@@ -1,30 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* Fonts */
   --font-primary: 'Public Sans', sans-serif;
   --font-secondary: 'Inter', sans-serif;
 
-  /* Core Colors */
+  /* Primary */
   --color-primary: #00288e;
   --color-on-primary: #ffffff;
-  
+  --color-primary-container: #1d4ed8;
+  --color-on-primary-container: #dbe7ff;
+
+  /* Secondary */
   --color-secondary: #6b38d4;
   --color-on-secondary: #ffffff;
-  
+  --color-secondary-container: #8b5cf6;
+  --color-on-secondary-container: #f1e8ff;
+
+  /* Tertiary */
   --color-tertiary: #440098;
   --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #6d28d9;
+  --color-on-tertiary-container: #efe0ff;
 
+  /* Background */
   --color-background: #f7f9fb;
   --color-on-background: #191c1e;
 
+  /* Surface */
   --color-surface: #ffffff;
   --color-on-surface: #191c1e;
-  
+  --color-on-surface-variant: #5f6470;
+
+  /* Surface Containers */
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f5f8;
+  --color-surface-container: #eceff3;
+  --color-surface-container-high: #e5e9ee;
+  --color-surface-container-highest: #dde2e8;
+
+  /* Error */
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
 
+  /* Outline */
   --color-outline: #757684;
+  --color-outline-variant: #c7ccd4;
 
   /* Roundness */
   --radius-sm: 0.25rem;
