@@ -24,7 +24,6 @@
   --color-tertiary-container: var(--color-tertiary-container);
   --color-on-tertiary-container: var(--color-on-tertiary-container);
 
-  --color-background: var(--color-background);
   --color-on-background: var(--color-on-background);
 
   --color-surface: var(--color-surface);
@@ -69,6 +68,8 @@
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-primary-foreground: var(--color-on-primary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 
   /* Fonts */
   --font-primary: var(--font-primary);
