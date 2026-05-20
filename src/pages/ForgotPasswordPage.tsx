@@ -141,7 +141,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-[#f3f5f8] via-[#eef2f9] to-[#f4f2fc] flex flex-col items-center justify-between p-4 selection:bg-[#6b38d4]/10 selection:text-[#6b38d4]">
+    <div className="min-h-screen bg-gradient-to-tr from-[#f3f5f8] via-[#eef2f9] to-[#f4f2fc] flex flex-col items-center justify-center p-4 selection:bg-[#6b38d4]/10 selection:text-[#6b38d4]">
       <div />
 
       <div className="w-full max-w-[440px] flex flex-col items-center space-y-6 py-8">

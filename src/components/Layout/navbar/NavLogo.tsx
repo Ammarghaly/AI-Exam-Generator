@@ -5,7 +5,7 @@ export default function NavLogo() {
         quiz
       </span>
       <span className="font-display text-h2 font-extrabold text-primary tracking-tight">
-        Academix AI
+        Academix
       </span>
     </a>
   );
