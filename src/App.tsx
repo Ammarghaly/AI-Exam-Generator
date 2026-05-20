@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { Toaster } from 'react-hot-toast';
 import { useThemeStore } from './stores/use-theme-store';
+import SignUpPage from './pages/SignUpPage';
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
       </Routes>
       <Toaster position="bottom-right" />
     </BrowserRouter>
