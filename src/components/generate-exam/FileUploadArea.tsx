@@ -3,7 +3,7 @@ import { UploadCloud, FileText, X, AlertCircle } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 
 export function FileUploadArea() {
-  const { register, setValue, watch, formState: { errors } } = useFormContext();
+  const { setValue, watch, formState: { errors } } = useFormContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const file = watch('file') as File | null;
