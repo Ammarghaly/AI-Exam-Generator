@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 
 export default function TeacherSignUpForm() {
   const [dragActive, setDragActive] = useState(false);
-  const { register, formState: { errors }, watch, setValue, trigger } = useFormContext<any>();
+  const { register, formState: { errors, isSubmitting }, watch, setValue, trigger } = useFormContext<any>();
   
   const files = watch("certificate");
   const fileName = files && files.length > 0 ? files[0].name : null;
@@ -120,9 +120,10 @@ export default function TeacherSignUpForm() {
 
       <button 
         type="submit" 
-        className="w-full h-12 bg-[#3525cd] text-white text-sm rounded-lg hover:shadow-md active:scale-[0.98] transition-all font-bold mt-2"
+        disabled={isSubmitting}
+        className="w-full h-12 bg-[#3525cd] text-white text-sm rounded-lg hover:shadow-md active:scale-[0.98] transition-all font-bold mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        Apply for Teacher Account
+        {isSubmitting ? "Applying..." : "Apply for Teacher Account"}
       </button>
     </>
   );

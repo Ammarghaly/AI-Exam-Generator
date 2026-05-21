@@ -3,6 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import StudentSignUpForm from "./StudentSignUpForm";
 import TeacherSignUpForm from "./TeacherSignUpForm";
+import { useRegisterUser } from "../../hooks/useRegisterUser";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const baseSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters").max(100),
@@ -62,9 +65,18 @@ export default function SignUpForm() {
 
   const { handleSubmit, reset, watch } = methods;
   const currentRole = watch("role");
+  const { mutateAsync: registerUser } = useRegisterUser();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log("Form Submitted Successfully:", data);
+  const onSubmit = async (data: SignUpFormData) => {
+    try {
+      await registerUser(data);
+      toast.success("Registration successful!");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Registration failed. Please try again.");
+      console.error(error);
+    }
   };
 
   const handleRoleChange = (newRole: "student" | "teacher") => {

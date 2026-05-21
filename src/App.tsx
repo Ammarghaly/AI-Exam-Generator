@@ -5,6 +5,9 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { Toaster } from 'react-hot-toast';
 import { useThemeStore } from './stores/use-theme-store';
 import SignUpPage from './pages/SignUpPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -14,14 +17,16 @@ function App() {
   }, [theme]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
-      </Routes>
-      <Toaster position="bottom-right" />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+        </Routes>
+        <Toaster position="bottom-right" />
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
