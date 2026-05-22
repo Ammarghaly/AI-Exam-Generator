@@ -148,13 +148,13 @@ export default function TeacherDashboardPage() {
 
           {/* Recent Exams Section */}
           <div className="bg-white rounded-xl shadow-[0px_4px_20px_rgba(30,64,175,0.03)] border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+            <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center">
               <h3 className="text-xl font-bold text-gray-900">Recent Exam Generations</h3>
-              <button className="text-sm font-bold text-indigo-700 hover:text-indigo-800 transition-colors flex items-center gap-1">
+              <button className="text-sm font-bold text-indigo-700 hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2 sm:mt-0">
                 View All <ArrowRight className="w-4 h-4 ml-1" />
               </button>
             </div>
-            <div className="p-0">
+            <div className="p-0 overflow-x-auto">
               <DataTable columns={columns} data={data} />
             </div>
           </div>
@@ -163,4 +163,3 @@ export default function TeacherDashboardPage() {
     </TeacherLayout>
   );
 }
-

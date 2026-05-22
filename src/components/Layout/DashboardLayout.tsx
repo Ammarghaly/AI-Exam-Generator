@@ -1,23 +1,15 @@
-import { Outlet } from 'react-router-dom';
-import Sidebar from '../common/Sidebar';
-import TopNavBar from '../common/TopNavBar';
-import BottomBar from '../common/BottomBar';
-import { useLayoutStore } from '../../stores/use-layout-store';
-import CreateGroupModal from '../groups/CreateGroupModal';
+import { Outlet } from "react-router-dom";
+import { TeacherSidebar } from "../common/TeacherSidebar";
+import TopNavBar from "../common/TopNavBar";
+import BottomBar from "../common/BottomBar";
+import CreateGroupModal from "../groups/CreateGroupModal";
 
 export default function DashboardLayout() {
-  const { isSidebarCollapsed } = useLayoutStore();
-
   return (
     <div className="flex min-h-screen bg-background">
+      <TeacherSidebar />
 
-      <Sidebar />
-
-      <div 
-        className={`flex-1 flex flex-col transition-all duration-300 w-full
-          ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[220px]'}
-        `}
-      >
+      <div className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-64">
         <TopNavBar />
 
         {/* Page Content */}

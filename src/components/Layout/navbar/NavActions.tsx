@@ -1,5 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useThemeStore } from "../../../stores/use-theme-store";
+import { Link } from "react-router-dom";
 
 export default function NavActions() {
   const { theme, toggleTheme } = useThemeStore();
@@ -14,19 +15,19 @@ export default function NavActions() {
         {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
-      <a
-        href="/login"
+      <Link
+        to="/login"
         className="px-lg py-sm rounded-lg font-label text-label text-primary border border-primary/30 hover:bg-primary/5 hover:border-primary/60 transition-all duration-200 cursor-pointer"
       >
         Sign In
-      </a>
+      </Link>
 
-      <a
-        href="/register"
+      <Link
+        to="/sign-up"
         className="bg-primary text-on-primary px-lg py-sm rounded-lg font-label text-label hover:opacity-90 transition-all duration-200 cursor-pointer shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98]"
       >
         Get Started
-      </a>
+      </Link>
     </div>
   );
 }
