@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import Sidebar from '../Common/Sidebar';
-import TopNavBar from '../Common/TopNavBar';
-import BottomBar from '../Common/BottomBar';
+import Sidebar from '../common/Sidebar';
+import TopNavBar from '../common/TopNavBar';
+import BottomBar from '../common/BottomBar';
 import { useLayoutStore } from '../../stores/use-layout-store';
 import CreateGroupModal from '../groups/CreateGroupModal';
 
@@ -10,10 +10,9 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar Component */}
+
       <Sidebar />
 
-      {/* Main Content Wrapper */}
       <div 
         className={`flex-1 flex flex-col transition-all duration-300 w-full
           ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[220px]'}
