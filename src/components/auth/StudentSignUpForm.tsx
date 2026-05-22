@@ -9,12 +9,12 @@ export default function StudentSignUpForm() {
       <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-[#1b1b24]">Full Name</label>
         <input 
-          {...register("fullName")}
+          {...register("name")}
           type="text" 
           placeholder="Enter your full name" 
-          className={`w-full px-4 py-2.5 bg-white border ${errors.fullName ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg text-sm text-[#1b1b24] placeholder:text-[#464555]/50 focus:outline-none focus:ring-2 transition-all`} 
+          className={`w-full px-4 py-2.5 bg-white border ${errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg text-sm text-[#1b1b24] placeholder:text-[#464555]/50 focus:outline-none focus:ring-2 transition-all`} 
         />
-        {errors.fullName?.message && <span className="text-xs text-red-500">{errors.fullName.message as string}</span>}
+        {errors.name?.message && <span className="text-xs text-red-500">{errors.name.message as string}</span>}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -32,8 +32,8 @@ export default function StudentSignUpForm() {
         <label className="text-sm font-semibold text-[#1b1b24]">Education Level</label>
         <div className="relative">
           <select 
-            {...register("educationLevel")}
-            className={`w-full appearance-none px-4 py-2.5 bg-white border ${errors.educationLevel ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all cursor-pointer`}
+            {...register("educational_level")}
+            className={`w-full appearance-none px-4 py-2.5 bg-white border ${errors.educational_level ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all cursor-pointer`}
             defaultValue=""
           >
             <option disabled value="">Select your current year</option>
@@ -47,7 +47,7 @@ export default function StudentSignUpForm() {
             <ChevronDown className="w-5 h-5" />
           </div>
         </div>
-        {errors.educationLevel?.message && <span className="text-xs text-red-500">{errors.educationLevel.message as string}</span>}
+        {errors.educational_level?.message && <span className="text-xs text-red-500">{errors.educational_level.message as string}</span>}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -11,10 +11,10 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 
 const sidebarNavigation = [
-  { name: 'Dashboard', href: '/teacher-dashboard', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/teacher/dashboard', icon: LayoutDashboard },
   { name: 'Generate Exam', href: '/teacher/generate-exam', icon: Sparkles },
-  { name: 'My Groups', href: '#', icon: Users },
-  { name: 'History', href: '#', icon: History },
+  { name: 'My Groups', href: '/teacher/groups', icon: Users },
+  { name: 'History', href: '/teacher/history', icon: History },
 ];
 
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
@@ -72,7 +72,7 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           <button className="md:hidden text-gray-600 p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
             <Menu className="w-6 h-6" />
           </button>
-          
+
           <div className="md:hidden text-lg font-extrabold text-indigo-700 truncate">
             EduGenius AI
           </div>

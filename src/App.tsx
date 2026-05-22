@@ -21,7 +21,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/teacher-dashboard" element={<TeacherDashboardPage />} />
+        <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
         <Route path="/teacher/generate-exam" element={<GenerateExamPage />} />
       </Routes>
       <Toaster position="bottom-right" />

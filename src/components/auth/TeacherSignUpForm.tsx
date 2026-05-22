@@ -6,8 +6,8 @@ export default function TeacherSignUpForm() {
   const [dragActive, setDragActive] = useState(false);
   const { register, formState: { errors }, watch, setValue, trigger } = useFormContext<any>();
   
-  const files = watch("certificate");
-  const fileName = files && files.length > 0 ? files[0].name : null;
+  const files_ = watch("file");
+  const fileName = files_ && files_.length > 0 ? files_[0].name : null;
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -24,8 +24,8 @@ export default function TeacherSignUpForm() {
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setValue("certificate", e.dataTransfer.files);
-      trigger("certificate");
+      setValue("file", e.dataTransfer.files);
+      trigger("file");
     }
   };
 
@@ -35,12 +35,12 @@ export default function TeacherSignUpForm() {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-[#464555] ml-1">Full Name</label>
           <input 
-            {...register("fullName")}
+            {...register("name")}
             type="text" 
             placeholder="Dr. Jane Smith" 
-            className={`w-full h-11 px-4 border ${errors.fullName ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg bg-[#fcf8ff] text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all`} 
+            className={`w-full h-11 px-4 border ${errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg bg-[#fcf8ff] text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all`} 
           />
-          {errors.fullName?.message && <span className="text-xs text-red-500">{errors.fullName.message as string}</span>}
+          {errors.name?.message && <span className="text-xs text-red-500">{errors.name.message as string}</span>}
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-[#464555] ml-1">Email Address</label>
@@ -80,19 +80,19 @@ export default function TeacherSignUpForm() {
       <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-[#464555] ml-1">Subject Taught</label>
         <input 
-          {...register("subjectTaught")}
+          {...register("subjects_taught")}
           type="text" 
           placeholder="Advanced Mathematics, Applied Physics" 
-          className={`w-full h-11 px-4 border ${errors.subjectTaught ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg bg-[#fcf8ff] text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all`} 
+          className={`w-full h-11 px-4 border ${errors.subjects_taught ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-[#c7c4d8] focus:border-[#3525cd] focus:ring-[#3525cd]/20"} rounded-lg bg-[#fcf8ff] text-sm text-[#1b1b24] focus:outline-none focus:ring-2 transition-all`} 
         />
-        {errors.subjectTaught?.message && <span className="text-xs text-red-500">{errors.subjectTaught.message as string}</span>}
+        {errors.subjects_taught?.message && <span className="text-xs text-red-500">{errors.subjects_taught.message as string}</span>}
       </div>
 
       <div className="flex flex-col gap-2">
         <label className="text-sm font-semibold text-[#464555] ml-1">College Certificate</label>
         <label
           className={`w-full py-6 px-6 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-3 cursor-pointer transition-all ${
-            errors.certificate ? "border-red-500 bg-red-50" : dragActive ? "bg-[#4f46e5]/10 border-[#3525cd]" : "border-[#C7D2FE] hover:bg-[#C7D2FE]/10 hover:border-[#3525cd]"
+            errors.file ? "border-red-500 bg-red-50" : dragActive ? "bg-[#4f46e5]/10 border-[#3525cd]" : "border-[#C7D2FE] hover:bg-[#C7D2FE]/10 hover:border-[#3525cd]"
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -109,13 +109,13 @@ export default function TeacherSignUpForm() {
             <p className="text-xs text-[#464555]">PDF, PNG, or JPG (max. 10MB)</p>
           </div>
           <input 
-            {...register("certificate")}
+            {...register("file")}
             type="file" 
             className="hidden" 
             accept=".pdf,.png,.jpg,.jpeg"
           />
         </label>
-        {errors.certificate && <span className="text-xs text-red-500">{errors.certificate.message as string}</span>}
+        {errors.file && <span className="text-xs text-red-500">{errors.file.message as string}</span>}
       </div>
 
       <button 
