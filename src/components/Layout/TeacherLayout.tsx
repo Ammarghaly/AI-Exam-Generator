@@ -8,7 +8,7 @@ import {
   History,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { TeacherSidebar } from "../common/TeacherSidebar";
+import { TeacherSidebar } from "../Common/TeacherSidebar";
 
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();

@@ -9,6 +9,8 @@ import SignUpPage from "./pages/SignUpPage";
 import TeacherDashboardPage from "./pages/TeacherDashboardPage";
 import GenerateExamPage from "./pages/GenerateExamPage";
 import TeacherExamManagementPage from "./pages/TeacherExamManagementPage";
+import ManualExamCreatorPage from "./pages/ManualExamCreatorPage";
+import ExamCreationSelectionPage from "./pages/ExamCreationSelectionPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -25,7 +27,9 @@ function App() {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
         <Route path="/teacher/exam-management" element={<TeacherExamManagementPage />} />
-        <Route path="/teacher/generate-exam" element={<GenerateExamPage />} />
+        <Route path="/teacher/manual-create" element={<ManualExamCreatorPage />} />
+        <Route path="/teacher/generate-exam" element={<ExamCreationSelectionPage />} />
+        <Route path="/teacher/generate-exam/ai-generate" element={<GenerateExamPage />} />
         <Route path="/teacher/groups" element={<MyGroups />} />
       </Routes>
       <Toaster position="bottom-right" />
