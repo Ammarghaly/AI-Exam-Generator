@@ -27,7 +27,7 @@ function App() {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
         <Route path="/teacher/exam-management" element={<TeacherExamManagementPage />} />
-        <Route path="/teacher/manual-create" element={<ManualExamCreatorPage />} />
+        <Route path="/teacher/generate-exam/manual-create" element={<ManualExamCreatorPage />} />
         <Route path="/teacher/generate-exam" element={<ExamCreationSelectionPage />} />
         <Route path="/teacher/generate-exam/ai-generate" element={<GenerateExamPage />} />
         <Route path="/teacher/groups" element={<MyGroups />} />

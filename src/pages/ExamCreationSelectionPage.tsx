@@ -48,7 +48,7 @@ export default function ExamCreationSelectionPage() {
 
             {/* Manual Creation Card */}
             <Link
-              to="/teacher/manual-create"
+              to="/teacher/generate-exam/manual-create"
               className="group relative bg-white border border-gray-200 rounded-3xl p-8 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
