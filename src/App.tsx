@@ -9,6 +9,7 @@ import SignUpPage from "./pages/SignUpPage";
 import TeacherDashboardPage from "./pages/TeacherDashboardPage";
 import GenerateExamPage from "./pages/GenerateExamPage";
 import LoginPage from "./pages/LoginPage";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />

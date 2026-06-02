@@ -41,6 +41,11 @@ export async function resetPassword(
   return response.data;
 }
 
+export async function resendActivationOtp(email: string): Promise<SendOtpResponse> {
+  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email });
+  return response.data;
+}
+
 export async function login(email: string, password: string) {
   const response = await api.post("/auth/login", { email, password });
   return response.data;

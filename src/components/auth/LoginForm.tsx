@@ -5,8 +5,9 @@ import { z } from "zod";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/axios";
+import { resendActivationOtp } from "../../api/auth";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -19,14 +20,18 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const prefillEmail = (location.state as { email?: string } | null)?.email ?? "";
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { email: prefillEmail },
   });
-  const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -37,11 +42,24 @@ export default function LoginForm() {
       localStorage.setItem("token", res.data.token);
       toast.success("Welcome back! ");
       navigate("/teacher/dashboard");
-    } catch (err) {
-      const message = (err as { response?: { data?: { message?: string } } }).response?.data?.message || "Something went wrong";
+    } catch (err: any) {
+      const resData = err.response?.data;
+
+      // Email not verified → send new OTP and redirect to verify page
+      if (resData?.notVerified) {
+        try {
+          await resendActivationOtp(resData.email);
+          toast("Please verify your email. A new code was sent.", { icon: "📧" });
+        } catch {
+          toast("Please verify your email first.", { icon: "📧" });
+        }
+        navigate("/verify-email", { state: { email: resData.email } });
+        return;
+      }
+
+      const message = resData?.message || "Something went wrong";
       toast.error(message);
     }
-
   };
 
 
