@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import MyGroups from "./pages/MyGroups";
@@ -8,6 +8,7 @@ import { useThemeStore } from "./stores/use-theme-store";
 import SignUpPage from "./pages/SignUpPage";
 import TeacherDashboardPage from "./pages/TeacherDashboardPage";
 import GenerateExamPage from "./pages/GenerateExamPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -20,6 +21,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
