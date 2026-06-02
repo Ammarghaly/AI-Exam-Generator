@@ -41,8 +41,13 @@ export async function resetPassword(
   return response.data;
 }
 
-
 export async function login(email: string, password: string) {
   const response = await api.post("/auth/login", { email, password });
   return response.data;
 }
+
+export async function signUp(formData: FormData) {
+  const response = await api.post("/auth/signUp", formData);
+  return response.data;
+}
+
