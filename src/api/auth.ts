@@ -56,3 +56,11 @@ export async function signUp(formData: FormData) {
   return response.data;
 }
 
+export async function logout() {
+  await api.post("/auth/logout");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
+}
+

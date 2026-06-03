@@ -9,6 +9,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/axios";
 import { resendActivationOtp } from "../../api/auth";
 
+const REMEMBER_EMAIL_KEY = "rememberedEmail";
+
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -22,7 +24,12 @@ export default function LoginForm() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const prefillEmail = (location.state as { email?: string } | null)?.email ?? "";
+
+  // Priority: email from verify-email redirect → remembered email → empty
+  const prefillEmail =
+    (location.state as { email?: string } | null)?.email ??
+    localStorage.getItem(REMEMBER_EMAIL_KEY) ??
+    "";
 
   const {
     register,
@@ -30,7 +37,10 @@ export default function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: prefillEmail },
+    defaultValues: {
+      email: prefillEmail,
+      rememberMe: !!localStorage.getItem(REMEMBER_EMAIL_KEY),
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -39,8 +49,22 @@ export default function LoginForm() {
         email: data.email,
         password: data.password,
       });
-      localStorage.setItem("token", res.data.token);
-      toast.success("Welcome back! ");
+
+      const { token, user } = res.data;
+
+      // Remember me: save email for next visit, clear if unchecked
+      if (data.rememberMe) {
+        localStorage.setItem(REMEMBER_EMAIL_KEY, data.email);
+      } else {
+        localStorage.removeItem(REMEMBER_EMAIL_KEY);
+      }
+
+      // Session persistence: localStorage (stays) vs sessionStorage (clears on tab close)
+      const storage = data.rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", token);
+      storage.setItem("user", JSON.stringify(user));
+
+      toast.success("Welcome back!");
       navigate("/teacher/dashboard");
     } catch (err: any) {
       const resData = err.response?.data;

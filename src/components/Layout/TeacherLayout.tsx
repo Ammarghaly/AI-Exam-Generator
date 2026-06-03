@@ -6,13 +6,34 @@ import {
   Sparkles,
   Users,
   History,
+  LogOut,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { TeacherSidebar } from "../common/TeacherSidebar";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { TeacherSidebar } from "../Common/TeacherSidebar";
+import { logout } from "../../api/auth";
+import toast from "react-hot-toast";
 
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const user = JSON.parse(
+    localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+  );
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
+    }
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
@@ -51,17 +72,29 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-4 ml-auto">
+            <span className="hidden md:block text-sm font-medium text-gray-600">
+              {user?.name || ""}
+            </span>
             <button className="text-gray-500 hover:text-indigo-700 transition-colors p-2 rounded-full hover:bg-gray-100 relative">
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-600 rounded-full border border-white"></span>
             </button>
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all ml-2">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuClV69JP-p7elXa9NogBaPuSgkuywgg4vHFnxFeyfexJSY-YqigSFPXNC9sfjg9VWKaWIt26dbbUSM1T_qozvoASbhvYrgxA6fBWgUWTc87zyYf6tTTWeJqMXyw_X8b1YAc8znzfvUJsHHYE3sHLhbV4FWOin6Ha6HwL8XLlzGq3FPW4btU0sqbSJNVgH8q78q0mATyn3mltJ87EQHjCk0uWXfPngSlcrUzCnLLojWoqYtrPspFR1LYyiL_e9uG35TjJM2EF_OneZY"
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
             </div>
+            {/* Logout button */}
+            <button
+              onClick={handleLogout}
+              title="Sign out"
+              className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden md:inline">Sign out</span>
+            </button>
           </div>
         </header>
 

@@ -1,13 +1,12 @@
 import { GraduationCap } from "lucide-react";
 import SignUpForm from "../components/auth/SignUpForm";
-
-const imgUrl = "https://lh3.googleusercontent.com/aida/ADBb0uhTWfQt--ZUQNbMtWsEaD2p9i03CH_Q5BWk5qlf27e35TPv1UgGEVyJYXNMeD8efant3ZF5Ugl-UPrVGrvAnXmGHum5-4eGr_SLeVFTdxTnr8rJjd2xKaUlkFztX-D7p39YapwhZ_Bn6C4nVjAh7ZEIC0VAprk4Sa1wBpltdvKHi4_V_R7C-s-kF2rsHMeSvAFwMihpX9dZjQwVrMFW1fI-V5f3YhbUKpINMWWoE9rP5o5PzCCISSj91aU";
+import imgUrl from "../assets/illustration.png";
 
 export default function SignUpPage() {
   return (
     <div className="flex min-h-screen flex-col lg:flex-row bg-[#fcf8ff] font-sans">
       {/* Left Side */}
-      <section className="hidden lg:flex w-1/2 flex-col justify-between p-8 xl:p-12 relative overflow-hidden bg-[#4f46e5]">
+      <section className="hidden lg:flex w-1/2 flex-col justify-between p-6 xl:p-12 relative overflow-hidden bg-[#4f46e5]">
         {/* Background Gradients */}
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#4f46e5] to-[#3525cd] opacity-90"></div>
         <div className="absolute -top-[10%] -right-[10%] w-64 h-64 bg-white/10 rounded-full blur-3xl z-0"></div>
@@ -41,7 +40,7 @@ export default function SignUpPage() {
 
         {/* Footer Text */}
         <div className="relative z-10 text-[#dad7ff]/50 text-xs xl:text-sm uppercase tracking-widest font-semibold">
-          The Intelligent Mentor System © 2024
+          The Intelligent Mentor System © 2026
         </div>
       </section>
 
