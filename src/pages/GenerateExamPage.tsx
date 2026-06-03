@@ -3,7 +3,7 @@ import { Sparkles } from 'lucide-react';
 import { TeacherLayout } from '../components/Layout/TeacherLayout';
 import { FileUploadArea } from '../components/generate-exam/FileUploadArea';
 import { ExamSettings } from '../components/generate-exam/ExamSettings';
-import { PublishSettingsArea } from '../components/generate-exam/PublishSettingsArea';
+import { PublishSettingsArea } from '../components/Common/PublishSettingsArea';
 import { z } from 'zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

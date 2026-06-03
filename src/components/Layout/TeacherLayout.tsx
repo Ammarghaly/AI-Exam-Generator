@@ -7,6 +7,7 @@ import {
   Users,
   History,
   LogOut,
+  FileText,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TeacherSidebar } from "../Common/TeacherSidebar";
@@ -123,6 +124,11 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
                 name: "Generate Exam",
                 href: "/teacher/generate-exam",
                 icon: Sparkles,
+              },
+              {
+                name: "Manage exams",
+                href: "/teacher/exam-management",
+                icon: FileText,
               },
               { name: "My Groups", href: "/teacher/groups", icon: Users },
               { name: "History", href: "/teacher/history", icon: History },
