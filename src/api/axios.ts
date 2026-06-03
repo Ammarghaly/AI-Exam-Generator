@@ -2,10 +2,9 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
-  withCredentials: true, // send httpOnly refresh token cookie automatically
+  withCredentials: true, 
 });
 
-// Attach access token to every request
 api.interceptors.request.use((config) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -15,7 +14,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Auto-refresh access token on 401
 let isRefreshing = false;
 let failedQueue: { resolve: (v: string) => void; reject: (e: unknown) => void }[] = [];
 
@@ -32,13 +30,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Only retry once and only on 401
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
 
     if (isRefreshing) {
-      // Queue requests while refreshing
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
       }).then((token) => {
@@ -59,7 +55,6 @@ api.interceptors.response.use(
 
       const newToken = data.token;
 
-      // Save to whichever storage was used originally
       if (localStorage.getItem("token")) {
         localStorage.setItem("token", newToken);
       } else {
@@ -71,7 +66,6 @@ api.interceptors.response.use(
       return api(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
-      // Refresh token expired → force logout
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       sessionStorage.removeItem("token");

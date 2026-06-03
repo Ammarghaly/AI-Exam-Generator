@@ -51,6 +51,7 @@ export default function LoginForm() {
       });
 
       const { token, user } = res.data;
+      // refreshToken is stored in httpOnly cookie automatically by the browser
 
       // Remember me: save email for next visit, clear if unchecked
       if (data.rememberMe) {

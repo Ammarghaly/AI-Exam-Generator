@@ -9,6 +9,8 @@ import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { generateExamManually } from '../api/exams';
 
 export type QuestionType = 'Multiple Choice' | 'True/False' | 'Short Answer' | 'Essay';
 
@@ -61,6 +63,7 @@ export type ExamFormValues = z.infer<typeof examSchema>;
 
 export default function ManualExamCreatorPage() {
   const [step, setStep] = useState<'build' | 'publish'>('build');
+  const navigate = useNavigate();
 
   const methods = useForm<ExamFormValues>({
     resolver: zodResolver(examSchema),
@@ -121,9 +124,57 @@ export default function ManualExamCreatorPage() {
     });
   };
 
-  const onSubmit = (data: ExamFormValues) => {
-    console.log('Publishing Exam with Data:', data);
-    toast.success('Exam successfully published!');
+  const onSubmit = async (data: ExamFormValues) => {
+    try {
+      const user = JSON.parse(
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+      );
+      const teacherID = user._id || "68401234abcd5678ef901111";
+
+      const mappedQuestions = data.questions.map((q) => {
+        const isMCQ = q.type === 'Multiple Choice';
+        const options = isMCQ && q.options ? q.options.map(opt => opt.text) : [];
+        let correctAnswer = '';
+        if (isMCQ && q.options) {
+          const correctOpt = q.options.find(opt => opt.isCorrect);
+          correctAnswer = correctOpt ? correctOpt.text : '';
+        } else {
+          correctAnswer = q.idealAnswer || 'True';
+        }
+
+        return {
+          title: q.text,
+          options: options,
+          correctAnswer: correctAnswer,
+          difficulty: 'medium' as const,
+          cognitiveLevel: 'understand' as const,
+          typeQue: (isMCQ ? 'MCQ' : 'TF') as 'MCQ' | 'TF',
+        };
+      });
+
+      const openingAt = Math.floor(new Date(data.availableFrom || Date.now()).getTime() / 1000);
+      const closingAt = Math.floor(new Date(data.deadline || Date.now()).getTime() / 1000);
+
+      const payload = {
+        examDetails: {
+          title: data.examTitle,
+          openingAt,
+          closingAt,
+          durationMinutes: 60,
+          accessCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+          status: 'Active' as const,
+          teacherID,
+        },
+        questions: mappedQuestions,
+      };
+
+      await generateExamManually(data.targetGroup, payload);
+      toast.success('Exam successfully published manually!');
+      navigate('/teacher/exam-management');
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.response?.data?.error || error?.response?.data?.message || error.message || 'Failed to publish exam');
+    }
   };
 
   const onInvalid = () => {

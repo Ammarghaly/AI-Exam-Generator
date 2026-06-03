@@ -57,7 +57,7 @@ export async function signUp(formData: FormData) {
 }
 
 export async function logout() {
-  await api.post("/auth/logout");
+  await api.post("/auth/logout"); // cookie sent automatically
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   sessionStorage.removeItem("token");
