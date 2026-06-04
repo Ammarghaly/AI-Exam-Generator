@@ -44,7 +44,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
       } else {
         toast.error("Failed to update profile photo");
       }
-    } catch (error) {
+    } catch  {
       toast.error("Failed to update profile photo");
     } finally {
       setIsUpdating(false);

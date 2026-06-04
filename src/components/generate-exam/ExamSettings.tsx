@@ -1,40 +1,62 @@
-import { Settings2, AlertCircle, Plus, Minus } from 'lucide-react';
-import { useFormContext } from 'react-hook-form';
+import { Settings2, AlertCircle, Plus, Minus } from "lucide-react";
+import { useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 
 export function ExamSettings() {
-  const { register, watch, setValue, formState: { errors } } = useFormContext();
+  const {
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
 
-  const distribution = watch('difficultyDistribution') || {};
-  const mcqCount = watch('mcqCount') || 0;
+  const distribution = watch("difficultyDistribution") || {};
+  const mcqCount = watch("mcqCount") || 0;
 
   // Calculate total questions dynamically
-  const totalQuestions: number = Object.values(distribution as Record<string, number>).reduce((sum: number, val) => sum + (Number(val) || 0), 0);
+  const totalQuestions: number = Object.values(
+    distribution as Record<string, number>,
+  ).reduce((sum: number, val) => sum + (Number(val) || 0), 0);
 
   // Automatically calculate TF count
   const tfCount = Math.max(0, totalQuestions - mcqCount);
 
+  useEffect(() => {
+    if (mcqCount > totalQuestions) {
+      const timeout = window.setTimeout(() => {
+        setValue("mcqCount", totalQuestions, { shouldValidate: true });
+      }, 0);
+      return () => window.clearTimeout(timeout);
+    }
+    return undefined;
+  }, [mcqCount, totalQuestions, setValue]);
+
   const incrementCell = (key: string) => {
     const currentVal = Number(distribution[key]) || 0;
-    setValue(`difficultyDistribution.${key}`, currentVal + 1, { shouldValidate: true });
+    setValue(`difficultyDistribution.${key}`, currentVal + 1, {
+      shouldValidate: true,
+    });
   };
 
   const decrementCell = (key: string) => {
     const currentVal = Number(distribution[key]) || 0;
     if (currentVal > 0) {
-      setValue(`difficultyDistribution.${key}`, currentVal - 1, { shouldValidate: true });
+      setValue(`difficultyDistribution.${key}`, currentVal - 1, {
+        shouldValidate: true,
+      });
     }
   };
 
   const gridCells = [
-    { label: 'Easy', prefix: 'Easy' },
-    { label: 'Normal', prefix: 'Normal' },
-    { label: 'Hard', prefix: 'Hard' },
+    { label: "Easy", prefix: "Easy" },
+    { label: "Normal", prefix: "Normal" },
+    { label: "Hard", prefix: "Hard" },
   ];
 
   const cognitiveLevels = [
-    { label: 'Memorization', key: 'Memorization' },
-    { label: 'Creativity', key: 'Creativity' },
-    { label: 'Thinking', key: 'Thinking' },
+    { label: "Memorization", key: "Memorization" },
+    { label: "Creativity", key: "Creativity" },
+    { label: "Thinking", key: "Thinking" },
   ];
 
   return (
@@ -47,7 +69,9 @@ export function ExamSettings() {
       {/* 3x3 Distribution Matrix */}
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <label className="block text-sm font-semibold text-gray-900">Cognitive & Difficulty Matrix</label>
+          <label className="block text-sm font-semibold text-gray-900">
+            Cognitive & Difficulty Matrix
+          </label>
           <span className="text-xs font-bold text-gray-500 bg-slate-100 px-2 py-1 rounded">
             Total: {totalQuestions} Questions
           </span>
@@ -57,19 +81,29 @@ export function ExamSettings() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-gray-100">
-                <th className="p-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Level</th>
-                {cognitiveLevels.map(cog => (
-                  <th key={cog.key} className="p-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">
+                <th className="p-3 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Level
+                </th>
+                {cognitiveLevels.map((cog) => (
+                  <th
+                    key={cog.key}
+                    className="p-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-center"
+                  >
                     {cog.label}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {gridCells.map(row => (
-                <tr key={row.prefix} className="border-b border-gray-50 last:border-0 hover:bg-slate-50/50">
-                  <td className="p-3 text-sm font-bold text-gray-700">{row.label}</td>
-                  {cognitiveLevels.map(cog => {
+              {gridCells.map((row) => (
+                <tr
+                  key={row.prefix}
+                  className="border-b border-gray-50 last:border-0 hover:bg-slate-50/50"
+                >
+                  <td className="p-3 text-sm font-bold text-gray-700">
+                    {row.label}
+                  </td>
+                  {cognitiveLevels.map((cog) => {
                     const cellKey = `${row.prefix}_${cog.key}`;
                     return (
                       <td key={cog.key} className="p-3">
@@ -84,7 +118,9 @@ export function ExamSettings() {
                           <input
                             type="number"
                             min="0"
-                            {...register(`difficultyDistribution.${cellKey}`, { valueAsNumber: true })}
+                            {...register(`difficultyDistribution.${cellKey}`, {
+                              valueAsNumber: true,
+                            })}
                             className="w-10 text-center text-sm font-bold text-gray-900 focus:outline-none bg-transparent"
                           />
                           <button
@@ -113,17 +149,21 @@ export function ExamSettings() {
 
       {/* Question Formats Configuration */}
       <div className="space-y-4 pt-4 border-t border-gray-100">
-        <label className="block text-sm font-semibold text-gray-900">Format Distribution</label>
+        <label className="block text-sm font-semibold text-gray-900">
+          Format Distribution
+        </label>
 
         <div className="grid grid-cols-2 gap-4">
           {/* MCQ Count */}
           <div className="bg-slate-50 p-4 rounded-xl border border-gray-200/60 space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">MCQ Questions</label>
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">
+              MCQ Questions
+            </label>
             <input
               type="number"
               min="0"
               max={totalQuestions}
-              {...register('mcqCount', { valueAsNumber: true })}
+              {...register("mcqCount", { valueAsNumber: true })}
               className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
             {errors.mcqCount?.message && (
@@ -136,11 +176,15 @@ export function ExamSettings() {
 
           {/* TF Count (Calculated) */}
           <div className="bg-slate-50 p-4 rounded-xl border border-gray-200/60 space-y-1.5 opacity-85">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">True / False</label>
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">
+              True / False
+            </label>
             <div className="w-full bg-slate-100 border border-gray-200/70 rounded-lg px-3 py-2 text-sm font-extrabold text-gray-600 select-none">
               {tfCount} Questions
             </div>
-            <span className="text-[10px] text-gray-400 block font-medium">Auto-computed from total</span>
+            <span className="text-[10px] text-gray-400 block font-medium">
+              Auto-computed from total
+            </span>
           </div>
         </div>
       </div>

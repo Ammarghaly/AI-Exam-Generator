@@ -15,8 +15,11 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
   const [isSaving, setIsSaving] = React.useState(false);
 
   React.useEffect(() => {
-    setName(user.name || "");
-    setEmail(user.email || "");
+    const timeout = window.setTimeout(() => {
+      setName(user.name || "");
+      setEmail(user.email || "");
+    }, 0);
+    return () => window.clearTimeout(timeout);
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +47,7 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
       } else {
         toast.error("Failed to update profile");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to update profile");
     } finally {
       setIsSaving(false);
@@ -54,13 +57,19 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
   return (
     <form onSubmit={handleSubmit} className="p-lg space-y-lg">
       <div className="flex items-center gap-sm mb-md">
-        <span className="material-symbols-outlined text-primary text-2xl">person</span>
-        <h3 className="font-display text-h3 text-on-surface font-bold">Personal Information</h3>
+        <span className="material-symbols-outlined text-primary text-2xl">
+          person
+        </span>
+        <h3 className="font-display text-h3 text-on-surface font-bold">
+          Personal Information
+        </h3>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
         <div className="space-y-sm">
-          <label className="font-label text-label text-on-surface-variant block font-medium">Full Name</label>
+          <label className="font-label text-label text-on-surface-variant block font-medium">
+            Full Name
+          </label>
           <input
             className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
             type="text"
@@ -70,7 +79,9 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
           />
         </div>
         <div className="space-y-sm">
-          <label className="font-label text-label text-on-surface-variant block font-medium">Email Address</label>
+          <label className="font-label text-label text-on-surface-variant block font-medium">
+            Email Address
+          </label>
           <input
             className="w-full bg-surface-container-high border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface-variant cursor-not-allowed opacity-75 outline-none select-none"
             type="email"
