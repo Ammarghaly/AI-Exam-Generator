@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Bell,
   Menu,
   LayoutDashboard,
   Sparkles,
@@ -18,18 +17,18 @@ import CreateGroupModal from "../groups/CreateGroupModal";
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [currentUser, setCurrentUser] = React.useState(() => {
+  const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
     );
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleUserUpdate = () => {
       const updatedUser = JSON.parse(
-        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
       );
       setCurrentUser(updatedUser);
     };
@@ -101,7 +100,10 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
               className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all"
             >
               <img
-                src={currentUser?.avatar || "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary"}
+                src={
+                  currentUser?.avatar ||
+                  "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary"
+                }
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -128,8 +130,9 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Navigation Drawer */}
         <nav
-          className={`fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 md:hidden transition-transform duration-300 overflow-y-auto ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+          className={`fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 md:hidden transition-transform duration-300 overflow-y-auto ${
+            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
         >
           <div className="px-4 py-6 space-y-2">
             {[
@@ -157,10 +160,11 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
                   key={item.name}
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${location.pathname === item.href
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${
+                    location.pathname === item.href
                       ? "bg-indigo-50 text-indigo-700"
                       : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                  }`}
                 >
                   <Icon
                     className={`w-5 h-5 ${location.pathname === item.href ? "text-indigo-700" : "text-gray-400"}`}
@@ -180,40 +184,44 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-around h-16 px-2">
             <Link
               to="/teacher/dashboard"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/dashboard"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
+                location.pathname === "/teacher/dashboard"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-                }`}
+              }`}
             >
               <LayoutDashboard className="w-6 h-6 mb-1" />
               <span>Dashboard</span>
             </Link>
             <Link
               to="/teacher/generate-exam"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/generate-exam"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
+                location.pathname === "/teacher/generate-exam"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-                }`}
+              }`}
             >
               <Sparkles className="w-6 h-6 mb-1" />
               <span>Generate</span>
             </Link>
             <Link
               to="/teacher/groups"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/groups"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
+                location.pathname === "/teacher/groups"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-                }`}
+              }`}
             >
               <Users className="w-6 h-6 mb-1" />
               <span>Groups</span>
             </Link>
             <Link
               to="/teacher/history"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/history"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
+                location.pathname === "/teacher/history"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-                }`}
+              }`}
             >
               <History className="w-6 h-6 mb-1" />
               <span>History</span>

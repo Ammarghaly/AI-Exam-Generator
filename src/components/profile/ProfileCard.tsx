@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { updateUserProfile } from "../../api/auth";
 import toast from "react-hot-toast";
 
@@ -13,8 +13,8 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ user }: ProfileCardProps) {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [isUpdating, setIsUpdating] = React.useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,7 +51,8 @@ export function ProfileCard({ user }: ProfileCardProps) {
     }
   };
 
-  const defaultAvatar = "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary";
+  const defaultAvatar =
+    "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary";
 
   return (
     <div className="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant text-center flex flex-col items-center justify-center h-full min-h-[350px]">
@@ -62,7 +63,9 @@ export function ProfileCard({ user }: ProfileCardProps) {
           src={user.avatar || defaultAvatar}
         />
         <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-          <span className="material-symbols-outlined text-white text-3xl">photo_camera</span>
+          <span className="material-symbols-outlined text-white text-3xl">
+            photo_camera
+          </span>
           <input
             ref={fileInputRef}
             className="hidden"
@@ -73,7 +76,9 @@ export function ProfileCard({ user }: ProfileCardProps) {
           />
         </label>
       </div>
-      <h3 className="font-display text-h3 text-on-surface font-bold mb-1">{user.name || ""}</h3>
+      <h3 className="font-display text-h3 text-on-surface font-bold mb-1">
+        {user.name || ""}
+      </h3>
       <p className="font-body text-small text-on-surface-variant mb-xs">
         {user.role || "Teacher"}
       </p>
@@ -85,7 +90,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
       ) : (
         <div className="h-7 mb-lg" />
       )}
-      
+
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isUpdating}
