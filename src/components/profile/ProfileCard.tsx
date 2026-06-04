@@ -52,7 +52,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
   };
 
   const defaultAvatar =
-    "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary";
+    "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png";
 
   return (
     <div className="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant text-center flex flex-col items-center justify-center h-full min-h-[350px]">

@@ -102,7 +102,7 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
               <img
                 src={
                   currentUser?.avatar ||
-                  "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary"
+                  "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png"
                 }
                 alt="Profile"
                 className="w-full h-full object-cover"

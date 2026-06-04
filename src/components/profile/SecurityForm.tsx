@@ -60,53 +60,58 @@ export function SecurityForm() {
         </h3>
       </div>
 
-      <div className="space-y-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-          <div className="space-y-sm">
-            <label className="font-label text-label text-on-surface-variant block font-medium">
-              Current Password
-            </label>
-            <input
-              className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
-              placeholder="••••••••"
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              disabled={isSaving}
-            />
-          </div>
-          <div className="space-y-sm">
-            <label className="font-label text-label text-on-surface-variant block font-medium">
-              New Password
-            </label>
-            <input
-              className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
-              placeholder="••••••••"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isSaving}
-            />
-          </div>
-          <div className="space-y-sm">
-            <label className="font-label text-label text-on-surface-variant block font-medium">
-              Confirm Password
-            </label>
-            <input
-              className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
-              placeholder="••••••••"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              disabled={isSaving}
-            />
-          </div>
-        </div>
-        <p className="font-body text-small text-on-surface-variant">
-          Password must be at least 8 characters and include a mix of letters,
-          numbers, and symbols.
-        </p>
-      </div>
+    <div className="space-y-lg w-full">
+  <div className="space-y-sm w-[48%]">
+    <label className="font-label text-label text-on-surface-variant block font-medium">
+      Current Password
+    </label>
+    <input
+      className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+      placeholder="••••••••"
+      type="password"
+      value={currentPassword}
+      onChange={(e) => setCurrentPassword(e.target.value)}
+      disabled={isSaving}
+    />
+  </div>
+
+  {/* قسم الحقلين الجديدين متجاورين بنفس عرض الحقل العلوي */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-lg w-full">
+    <div className="space-y-sm">
+      <label className="font-label text-label text-on-surface-variant block font-medium">
+        New Password
+      </label>
+      <input
+        className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+        placeholder="••••••••"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        disabled={isSaving}
+      />
+    </div>
+    <div className="space-y-sm">
+      <label className="font-label text-label text-on-surface-variant block font-medium">
+        Confirm Password
+      </label>
+      <input
+        className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-sm text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none"
+        placeholder="••••••••"
+        type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        disabled={isSaving}
+      />
+    </div>
+  </div>
+
+  <p className="font-body text-small text-on-surface-variant">
+    Password must be at least 8 characters and include a mix of letters,
+    numbers, and symbols.
+  </p>
+</div>
+
+
 
       <div className="flex justify-end gap-md pt-sm">
         <button
