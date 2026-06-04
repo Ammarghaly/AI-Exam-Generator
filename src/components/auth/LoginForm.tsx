@@ -60,10 +60,9 @@ export default function LoginForm() {
         localStorage.removeItem(REMEMBER_EMAIL_KEY);
       }
 
-      // Session persistence: localStorage (stays) vs sessionStorage (clears on tab close)
-      const storage = data.rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", token);
-      storage.setItem("user", JSON.stringify(user));
+      // Always persist token and user in localStorage to keep user logged in across tabs
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Welcome back!");
       navigate("/teacher/dashboard");
