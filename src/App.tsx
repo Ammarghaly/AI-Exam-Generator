@@ -1,18 +1,36 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import LoginPage from './pages/LoginPage';
-// import SignUpPage from './pages/SignUpPage';
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import MyGroups from "./pages/MyGroups";
+import { Toaster } from "react-hot-toast";
+import { useThemeStore } from "./stores/use-theme-store";
+import SignUpPage from "./pages/SignUpPage";
+import TeacherDashboardPage from "./pages/TeacherDashboardPage";
+import GenerateExamPage from "./pages/GenerateExamPage";
+import LoginPage from "./pages/LoginPage";
+import GroupDetailsPage from "./pages/GroupDetailsPage";
 
 function App() {
+  const theme = useThemeStore((state) => state.theme);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
+        <Route path="/teacher/generate-exam" element={<GenerateExamPage />} />
+        <Route path="/teacher/groups" element={<MyGroups />} />
+       <Route path="/teacher/groups/:id" element={<GroupDetailsPage />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/register" element={<SignUpPage />} /> */}
-        
       </Routes>
-      <Toaster position="top-right" />
+      <Toaster position="bottom-right" />
     </BrowserRouter>
   );
 }
