@@ -74,8 +74,6 @@ export function SecurityForm() {
       disabled={isSaving}
     />
   </div>
-
-  {/* قسم الحقلين الجديدين متجاورين بنفس عرض الحقل العلوي */}
   <div className="grid grid-cols-1 md:grid-cols-2 gap-lg w-full">
     <div className="space-y-sm">
       <label className="font-label text-label text-on-surface-variant block font-medium">
