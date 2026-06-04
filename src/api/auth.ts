@@ -64,3 +64,17 @@ export async function logout() {
   sessionStorage.removeItem("user");
 }
 
+export async function getMe() {
+  const response = await api.get<{ success: boolean; user: any }>("/auth/me");
+  return response.data;
+}
+
+export async function updateUserProfile(formData: FormData) {
+  const response = await api.put<{ success: boolean; user: any }>("/auth/profile", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}
+

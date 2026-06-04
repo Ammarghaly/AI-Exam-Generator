@@ -20,9 +20,25 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  const user = JSON.parse(
-    localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
-  );
+  const [currentUser, setCurrentUser] = React.useState(() => {
+    return JSON.parse(
+      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+    );
+  });
+
+  React.useEffect(() => {
+    const handleUserUpdate = () => {
+      const updatedUser = JSON.parse(
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+      );
+      setCurrentUser(updatedUser);
+    };
+
+    window.addEventListener("user-updated", handleUserUpdate);
+    return () => {
+      window.removeEventListener("user-updated", handleUserUpdate);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -74,16 +90,18 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-4 ml-auto">
-            <span className="hidden md:block text-sm font-medium text-gray-600">
-              {user?.name || ""}
+            <span
+              onClick={() => navigate("/teacher/profile")}
+              className="hidden md:block text-sm font-medium text-gray-600 cursor-pointer hover:text-indigo-700 transition-colors select-none"
+            >
+              {currentUser?.name || ""}
             </span>
-            <button className="text-gray-500 hover:text-indigo-700 transition-colors p-2 rounded-full hover:bg-gray-100 relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-rose-600 rounded-full border border-white"></span>
-            </button>
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all">
+            <div
+              onClick={() => navigate("/teacher/profile")}
+              className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all"
+            >
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuClV69JP-p7elXa9NogBaPuSgkuywgg4vHFnxFeyfexJSY-YqigSFPXNC9sfjg9VWKaWIt26dbbUSM1T_qozvoASbhvYrgxA6fBWgUWTc87zyYf6tTTWeJqMXyw_X8b1YAc8znzfvUJsHHYE3sHLhbV4FWOin6Ha6HwL8XLlzGq3FPW4btU0sqbSJNVgH8q78q0mATyn3mltJ87EQHjCk0uWXfPngSlcrUzCnLLojWoqYtrPspFR1LYyiL_e9uG35TjJM2EF_OneZY"
+                src={currentUser?.avatar || "https://res-console.cloudinary.com/dgjw80t8x/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/bW9zdGFmYW1hZ2R5X2hzamJ3Mw==/template_primary"}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -110,9 +128,8 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Navigation Drawer */}
         <nav
-          className={`fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 md:hidden transition-transform duration-300 overflow-y-auto ${
-            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 md:hidden transition-transform duration-300 overflow-y-auto ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <div className="px-4 py-6 space-y-2">
             {[
@@ -140,11 +157,10 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
                   key={item.name}
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${
-                    location.pathname === item.href
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${location.pathname === item.href
                       ? "bg-indigo-50 text-indigo-700"
                       : "text-gray-600 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <Icon
                     className={`w-5 h-5 ${location.pathname === item.href ? "text-indigo-700" : "text-gray-400"}`}
@@ -164,44 +180,40 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-around h-16 px-2">
             <Link
               to="/teacher/dashboard"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
-                location.pathname === "/teacher/dashboard"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/dashboard"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <LayoutDashboard className="w-6 h-6 mb-1" />
               <span>Dashboard</span>
             </Link>
             <Link
               to="/teacher/generate-exam"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
-                location.pathname === "/teacher/generate-exam"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/generate-exam"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <Sparkles className="w-6 h-6 mb-1" />
               <span>Generate</span>
             </Link>
             <Link
               to="/teacher/groups"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
-                location.pathname === "/teacher/groups"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/groups"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <Users className="w-6 h-6 mb-1" />
               <span>Groups</span>
             </Link>
             <Link
               to="/teacher/history"
-              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
-                location.pathname === "/teacher/history"
+              className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${location.pathname === "/teacher/history"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <History className="w-6 h-6 mb-1" />
               <span>History</span>

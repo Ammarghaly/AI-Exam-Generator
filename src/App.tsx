@@ -18,6 +18,7 @@ import ManualExamCreatorPage from "./pages/ManualExamCreatorPage";
 import ExamCreationSelectionPage from "./pages/ExamCreationSelectionPage";
 import StudentExamPage from "./pages/StudentExamPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserProfilePage from "./pages/UserProfilePage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/teacher/generate-exam/ai-generate" element={<ProtectedRoute><GenerateExamPage /></ProtectedRoute>} />
         <Route path="/teacher/generate-exam/processing" element={<ProtectedRoute><AIProcessingPage /></ProtectedRoute>} />
         <Route path="/teacher/groups" element={<ProtectedRoute><MyGroups /></ProtectedRoute>} />
+        <Route path="/teacher/profile" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
         <Route path="/student/exam/:id" element={<StudentExamPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

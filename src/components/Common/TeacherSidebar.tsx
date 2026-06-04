@@ -14,6 +14,7 @@ const sidebarNavigation = [
   { name: "Manage exams", href: "/teacher/exam-management", icon: FileText },
   { name: "My Groups", href: "/teacher/groups", icon: Users },
   { name: "History", href: "/teacher/history", icon: History },
+  { name: "Profile", href: "/teacher/profile", icon: Users },
 ];
 
 export function TeacherSidebar() {
