@@ -1,23 +1,21 @@
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getMyExams } from '../../api/exams';
 import { DataTable } from '../ui/data-table';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useSearchStore } from '../../stores/use-search-store';
 
 type Assessment = {
   id: string;
   title: string;
   course: string;
-  status: 'READY' | 'OUT FOR REVIEW' | 'PUBLISHED' | 'DRAFT';
+  status: string;
   date: string;
+  startDate: string;
+  endDate: string;
 };
-
-const assessmentsData: Assessment[] = [
-  { id: '1', title: 'Intro to Quantum Theory', course: 'PHY-101', status: 'READY', date: 'Oct 28, 2023' },
-  { id: '2', title: 'Advanced Fluid Dynamics', course: 'MECH-425', status: 'OUT FOR REVIEW', date: 'Oct 28, 2023' },
-  { id: '3', title: 'Ethics in AI - Final', course: 'PHIL-220', status: 'PUBLISHED', date: 'Oct 28, 2023' },
-  { id: '4', title: 'Macroeconomics Quiz 3', course: 'ECON-102', status: 'DRAFT', date: 'Nov 01, 2023' },
-];
 
 const columns: ColumnDef<Assessment>[] = [
   {
@@ -28,20 +26,24 @@ const columns: ColumnDef<Assessment>[] = [
     ),
   },
   {
-    accessorKey: 'course',
-    header: 'COURSE',
+    accessorKey: 'groupID',
+    header: 'GROUP',
     cell: ({ row }) => <span className="text-sm font-semibold text-gray-500">{row.original.course}</span>,
   },
   {
     accessorKey: 'status',
     header: 'STATUS',
     cell: ({ row }) => {
-      const status = row.original.status;
+      const status = row.original.status || '';
       let badgeClass = '';
-      if (status === 'READY') badgeClass = 'bg-emerald-100 text-emerald-700';
-      else if (status === 'OUT FOR REVIEW') badgeClass = 'bg-orange-100 text-orange-700';
-      else if (status === 'PUBLISHED') badgeClass = 'bg-blue-100 text-blue-700';
-      else if (status === 'DRAFT') badgeClass = 'bg-gray-100 text-gray-600';
+      const displayStatus = status.toUpperCase();
+
+      if (displayStatus === 'READY' || displayStatus === 'ACTIVE') badgeClass = 'bg-emerald-100 text-emerald-700';
+      else if (displayStatus === 'OUT FOR REVIEW') badgeClass = 'bg-orange-100 text-orange-700';
+      else if (displayStatus === 'PUBLISHED') badgeClass = 'bg-blue-100 text-blue-700';
+      else if (displayStatus === 'DRAFT' || displayStatus === 'HIDDEN') badgeClass = 'bg-gray-100 text-gray-600';
+      else if (displayStatus === 'CLOSED') badgeClass = 'bg-rose-100 text-rose-700';
+      else badgeClass = 'bg-gray-100 text-gray-600';
 
       return (
         <span className={cn("inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold tracking-wide uppercase", badgeClass)}>
@@ -52,8 +54,18 @@ const columns: ColumnDef<Assessment>[] = [
   },
   {
     accessorKey: 'date',
-    header: 'DATE',
+    header: 'CREATION DATE',
     cell: ({ row }) => <span className="text-sm font-semibold text-gray-500">{row.original.date}</span>,
+  },
+  {
+    accessorKey: 'startDate',
+    header: 'START DATE',
+    cell: ({ row }) => <span className="text-sm font-semibold text-gray-500">{row.original.startDate}</span>,
+  },
+  {
+    accessorKey: 'endDate',
+    header: 'END DATE',
+    cell: ({ row }) => <span className="text-sm font-semibold text-gray-500">{row.original.endDate}</span>,
   },
   {
     id: 'actions',
@@ -69,18 +81,89 @@ const columns: ColumnDef<Assessment>[] = [
 ];
 
 export function ExamsTable() {
-  const data = useMemo(() => assessmentsData, []);
+  const searchQuery = useSearchStore((state) => state.searchQuery);
+
+  const { data: response, isLoading, error } = useQuery({
+    queryKey: ['myExams'],
+    queryFn: getMyExams,
+  });
+
+  const assessmentsData = useMemo(() => {
+    if (!response?.data) return [];
+    const mapped = response.data.map((exam: any) => {
+      let formattedDate = 'N/A';
+      if (exam.createdAt) {
+        formattedDate = new Date(exam.createdAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+
+      let formattedStartDate = 'N/A';
+      if (exam.openingAt) {
+        const startMs = exam.openingAt < 9999999999 ? exam.openingAt * 1000 : exam.openingAt;
+        formattedStartDate = new Date(startMs).toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      let formattedEndDate = 'N/A';
+      if (exam.closingAt) {
+        const endMs = exam.closingAt < 9999999999 ? exam.closingAt * 1000 : exam.closingAt;
+        formattedEndDate = new Date(endMs).toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      return {
+        id: exam._id,
+        title: exam.title,
+        course: exam.groupID?.groupName || exam.groupID?.subject || 'N/A',
+        status: exam.status || 'Active',
+        date: formattedDate,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+    });
+
+    return mapped.filter((exam: any) =>
+      exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      exam.course.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [response, searchQuery]);
 
   return (
-    <div className="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+    <div className="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col min-h-[200px]">
       <div className="p-6 border-b border-gray-100 flex justify-between items-center">
         <h3 className="text-lg font-extrabold text-gray-900">Recent Generations</h3>
-        <button className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
-          View All Assessments
-        </button>
       </div>
-      <div className="flex-1 overflow-x-auto p-0">
-        <DataTable columns={columns} data={data} />
+
+      <div className="flex-1 p-0 flex flex-col p-3">
+        {isLoading ? (
+          <div className="flex items-center justify-center p-8 gap-2 text-gray-500 font-medium">
+            <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+            <span>Loading exams...</span>
+          </div>
+        ) : error ? (
+          <div className="text-center p-8 text-rose-600 font-medium">
+            Failed to load exams from backend.
+          </div>
+        ) : assessmentsData.length === 0 ? (
+          <div className="text-center p-8 text-gray-400 font-medium">
+            No exams found. Start by generating or creating one manually!
+          </div>
+        ) : (
+          <DataTable columns={columns} data={assessmentsData} />
+        )}
       </div>
     </div>
   );

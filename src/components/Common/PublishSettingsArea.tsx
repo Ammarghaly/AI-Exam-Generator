@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Sparkles, ChevronDown, AlertCircle, CalendarIcon, Eye, Shuffle } from 'lucide-react';
+import { Sparkles, ChevronDown, AlertCircle, CalendarIcon, Eye, Shuffle, Loader2 } from 'lucide-react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
@@ -38,7 +38,15 @@ const handleDateSelect = (newDate: Date | undefined, field: any) => {
   }
 };
 
-export function PublishSettingsArea({ onBack }: { onBack: () => void }) {
+export function PublishSettingsArea({ 
+  onBack,
+  submitLabel = "🚀 Publish to Students",
+  isSubmitting = false
+}: { 
+  onBack: () => void;
+  submitLabel?: string;
+  isSubmitting?: boolean;
+}) {
   const { register, watch, setValue, formState: { errors } } = useFormContext();
   const allowReview = watch('allowReview');
   const allowImmediateAI = watch('allowImmediateAI');
@@ -245,9 +253,17 @@ export function PublishSettingsArea({ onBack }: { onBack: () => void }) {
           </button>
           <button 
             type="submit"
-            className="w-full md:w-auto text-[14px] font-semibold text-white bg-indigo-700 hover:opacity-90 py-2.5 px-6 rounded-lg shadow-sm transition-opacity flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="w-full md:w-auto text-[14px] font-semibold text-white bg-indigo-700 hover:opacity-90 py-2.5 px-6 rounded-lg shadow-sm transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            🚀 Publish to Students
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              submitLabel
+            )}
           </button>
         </div>
       </div>

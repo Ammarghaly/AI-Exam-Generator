@@ -13,6 +13,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TeacherSidebar } from "../Common/TeacherSidebar";
 import { logout } from "../../api/auth";
 import toast from "react-hot-toast";
+import CreateGroupModal from "../groups/CreateGroupModal";
 
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -208,6 +209,7 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
       </div>
+      <CreateGroupModal />
     </div>
   );
 }

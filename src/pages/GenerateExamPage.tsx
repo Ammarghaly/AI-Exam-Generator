@@ -80,22 +80,59 @@ export default function GenerateExamPage() {
   });
 
   const onSubmit = async (data: GenerateExamFormValues) => {
-    if (!examId) {
-      toast.error('Exam questions are not generated yet.');
-      return;
-    }
+    setIsGenerating(true);
+    const toastId = toast.loading('Uploading material and generating exam with AI... This might take up to a minute.');
 
     try {
+      // Step 1: Upload PDF
+      const uploadRes = await uploadPDF(data.file);
+      const generatedId = uploadRes.examId;
+      setExamId(generatedId);
+
+      // Step 2: Calculate total questions
+      const totalQuestions = Object.values(data.difficultyDistribution).reduce((sum, val) => sum + val, 0);
+
+      // Step 3: Map difficulties dynamically from the grid
+      const difficultyRules = [
+        { key: 'Easy_Memorization', difficulty: 'Easy' as const, measures: 'Memorization' as const },
+        { key: 'Easy_Creativity', difficulty: 'Easy' as const, measures: 'Creativity' as const },
+        { key: 'Easy_Thinking', difficulty: 'Easy' as const, measures: 'Thinking' as const },
+        { key: 'Normal_Memorization', difficulty: 'Normal' as const, measures: 'Memorization' as const },
+        { key: 'Normal_Creativity', difficulty: 'Normal' as const, measures: 'Creativity' as const },
+        { key: 'Normal_Thinking', difficulty: 'Normal' as const, measures: 'Thinking' as const },
+        { key: 'Hard_Memorization', difficulty: 'Hard' as const, measures: 'Memorization' as const },
+        { key: 'Hard_Creativity', difficulty: 'Hard' as const, measures: 'Creativity' as const },
+        { key: 'Hard_Thinking', difficulty: 'Hard' as const, measures: 'Thinking' as const },
+      ].map(item => {
+        const count = data.difficultyDistribution[item.key as keyof typeof data.difficultyDistribution] || 0;
+        return {
+          count,
+          difficulty: item.difficulty,
+          measures: item.measures,
+        };
+      }).filter(rule => rule.count > 0);
+
+      // Step 4: Call AI Exam Generation API
+      await generateExamAI({
+        examId: generatedId,
+        totalQuestions,
+        mcqCount: data.mcqCount,
+        difficulty: difficultyRules,
+      });
+
+      toast.success('AI questions generated successfully!', { id: toastId });
+
+      // Step 5: Publish Exam
       const user = JSON.parse(
         localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
       );
-      const teacherID = user._id || "68401234abcd5678ef901111";
+      const teacherID = user._id ;
 
       const openingAt = Math.floor(new Date(data.availableFrom).getTime() / 1000);
       const closingAt = Math.floor(new Date(data.deadline).getTime() / 1000);
 
       const payload = {
-        examId,
+        examId: generatedId,
         examDetails: {
           title: data.examTitle,
           openingAt,
@@ -112,64 +149,16 @@ export default function GenerateExamPage() {
       navigate('/teacher/exam-management');
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.response?.data?.error || error?.response?.data?.message || error.message || 'Failed to publish exam');
+      toast.error(error?.response?.data?.error || error?.response?.data?.message || error.message || 'Failed to generate and publish exam', { id: toastId });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   const handleNextStep = async () => {
     const isStep1Valid = await methods.trigger(['examTitle', 'file', 'difficultyDistribution', 'mcqCount']);
     if (!isStep1Valid) return;
-
-    setIsGenerating(true);
-    const toastId = toast.loading('Uploading material and generating exam with AI... This might take up to a minute.');
-
-    try {
-      const formValues = methods.getValues();
-      
-      // Step 1: Upload PDF
-      const uploadRes = await uploadPDF(formValues.file);
-      const generatedId = uploadRes.examId;
-      setExamId(generatedId);
-
-      // Step 2: Calculate total questions
-      const totalQuestions = Object.values(formValues.difficultyDistribution).reduce((sum, val) => sum + val, 0);
-
-      // Step 3: Map difficulties dynamically from the grid
-      const difficultyRules = [
-        { key: 'Easy_Memorization', difficulty: 'Easy' as const, measures: 'Memorization' as const },
-        { key: 'Easy_Creativity', difficulty: 'Easy' as const, measures: 'Creativity' as const },
-        { key: 'Easy_Thinking', difficulty: 'Easy' as const, measures: 'Thinking' as const },
-        { key: 'Normal_Memorization', difficulty: 'Normal' as const, measures: 'Memorization' as const },
-        { key: 'Normal_Creativity', difficulty: 'Normal' as const, measures: 'Creativity' as const },
-        { key: 'Normal_Thinking', difficulty: 'Normal' as const, measures: 'Thinking' as const },
-        { key: 'Hard_Memorization', difficulty: 'Hard' as const, measures: 'Memorization' as const },
-        { key: 'Hard_Creativity', difficulty: 'Hard' as const, measures: 'Creativity' as const },
-        { key: 'Hard_Thinking', difficulty: 'Hard' as const, measures: 'Thinking' as const },
-      ].map(item => {
-        const count = formValues.difficultyDistribution[item.key as keyof typeof formValues.difficultyDistribution] || 0;
-        return {
-          count,
-          difficulty: item.difficulty,
-          measures: item.measures,
-        };
-      }).filter(rule => rule.count > 0);
-
-      // Step 4: Call AI Exam Generation API
-      await generateExamAI({
-        examId: generatedId,
-        totalQuestions,
-        mcqCount: formValues.mcqCount,
-        difficulty: difficultyRules,
-      });
-
-      toast.success('AI questions generated successfully!', { id: toastId });
-      setStep(2);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.error || error?.response?.data?.message || error.message || 'Failed to generate questions', { id: toastId });
-    } finally {
-      setIsGenerating(false);
-    }
+    setStep(2);
   };
 
   return (
@@ -213,27 +202,25 @@ export default function GenerateExamPage() {
                 </div>
               </div>
 
-              {/* Generate Button Action Area */}
+              {/* Next Button Action Area */}
               <div className="mt-8 flex justify-end border-t border-gray-200 pt-8">
                 <button 
                   type="button"
                   onClick={handleNextStep}
-                  disabled={isGenerating}
-                  className="bg-gradient-to-r from-orange-600 to-sky-600 hover:from-orange-500 hover:to-sky-500 text-white font-bold text-[20px] py-4 px-10 rounded-xl shadow-[0_8px_30px_rgba(95,0,209,0.3)] transition-all transform hover:-translate-y-1 flex items-center gap-3 w-full md:w-auto justify-center group disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[18px] py-3.5 px-10 rounded-xl shadow-[0_8px_30px_rgba(79,70,229,0.3)] transition-all transform hover:-translate-y-1 flex items-center gap-2 w-full md:w-auto justify-center group"
                 >
-                  {isGenerating ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                  )}
-                  {isGenerating ? 'Generating...' : '✨ Generate Exam with AI'}
+                  Next
                 </button>
               </div>
             </div>
           )}
 
           {step === 2 && (
-            <PublishSettingsArea onBack={() => setStep(1)} />
+            <PublishSettingsArea 
+              onBack={() => setStep(1)} 
+              submitLabel="✨ Generate Exam with AI" 
+              isSubmitting={isGenerating} 
+            />
           )}
 
         </form>

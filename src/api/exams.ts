@@ -74,3 +74,8 @@ export const publishAIExam = async (groupId: string, payload: PublishAIExamPaylo
   const response = await api.post(`/exam/publish-ai?groupId=${groupId}`, payload);
   return response.data;
 };
+
+export const getMyExams = async () => {
+  const response = await api.get('/exam/myExams');
+  return response.data;
+};
