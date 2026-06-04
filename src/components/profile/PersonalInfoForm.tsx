@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { updateUserProfile } from "../../api/auth";
 import toast from "react-hot-toast";
 
@@ -10,16 +10,13 @@ interface PersonalInfoFormProps {
 }
 
 export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
-  const [name, setName] = React.useState(user.name || "");
-  const [email, setEmail] = React.useState(user.email || "");
-  const [isSaving, setIsSaving] = React.useState(false);
+  const [name, setName] = useState(user.name || "");
+  const [email, setEmail] = useState(user.email || "");
+  const [isSaving, setIsSaving] = useState(false);
 
-  React.useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setName(user.name || "");
-      setEmail(user.email || "");
-    }, 0);
-    return () => window.clearTimeout(timeout);
+  useEffect(() => {
+    setName(user.name || "");
+    setEmail(user.email || "");
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {

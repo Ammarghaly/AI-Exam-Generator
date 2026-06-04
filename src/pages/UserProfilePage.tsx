@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
 import { ProfileCard } from "../components/profile/ProfileCard";
 import { PersonalInfoForm } from "../components/profile/PersonalInfoForm";
@@ -6,28 +6,28 @@ import { SecurityForm } from "../components/profile/SecurityForm";
 import { getMe } from "../api/auth";
 
 export default function UserProfilePage() {
-  const [currentUser, setCurrentUser] = React.useState(() => {
+  const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
     );
   });
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await getMe();
         if (data.success && data.user) {
           const isLocal = !!localStorage.getItem("user");
           const storage = isLocal ? localStorage : sessionStorage;
-          
+
           // Merge avatar from existing storage if not present in backend
           const existingUser = JSON.parse(storage.getItem("user") || "{}");
           const updatedUser = {
             ...data.user,
             avatar: existingUser.avatar || data.user.avatar || "",
           };
-          
+
           storage.setItem("user", JSON.stringify(updatedUser));
           setCurrentUser(updatedUser);
           window.dispatchEvent(new Event("user-updated"));
@@ -43,7 +43,7 @@ export default function UserProfilePage() {
 
     const handleUserUpdate = () => {
       const updatedUser = JSON.parse(
-        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
       );
       setCurrentUser(updatedUser);
     };
@@ -58,7 +58,9 @@ export default function UserProfilePage() {
     <TeacherLayout>
       <div className="max-w-4xl mx-auto p-xl space-y-lg">
         <div className="mb-lg">
-          <h2 className="font-display text-h1 text-on-surface font-bold">Profile</h2>
+          <h2 className="font-display text-h1 text-on-surface font-bold">
+            Profile
+          </h2>
           <p className="font-body text-body text-on-surface-variant">
             Manage your account and personal information.
           </p>
