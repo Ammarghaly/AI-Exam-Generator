@@ -34,8 +34,8 @@ export interface ManualQuestion {
   title: string;
   options: string[];
   correctAnswer: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  cognitiveLevel: 'remember' | 'understand' | 'think';
+  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Manual';
+  cognitiveLevel: 'Memorization' | 'Creativity' | 'Thinking' | 'Manual';
   typeQue: 'MCQ' | 'TF';
 }
 

@@ -34,7 +34,7 @@ function App() {
         <Route path="/sign-up" element={<GuestRoute><SignUpPage /></GuestRoute>} />
         <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
         <Route path="/verify-email" element={<GuestRoute><VerifyEmailPage /></GuestRoute>} />
-        
+
         {/* Protected routes — redirect to login if not logged in */}
         <Route path="/teacher/dashboard" element={<ProtectedRoute><TeacherDashboardPage /></ProtectedRoute>} />
         <Route path="/teacher/exam-management" element={<ProtectedRoute><TeacherExamManagementPage /></ProtectedRoute>} />

@@ -146,14 +146,15 @@ export default function ManualExamCreatorPage() {
           title: q.text,
           options: options,
           correctAnswer: correctAnswer,
-          difficulty: 'medium' as const,
-          cognitiveLevel: 'understand' as const,
+          difficulty: 'Manual' as const,
+          cognitiveLevel: 'Manual' as const,
           typeQue: (isMCQ ? 'MCQ' : 'TF') as 'MCQ' | 'TF',
         };
       });
 
-      const openingAt = Math.floor(new Date(data.availableFrom || Date.now()).getTime() / 1000);
-      const closingAt = Math.floor(new Date(data.deadline || Date.now()).getTime() / 1000);
+      const now = Date.now();
+      const openingAt = Math.floor(new Date(data.availableFrom || now).getTime() / 1000);
+      const closingAt = Math.floor(new Date(data.deadline || (now + 7 * 24 * 60 * 60 * 1000)).getTime() / 1000);
 
       const payload = {
         examDetails: {
@@ -173,7 +174,22 @@ export default function ManualExamCreatorPage() {
       navigate('/teacher/exam-management');
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.response?.data?.error || error?.response?.data?.message || error.message || 'Failed to publish exam');
+      let errorMessage = 'Failed to publish exam';
+      if (error?.response?.data) {
+        const data = error.response.data;
+        if (typeof data.error === 'string') {
+          errorMessage = data.error;
+        } else if (data.error?.details && Array.isArray(data.error.details)) {
+          errorMessage = data.error.details.map((d: any) => d.message).join(', ');
+        } else if (typeof data.message === 'string') {
+          errorMessage = data.message;
+        } else if (data.message?.details && Array.isArray(data.message.details)) {
+          errorMessage = data.message.details.map((d: any) => d.message).join(', ');
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
   };
 
