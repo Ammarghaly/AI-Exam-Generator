@@ -7,6 +7,8 @@ import { Calendar } from '../ui/calendar';
 import { cn } from '../../lib/utils';
 import { Clock } from 'lucide-react';
 import { ToggleSetting } from './ToggleSetting';
+import { useQuery } from '@tanstack/react-query';
+import { getMyGroups } from '../../api/groups';
 
 const getTimeString = (date: Date | undefined) => {
   if (!date) return "12:00";
@@ -41,6 +43,12 @@ export function PublishSettingsArea({ onBack }: { onBack: () => void }) {
   const allowReview = watch('allowReview');
   const allowImmediateAI = watch('allowImmediateAI');
 
+  const { data: response } = useQuery({
+    queryKey: ["myGroups"],
+    queryFn: getMyGroups,
+  });
+  const groups = response?.data || [];
+
   useEffect(() => {
     if (!allowReview && allowImmediateAI) {
       setValue('allowImmediateAI', false);
@@ -68,9 +76,11 @@ export function PublishSettingsArea({ onBack }: { onBack: () => void }) {
               className={`w-full bg-white border ${errors.targetGroup ? 'border-rose-500' : 'border-gray-200'} rounded-lg py-3 pl-4 pr-10 text-[16px] text-gray-900 appearance-none focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all cursor-pointer`}
             >
               <option value="" disabled>Select a student group or course...</option>
-              <option value="cs101">Introduction to Computer Science (CS101)</option>
-              <option value="bio202">Advanced Molecular Biology (BIO202)</option>
-              <option value="honors">Honors Cohort 2024</option>
+              {groups.map((group: any) => (
+                <option key={group._id} value={group._id}>
+                  {group.groupName}
+                </option>
+              ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
               <ChevronDown className="w-5 h-5" />

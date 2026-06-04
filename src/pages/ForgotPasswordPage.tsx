@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
       setStep("otp");
       setCooldown(60);
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "User not found or failed to send OTP.";
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || "User not found or failed to send OTP.";
       toast.error(errorMsg);
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
       toast.success("OTP verified successfully!");
       setStep("reset");
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "Invalid or expired OTP code.";
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || "Invalid or expired OTP code.";
       toast.error(errorMsg);
       setOtpError(errorMsg);
     } finally {
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
       toast.success("Verification code resent successfully!");
       setCooldown(60);
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "Failed to resend OTP.";
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || "Failed to resend OTP.";
       toast.error(errorMsg);
     } finally {
       setLoading(false);
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
       toast.success("Password has been reset successfully!");
       setStep("success");
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "Failed to reset password. Please try again.";
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || "Failed to reset password. Please try again.";
       toast.error(errorMsg);
     } finally {
       setLoading(false);

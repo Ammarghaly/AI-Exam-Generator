@@ -41,8 +41,26 @@ export async function resetPassword(
   return response.data;
 }
 
+export async function resendActivationOtp(email: string): Promise<SendOtpResponse> {
+  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email });
+  return response.data;
+}
 
 export async function login(email: string, password: string) {
   const response = await api.post("/auth/login", { email, password });
   return response.data;
 }
+
+export async function signUp(formData: FormData) {
+  const response = await api.post("/auth/signUp", formData);
+  return response.data;
+}
+
+export async function logout() {
+  await api.post("/auth/logout"); // cookie sent automatically
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
+}
+

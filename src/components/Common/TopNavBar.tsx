@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useThemeStore } from '../../stores/use-theme-store';
 import { useSearchStore } from '../../stores/use-search-store';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../api/auth';
+import toast from 'react-hot-toast';
 
 export default function TopNavBar() {
   const { theme, toggleTheme } = useThemeStore();
   const { searchQuery, setSearchQuery } = useSearchStore();
+  const navigate = useNavigate();
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -14,6 +18,24 @@ export default function TopNavBar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const user = JSON.parse(
+    localStorage.getItem('user') || sessionStorage.getItem('user') || '{}'
+  );
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // Clear storage even if API call fails
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+    }
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -163,8 +185,8 @@ export default function TopNavBar() {
           {isProfileOpen && (
             <div className="absolute right-0 mt-sm w-56 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg overflow-hidden flex flex-col z-50">
               <div className="px-md py-sm border-b border-surface-container bg-surface-container-lowest flex flex-col">
-                <span className="font-title-md text-label-md text-on-surface font-semibold">Dr. Ahmed</span>
-                <span className="font-label-sm text-label-sm text-on-surface-variant">ahmed@university.edu</span>
+                <span className="font-title-md text-label-md text-on-surface font-semibold">{user?.name || 'User'}</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant">{user?.email || ''}</span>
               </div>
               <div className="flex flex-col py-xs">
                 <button className="flex items-center gap-sm px-md py-sm hover:bg-surface-container transition-colors text-left text-on-surface">
@@ -177,7 +199,10 @@ export default function TopNavBar() {
                 </button>
               </div>
               <div className="border-t border-surface-container py-xs">
-                <button className="w-full flex items-center gap-sm px-md py-sm hover:bg-error-container transition-colors text-left text-error hover:text-on-error-container">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-sm px-md py-sm hover:bg-error-container transition-colors text-left text-error hover:text-on-error-container"
+                >
                   <span className="material-symbols-outlined text-xl">logout</span>
                   <span className="font-label-md text-label-md">Sign out</span>
                 </button>

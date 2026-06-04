@@ -4,12 +4,14 @@ import {
   Users,
   History,
   School,
+  FileText,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const sidebarNavigation = [
   { name: "Dashboard", href: "/teacher/dashboard", icon: LayoutDashboard },
   { name: "Generate Exam", href: "/teacher/generate-exam", icon: Sparkles },
+  { name: "Manage exams", href: "/teacher/exam-management", icon: FileText },
   { name: "My Groups", href: "/teacher/groups", icon: Users },
   { name: "History", href: "/teacher/history", icon: History },
 ];

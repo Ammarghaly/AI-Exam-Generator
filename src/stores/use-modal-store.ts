@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type ModalType = 'createGroup' | null;
+type ModalType = 'createGroup' | 'confirmSubmitExam' | 'confirmExitExam' | null;
 
 interface ModalState {
   activeModal: ModalType;

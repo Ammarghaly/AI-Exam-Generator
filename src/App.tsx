@@ -9,7 +9,13 @@ import SignUpPage from "./pages/SignUpPage";
 import TeacherDashboardPage from "./pages/TeacherDashboardPage";
 import GenerateExamPage from "./pages/GenerateExamPage";
 import LoginPage from "./pages/LoginPage";
-import GroupDetailsPage from "./pages/GroupDetailsPage";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
+import GuestRoute from "./components/auth/GuestRoute";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import TeacherExamManagementPage from "./pages/TeacherExamManagementPage";
+import ManualExamCreatorPage from "./pages/ManualExamCreatorPage";
+import ExamCreationSelectionPage from "./pages/ExamCreationSelectionPage";
+import StudentExamPage from "./pages/StudentExamPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -22,13 +28,21 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
-        <Route path="/teacher/generate-exam" element={<GenerateExamPage />} />
-        <Route path="/teacher/groups" element={<MyGroups />} />
-       <Route path="/teacher/groups/:id" element={<GroupDetailsPage />} />
-        <Route path="/login" element={<LoginPage />} />
+
+        {/* Guest-only routes — redirect to dashboard if already logged in */}
+        <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+        <Route path="/sign-up" element={<GuestRoute><SignUpPage /></GuestRoute>} />
+        <Route path="/forgot-password" element={<GuestRoute><ForgotPasswordPage /></GuestRoute>} />
+        <Route path="/verify-email" element={<GuestRoute><VerifyEmailPage /></GuestRoute>} />
+        
+        {/* Protected routes — redirect to login if not logged in */}
+        <Route path="/teacher/dashboard" element={<ProtectedRoute><TeacherDashboardPage /></ProtectedRoute>} />
+        <Route path="/teacher/exam-management" element={<ProtectedRoute><TeacherExamManagementPage /></ProtectedRoute>} />
+        <Route path="/teacher/generate-exam" element={<ProtectedRoute><ExamCreationSelectionPage /></ProtectedRoute>} />
+        <Route path="/teacher/generate-exam/manual-create" element={<ProtectedRoute><ManualExamCreatorPage /></ProtectedRoute>} />
+        <Route path="/teacher/generate-exam/ai-generate" element={<ProtectedRoute><GenerateExamPage /></ProtectedRoute>} />
+        <Route path="/teacher/groups" element={<ProtectedRoute><MyGroups /></ProtectedRoute>} />
+        <Route path="/student/exam/:id" element={<StudentExamPage />} />
       </Routes>
       <Toaster position="bottom-right" />
     </BrowserRouter>

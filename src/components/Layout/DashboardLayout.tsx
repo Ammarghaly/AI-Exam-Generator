@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { TeacherSidebar } from "../common/TeacherSidebar";
-import TopNavBar from "../common/TopNavBar";
-import BottomBar from "../common/BottomBar";
+import { TeacherSidebar } from "../Common/TeacherSidebar";
+import TopNavBar from "../Common/TopNavBar";
+import BottomBar from "../Common/BottomBar";
 import CreateGroupModal from "../groups/CreateGroupModal";
 
 export default function DashboardLayout() {
