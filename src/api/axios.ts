@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -50,10 +50,10 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/auth/refresh-token",
-        {},
-        { withCredentials: true }
+      const { data } = await api.post("/auth/refresh-token",
+        {}, {
+        withCredentials: true
+      }
       );
 
       const newToken = data.token;
