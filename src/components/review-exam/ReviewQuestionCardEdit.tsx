@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Check, X } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { updateQuestion } from '../../api/exams';
-import toast from 'react-hot-toast';
-import type { ExamQuestion } from '../../types/exam';
+import { useState } from "react";
+import { Check, X } from "lucide-react";
+import { cn } from "../../lib/utils";
+import { updateQuestion } from "../../api/exams";
+import toast from "react-hot-toast";
+import type { ExamQuestion } from "../../types/exam";
 
 interface ReviewQuestionCardEditProps {
   question: ExamQuestion;
@@ -12,7 +12,12 @@ interface ReviewQuestionCardEditProps {
   onUpdate: (updatedQuestion: ExamQuestion) => void;
 }
 
-export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: ReviewQuestionCardEditProps) {
+export function ReviewQuestionCardEdit({
+  question,
+  index,
+  onCancel,
+  onUpdate,
+}: ReviewQuestionCardEditProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const [title, setTitle] = useState(question.title);
@@ -25,29 +30,34 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      await updateQuestion({
+      const payload: any = {
         questionId: question._id,
         title,
         typeQue,
-        options: typeQue === 'MCQ' ? options : [],
         correctAnswer,
         difficulty,
-        cognitiveLevel
-      });
+        cognitiveLevel,
+      };
+
+      if (typeQue === "MCQ") {
+        payload.options = options;
+      }
+
+      await updateQuestion(payload);
 
       onUpdate({
         ...question,
         title,
         typeQue,
-        options: typeQue === 'MCQ' ? options : [],
+        options: typeQue === "MCQ" ? options : question.options,
         correctAnswer,
         difficulty,
-        cognitiveLevel
+        cognitiveLevel,
       });
 
-      toast.success('Question updated successfully');
+      toast.success("Question updated successfully");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update question');
+      toast.error(error.response?.data?.message || "Failed to update question");
     } finally {
       setIsSaving(false);
     }
@@ -61,7 +71,9 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
             {index + 1}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-extrabold text-lg text-gray-900">Question {index + 1}</h3>
+            <h3 className="font-extrabold text-lg text-gray-900">
+              Question {index + 1}
+            </h3>
           </div>
         </div>
 
@@ -86,15 +98,20 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">Type</label>
+            <label className="text-xs font-bold text-gray-500 uppercase">
+              Type
+            </label>
             <select
               value={typeQue}
               onChange={(e) => {
-                setTypeQue(e.target.value as 'MCQ' | 'TF');
-                if (e.target.value === 'TF' && !['True', 'False'].includes(correctAnswer)) {
-                  setCorrectAnswer('True');
-                } else if (e.target.value === 'MCQ' && options.length === 0) {
-                  setOptions(['', '', '', '']);
+                setTypeQue(e.target.value as "MCQ" | "TF");
+                if (
+                  e.target.value === "TF" &&
+                  !["True", "False"].includes(correctAnswer)
+                ) {
+                  setCorrectAnswer("True");
+                } else if (e.target.value === "MCQ" && options.length === 0) {
+                  setOptions(["", "", "", ""]);
                 }
               }}
               className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20"
@@ -104,7 +121,9 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">Difficulty</label>
+            <label className="text-xs font-bold text-gray-500 uppercase">
+              Difficulty
+            </label>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value as any)}
@@ -117,7 +136,9 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">Cognitive Level</label>
+            <label className="text-xs font-bold text-gray-500 uppercase">
+              Cognitive Level
+            </label>
             <select
               value={cognitiveLevel}
               onChange={(e) => setCognitiveLevel(e.target.value as any)}
@@ -132,7 +153,9 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-gray-500 uppercase">Question Text</label>
+          <label className="text-xs font-bold text-gray-500 uppercase">
+            Question Text
+          </label>
           <textarea
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -140,18 +163,25 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
           />
         </div>
 
-        {typeQue === 'MCQ' && (
+        {typeQue === "MCQ" && (
           <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-gray-100">
-            <label className="text-xs font-bold text-gray-500 uppercase block">Options (Select Correct)</label>
+            <label className="text-xs font-bold text-gray-500 uppercase block">
+              Options (Select Correct)
+            </label>
             {options.map((opt, idx) => (
-              <div key={idx} className={cn(
-                "flex items-center gap-3 p-2 rounded-lg border",
-                correctAnswer === opt && opt !== '' ? "bg-blue-50 border-blue-300" : "bg-white border-gray-200"
-              )}>
+              <div
+                key={idx}
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg border",
+                  correctAnswer === opt && opt !== ""
+                    ? "bg-blue-50 border-blue-300"
+                    : "bg-white border-gray-200",
+                )}
+              >
                 <input
                   type="radio"
                   name={`correct-${question._id}`}
-                  checked={correctAnswer === opt && opt !== ''}
+                  checked={correctAnswer === opt && opt !== ""}
                   onChange={() => setCorrectAnswer(opt)}
                   className="w-4 h-4 text-indigo-600 ml-2"
                 />
@@ -175,15 +205,17 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
           </div>
         )}
 
-        {typeQue === 'TF' && (
+        {typeQue === "TF" && (
           <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-gray-100">
-            <label className="text-xs font-bold text-gray-500 uppercase block">Correct Answer</label>
+            <label className="text-xs font-bold text-gray-500 uppercase block">
+              Correct Answer
+            </label>
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
-                  checked={correctAnswer === 'True'}
-                  onChange={() => setCorrectAnswer('True')}
+                  checked={correctAnswer === "True"}
+                  onChange={() => setCorrectAnswer("True")}
                   className="w-4 h-4 text-indigo-600"
                 />
                 <span className="text-sm font-medium">True</span>
@@ -191,8 +223,8 @@ export function ReviewQuestionCardEdit({ question, index, onCancel, onUpdate }: 
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
-                  checked={correctAnswer === 'False'}
-                  onChange={() => setCorrectAnswer('False')}
+                  checked={correctAnswer === "False"}
+                  onChange={() => setCorrectAnswer("False")}
                   className="w-4 h-4 text-indigo-600"
                 />
                 <span className="text-sm font-medium">False</span>

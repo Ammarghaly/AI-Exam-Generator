@@ -116,3 +116,11 @@ export const deleteQuestion = async (questionId: string) => {
   });
   return response.data;
 };
+
+export const downloadExamPDF = async (examId: string, showAnswers: boolean) => {
+  const response = await api.get(`/exam/${examId}/download-pdf?showAnswers=${showAnswers}`, {
+    responseType: "blob",
+  });
+  return response.data;
+};
+

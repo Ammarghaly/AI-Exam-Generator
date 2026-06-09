@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getMyExams } from "../../api/exams";
+import { getMyExams, downloadExamPDF } from "../../api/exams";
 import { DataTable } from "../ui/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Download, Loader2, Eye } from "lucide-react";
@@ -17,6 +17,91 @@ type Assessment = {
   startDate: string;
   endDate: string;
 };
+
+function ExamActions({ row, navigate }: { row: any; navigate: any }) {
+  const [showMenu, setShowMenu] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDownload = async (showAnswers: boolean) => {
+    try {
+      setIsDownloading(true);
+      setShowMenu(false);
+      const blob = await downloadExamPDF(row.original.id, showAnswers);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${row.original.title.replace(/\s+/g, "_")}_Exam.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return (
+    <div className="flex justify-end gap-2 relative">
+      <button
+        onClick={() => navigate(`/teacher/exam/${row.original.id}/review`)}
+        className="text-indigo-600 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-50 transition-colors"
+        title="View/Edit Questions"
+      >
+        <Eye className="w-5 h-5" />
+      </button>
+      <div ref={menuRef} className="relative">
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          disabled={isDownloading}
+          className={cn(
+            "p-2 rounded-full transition-colors",
+            isDownloading
+              ? "text-indigo-400 cursor-not-allowed"
+              : "text-gray-400 hover:text-indigo-600 hover:bg-indigo-50"
+          )}
+          title="Download PDF"
+        >
+          {isDownloading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <Download className="w-5 h-5" />
+          )}
+        </button>
+        {showMenu && (
+          <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-100 shadow-lg rounded-xl z-50 overflow-hidden text-sm">
+            <button
+              onClick={() => handleDownload(true)}
+              className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors border-b border-gray-50"
+            >
+              <div className="font-semibold mb-0.5">With Answers</div>
+              <div className="text-xs text-gray-500">Includes explanations</div>
+            </button>
+            <button
+              onClick={() => handleDownload(false)}
+              className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors"
+            >
+              <div className="font-semibold mb-0.5">Questions Only</div>
+              <div className="text-xs text-gray-500">For students</div>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 
 export function ExamsTable() {
   const navigate = useNavigate();
@@ -105,21 +190,7 @@ export function ExamsTable() {
           ACTIONS
         </div>
       ),
-      cell: ({ row }) => (
-        <div className="flex justify-end gap-2">
-          {/* Navigate to review page for this exam */}
-          <button
-            onClick={() => navigate(`/teacher/exam/${row.original.id}/review`)}
-            className="text-indigo-600 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-50 transition-colors"
-            title="View/Edit Questions"
-          >
-            <Eye className="w-5 h-5" />
-          </button>
-          <button className="text-gray-400 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors">
-            <Download className="w-5 h-5" />
-          </button>
-        </div>
-      ),
+      cell: ({ row }) => <ExamActions row={row} navigate={navigate} />,
     },
   ];
 

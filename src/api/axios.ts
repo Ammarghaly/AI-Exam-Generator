@@ -15,7 +15,10 @@ api.interceptors.request.use((config) => {
 });
 
 let isRefreshing = false;
-let failedQueue: { resolve: (v: string) => void; reject: (e: unknown) => void }[] = [];
+let failedQueue: {
+  resolve: (v: string) => void;
+  reject: (e: unknown) => void;
+}[] = [];
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
@@ -30,10 +33,19 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    const isAuthRequest = originalRequest.url?.includes("/auth/login") || originalRequest.url?.includes("/auth/register");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    const isAuthRequest =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/signUp") ||
+      originalRequest.url?.includes("/auth/refresh-token");
 
-    if (error.response?.status !== 401 || originalRequest._retry || isAuthRequest || !token) {
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      isAuthRequest ||
+      !token
+    ) {
       return Promise.reject(error);
     }
 
@@ -50,10 +62,12 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await api.post("/auth/refresh-token",
-        {}, {
-        withCredentials: true
-      }
+      const { data } = await api.post(
+        "/auth/refresh-token",
+        {},
+        {
+          withCredentials: true,
+        },
       );
 
       const newToken = data.token;
@@ -78,7 +92,7 @@ api.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );
 
 export default api;
