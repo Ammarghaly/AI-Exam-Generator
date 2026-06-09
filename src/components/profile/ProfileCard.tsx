@@ -55,15 +55,18 @@ export function ProfileCard({ user }: ProfileCardProps) {
     "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png";
 
   return (
-    <div className="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant text-center flex flex-col items-center justify-center h-full min-h-[350px]">
+    <div className="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant gap-2 text-center flex flex-col items-center justify-center h-full min-h-[350px]">
       <div className="relative w-32 h-32 mx-auto mb-md group cursor-pointer">
         <img
           alt="User Avatar"
           className="w-full h-full rounded-full object-cover border-4 border-surface-container-high shadow-md transition-all group-hover:opacity-85"
           src={user.avatar || defaultAvatar}
         />
+        <h3 className="font-body my-2 bold text-on-surface-variant mb-xs">
+          {user.role || "Teacher"}
+        </h3>
         <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-          <span className="material-symbols-outlined text-white text-3xl">
+          <span className="material-symbols-outlined text-white text-3xl my-2">
             photo_camera
           </span>
           <input
@@ -79,9 +82,6 @@ export function ProfileCard({ user }: ProfileCardProps) {
       <h3 className="font-display text-h3 text-on-surface font-bold mb-1">
         {user.name || ""}
       </h3>
-      <p className="font-body text-small text-on-surface-variant mb-xs">
-        {user.role || "Teacher"}
-      </p>
       {user.subjects_taught ? (
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-medium text-xs mb-lg">
           <span className="material-symbols-outlined text-xs">menu_book</span>

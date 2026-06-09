@@ -8,6 +8,7 @@ import {
   LogOut,
   FileText,
 } from "lucide-react";
+import img from "../../assets/img.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TeacherSidebar } from "../Common/TeacherSidebar";
 import { logout } from "../../api/auth";
@@ -95,9 +96,20 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
             >
               {currentUser?.name || ""}
             </span>
+            {currentUser?.available_credits !== undefined && (
+              <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs">
+                <img src={img} className="w-8 h-8" alt="Bolt" />
+                {currentUser.available_credits}
+              </span>
+            )}
             <div
               onClick={() => navigate("/teacher/profile")}
-              className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 shrink-0 cursor-pointer hover:ring-2 ring-indigo-500 transition-all"
+              className={`w-8 h-8 rounded-full overflow-hidden shrink-0 cursor-pointer transition-all duration-300
+                      ${
+                        currentUser?.subscription_type !== "free"
+                          ? "border-2 border-transparent bg-gradient-to-tr from-yellow-400 via-amber-500 to-gold-600 bg-origin-border hover:from-amber-500 hover:to-yellow-300 hover:scale-105"
+                          : "border border-gray-200 hover:border-indigo-500 hover:ring-2 hover:ring-indigo-100"
+                      }`}
             >
               <img
                 src={
@@ -105,7 +117,7 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
                   "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png"
                 }
                 alt="Profile"
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover `}
               />
             </div>
             {/* Logout button */}

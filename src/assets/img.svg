@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- التدرج الذهبي المعدني الفخم للعملة -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE57F" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#AA7C11" />
+    </linearGradient>
+  </defs>
+
+  <!-- الظل الخارجي الناعم للعملة -->
+  <circle cx="50" cy="50" r="46" fill="#11254A" opacity="0.18" />
+  
+  <!-- جسم العملة الرئيسي (الكحلي الداكن من اللوجو الخاص بك) -->
+  <circle cx="50" cy="50" r="43" fill="#16305b" />
+  
+  <!-- الإطار الخارجي الذهبي اللامع (لمسة الجولد الأنيقة) -->
+  <circle cx="50" cy="50" r="43" fill="none" stroke="url(#gold)" stroke-width="2.5" />
+  
+  <!-- الإطار الداخلي الذهبي المنقط الفاخر -->
+  <circle cx="50" cy="50" r="36" fill="none" stroke="url(#gold)" stroke-width="1.2" stroke-dasharray="3 2" opacity="0.8" />
+  
+  <!-- ========================================================== -->
+  <!-- سنتر العملة: تصميم المخ المنقسم (مطابق تماماً لروح اللوجو) -->
+  <!-- ========================================================== -->
+  <g transform="translate(50, 50) scale(1.1)">
+    
+    <!-- خط الفصل المركزي الذهبي في منتصف المخ -->
+    <line x1="0" y1="-18" x2="0" y2="18" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" />
+
+    <!-- 🧠 النصف الأيسر: المخ العضوي (باللون الأبيض الناصع مع ظلال كحلية) -->
+    <!-- تم رسم الانحناءات العضوية للمخ بدقة -->
+    <path d="M -1.5 -16 C -8 -16 -17 -11 -17 -1 C -17 8 -10 16 -1.5 16 Z" fill="#FFFFFF" />
+    <!-- ثنايا وتلافيف المخ الداخلية -->
+    <path d="M -5 -11 C -11 -9 -11 -3 -5 -1" fill="none" stroke="#16305b" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M -1.5 -6 C -6 -6 -8 -3 -8 1" fill="none" stroke="#16305b" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M -5 10 C -11 8 -11 3 -5 1" fill="none" stroke="#16305b" stroke-width="1.5" stroke-linecap="round" />
+
+    <!-- 🌐 النصف الأيمن: الشبكة العصبية التقنية (باللون الذهبي اللامع) -->
+    <!-- خطوط الاتصال الشبكية -->
+    <path d="M 1.5 -16 L 12 -11 L 16 -1 L 10 11 L 1.5 16 Z" fill="none" stroke="url(#gold)" stroke-width="2" stroke-linejoin="round" />
+    <path d="M 1.5 -7 L 10 -1 L 1.5 5" fill="none" stroke="url(#gold)" stroke-width="1.5" />
+    <path d="M 12 -11 L 1.5 -1" fill="none" stroke="url(#gold)" stroke-width="1" />
+    <path d="M 10 11 L 1.5 1" fill="none" stroke="url(#gold)" stroke-width="1" />
+
+    <!-- عقد الشبكة العصبية الدائرية (الذهب المحاط بالأبيض لمظهر مضيء) -->
+    <circle cx="12" cy="-11" r="2.2" fill="url(#gold)" stroke="#FFFFFF" stroke-width="0.8" />
+    <circle cx="16" cy="-1" r="2.2" fill="url(#gold)" stroke="#FFFFFF" stroke-width="0.8" />
+    <circle cx="10" cy="11" r="2.2" fill="url(#gold)" stroke="#FFFFFF" stroke-width="0.8" />
+    <circle cx="10" cy="-1" r="2.2" fill="#FFFFFF" stroke="url(#gold)" stroke-width="0.8" />
+  </g>
+</svg>
