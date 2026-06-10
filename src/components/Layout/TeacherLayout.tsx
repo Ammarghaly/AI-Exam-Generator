@@ -15,30 +15,14 @@ import { logout } from "../../api/auth";
 import toast from "react-hot-toast";
 import CreateGroupModal from "../groups/CreateGroupModal";
 
+import { useUserStore } from "../../stores/use-user-store";
+
 export function TeacherLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState(() => {
-    return JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-    );
-  });
-
-  useEffect(() => {
-    const handleUserUpdate = () => {
-      const updatedUser = JSON.parse(
-        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-      );
-      setCurrentUser(updatedUser);
-    };
-
-    window.addEventListener("user-updated", handleUserUpdate);
-    return () => {
-      window.removeEventListener("user-updated", handleUserUpdate);
-    };
-  }, []);
+  const { currentUser } = useUserStore();
 
   const handleLogout = async () => {
     try {

@@ -1,19 +1,22 @@
-import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getMyExams } from '../api/exams';
+import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getMyExams, updateExamStatus } from '../api/exams';
 import {
   FileText,
   MoreVertical,
   BarChart3,
   Calendar,
   Sparkles,
-  Loader2
+  Loader2,
+  CheckCircle,
 } from 'lucide-react';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { DataTable } from '../components/ui/data-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import { cn } from '../lib/utils';
 import { TeacherLayout } from '../components/Layout/TeacherLayout';
+import toast from 'react-hot-toast';
+import { FloatingDropdown } from '../components/ui/FloatingDropdown';
 
 type Generation = {
   id: string | number;
@@ -23,6 +26,78 @@ type Generation = {
   difficulty: string;
   status: string;
 };
+
+const STATUS_OPTIONS = ['Active', 'Closed', 'Hidden'] as const;
+
+function DashboardExamActions({ row }: { row: any }) {
+  const queryClient = useQueryClient();
+  const [showMenu, setShowMenu] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const t = event.target as Node;
+      if (
+        menuRef.current && !menuRef.current.contains(t) &&
+        btnRef.current && !btnRef.current.contains(t)
+      ) {
+        setShowMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleStatusChange = useCallback(async (status: 'Active' | 'Closed' | 'Hidden') => {
+    if (status === row.original.status) { setShowMenu(false); return; }
+    try {
+      setIsUpdating(true);
+      setShowMenu(false);
+      await updateExamStatus(String(row.original.id), status);
+      await queryClient.invalidateQueries({ queryKey: ['myExams'] });
+      toast.success(`Status updated to ${status}`);
+    } catch {
+      toast.error('Failed to update status');
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [row.original.id, row.original.status, queryClient]);
+
+  return (
+    <div className="flex justify-end">
+      <button
+        ref={btnRef}
+        onClick={() => setShowMenu((v) => !v)}
+        disabled={isUpdating}
+        className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
+      >
+        {isUpdating ? <Loader2 className="w-5 h-5 animate-spin" /> : <MoreVertical className="w-5 h-5" />}
+      </button>
+      <FloatingDropdown triggerRef={btnRef} open={showMenu} width={176}>
+        <div ref={menuRef}>
+          <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-b border-gray-100">
+            Change Status
+          </div>
+          {STATUS_OPTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => handleStatusChange(s)}
+              className={cn(
+                'w-full text-left px-4 py-2.5 flex items-center gap-2 transition-colors text-gray-700 hover:bg-indigo-50 hover:text-indigo-700',
+                row.original.status === s && 'bg-indigo-50 text-indigo-700 font-semibold'
+              )}
+            >
+              <CheckCircle className={cn('w-4 h-4 flex-shrink-0', row.original.status === s ? 'opacity-100 text-indigo-600' : 'opacity-0')} />
+              {s}
+            </button>
+          ))}
+        </div>
+      </FloatingDropdown>
+    </div>
+  );
+}
 
 const columns: ColumnDef<Generation>[] = [
   {
@@ -88,13 +163,7 @@ const columns: ColumnDef<Generation>[] = [
   {
     id: 'actions',
     header: () => <div className="text-right w-full">Actions</div>,
-    cell: () => (
-      <div className="flex justify-end">
-        <button className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <MoreVertical className="w-5 h-5" />
-        </button>
-      </div>
-    )
+    cell: ({ row }) => <DashboardExamActions row={row} />,
   }
 ];
 

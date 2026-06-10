@@ -94,7 +94,39 @@ export default function GenerateExamPage() {
 
   const handleNextStep = async () => {
     const isStep1Valid = await methods.trigger(['examTitle', 'file', 'difficultyDistribution', 'mcqCount']);
-    if (!isStep1Valid) return;
+    
+    const values = methods.getValues();
+    const total = Object.values(values.difficultyDistribution || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
+    
+    let hasCustomError = false;
+    
+    if (total < 5 || total > 100) {
+      methods.setError('difficultyDistribution', {
+        type: 'manual',
+        message: 'Total questions must be between 5 and 100',
+      });
+      hasCustomError = true;
+    } else {
+      methods.clearErrors('difficultyDistribution');
+    }
+    
+    if (values.mcqCount > total) {
+      methods.setError('mcqCount', {
+        type: 'manual',
+        message: 'MCQ count cannot exceed the total questions count',
+      });
+      hasCustomError = true;
+    } else if (values.mcqCount < 0) {
+      methods.setError('mcqCount', {
+        type: 'manual',
+        message: 'MCQ Count cannot be negative',
+      });
+      hasCustomError = true;
+    } else {
+      methods.clearErrors('mcqCount');
+    }
+    
+    if (!isStep1Valid || hasCustomError) return;
     setStep(2);
   };
 

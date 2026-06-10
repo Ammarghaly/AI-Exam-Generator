@@ -7,6 +7,8 @@ export function ExamSettings() {
     register,
     watch,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
 
@@ -23,13 +25,16 @@ export function ExamSettings() {
 
   useEffect(() => {
     if (mcqCount > totalQuestions) {
-      const timeout = window.setTimeout(() => {
-        setValue("mcqCount", totalQuestions, { shouldValidate: true });
-      }, 0);
-      return () => window.clearTimeout(timeout);
+      setError("mcqCount", {
+        type: "manual",
+        message: "MCQ count cannot exceed the total questions count",
+      });
+    } else {
+      if (errors.mcqCount?.type === "manual") {
+        clearErrors("mcqCount");
+      }
     }
-    return undefined;
-  }, [mcqCount, totalQuestions, setValue]);
+  }, [mcqCount, totalQuestions, setError, clearErrors, errors.mcqCount]);
 
   const incrementCell = (key: string) => {
     const currentVal = Number(distribution[key]) || 0;

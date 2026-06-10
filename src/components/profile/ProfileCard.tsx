@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { updateUserProfile } from "../../api/auth";
 import toast from "react-hot-toast";
+import { useUserStore } from "../../stores/use-user-store";
 
 interface ProfileCardProps {
   user: {
@@ -15,6 +16,7 @@ interface ProfileCardProps {
 export function ProfileCard({ user }: ProfileCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const { setCurrentUser } = useUserStore();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -36,10 +38,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
       formData.append("avatar", file);
       const data = await updateUserProfile(formData);
       if (data.success && data.user) {
-        const isLocal = !!localStorage.getItem("user");
-        const storage = isLocal ? localStorage : sessionStorage;
-        storage.setItem("user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("user-updated"));
+        setCurrentUser(data.user);
         toast.success("Profile photo updated successfully!");
       } else {
         toast.error("Failed to update profile photo");

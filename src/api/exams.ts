@@ -92,6 +92,11 @@ export const getMyExams = async () => {
   return response.data;
 };
 
+export const updateExamStatus = async (examId: string, status: "Active" | "Closed" | "Hidden") => {
+  const response = await api.patch(`/exam/${examId}/status`, { status });
+  return response.data;
+};
+
 export const getQuestionsByExamId = async (examId: string) => {
   const response = await api.get(`/question/questions/${examId}`);
   return response.data;

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { uploadPDF, generateExamAI, publishAIExam } from "../api/exams";
+import { useUserStore } from "../stores/use-user-store";
 
 const reassuringMessages = [
   "Uploading your course material securely...",
@@ -20,6 +21,7 @@ export default function AIProcessingPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const processedRef = useRef(false);
+  const { updateUser } = useUserStore();
 
   const [progress, setProgress] = useState(0);
   const [currentMessage, setCurrentMessage] = useState(reassuringMessages[0]);
@@ -191,8 +193,13 @@ export default function AIProcessingPage() {
           },
         };
 
-        await publishAIExam(formData.targetGroup, payload);
+        const publishResponse = await publishAIExam(formData.targetGroup, payload);
         setProgress(100);
+
+        // Update user credits in store automatically
+        if (publishResponse.remainingCredits !== undefined && publishResponse.remainingCredits !== null) {
+          updateUser({ available_credits: publishResponse.remainingCredits });
+        }
 
         toast.success("Exam successfully generated and published!");
 
@@ -213,7 +220,7 @@ export default function AIProcessingPage() {
     };
 
     executeGeneration();
-  }, [formData, navigate]);
+  }, [formData, navigate, updateUser]);
 
   return (
     <div

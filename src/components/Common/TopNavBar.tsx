@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useThemeStore } from "../../stores/use-theme-store";
 import { useSearchStore } from "../../stores/use-search-store";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/use-user-store";
 
 export default function TopNavBar() {
   const { theme, toggleTheme } = useThemeStore();
@@ -12,23 +13,7 @@ export default function TopNavBar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const [currentUser, setCurrentUser] = useState(() => {
-    return JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-    );
-  });
-
-  useEffect(() => {
-    const handleUserUpdate = () => {
-      const updatedUser = JSON.parse(
-        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-      );
-      setCurrentUser(updatedUser);
-    };
-
-    window.addEventListener("user-updated", handleUserUpdate);
-    return () => window.removeEventListener("user-updated", handleUserUpdate);
-  }, []);
+  const { currentUser } = useUserStore();
 
   // logout handled elsewhere in layout; no direct handler needed here
 

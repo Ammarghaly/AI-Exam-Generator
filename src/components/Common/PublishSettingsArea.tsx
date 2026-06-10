@@ -243,14 +243,7 @@ export function PublishSettingsArea({
             className="w-full md:w-auto text-[14px] font-semibold text-gray-600 bg-transparent border border-gray-300 hover:bg-gray-50 py-2.5 px-6 rounded-lg transition-colors"
           >
             Back to Edit
-          </button>
-          
-          <button 
-            type="button"
-            className="w-full md:w-auto text-[14px] font-semibold text-gray-600 bg-transparent border border-gray-300 hover:bg-gray-50 py-2.5 px-6 rounded-lg transition-colors"
-          >
-            Save Draft
-          </button>
+          </button> 
           <button 
             type="submit"
             disabled={isSubmitting}

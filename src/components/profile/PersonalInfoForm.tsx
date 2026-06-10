@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { updateUserProfile } from "../../api/auth";
 import toast from "react-hot-toast";
+import { useUserStore } from "../../stores/use-user-store";
 
 interface PersonalInfoFormProps {
   user: {
@@ -13,6 +14,7 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
   const [name, setName] = useState(user.name || "");
   const [email, setEmail] = useState(user.email || "");
   const [isSaving, setIsSaving] = useState(false);
+  const { setCurrentUser } = useUserStore();
 
   useEffect(() => {
     setName(user.name || "");
@@ -36,10 +38,7 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
       formData.append("name", name.trim());
       const data = await updateUserProfile(formData);
       if (data.success && data.user) {
-        const isLocal = !!localStorage.getItem("user");
-        const storage = isLocal ? localStorage : sessionStorage;
-        storage.setItem("user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("user-updated"));
+        setCurrentUser(data.user);
         toast.success("Personal information updated successfully!");
       } else {
         toast.error("Failed to update profile");

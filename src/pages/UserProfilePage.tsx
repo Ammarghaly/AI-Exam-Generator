@@ -4,13 +4,10 @@ import { ProfileCard } from "../components/profile/ProfileCard";
 import { PersonalInfoForm } from "../components/profile/PersonalInfoForm";
 import { SecurityForm } from "../components/profile/SecurityForm";
 import { getMe } from "../api/auth";
+import { useUserStore } from "../stores/use-user-store";
 
 export default function UserProfilePage() {
-  const [currentUser, setCurrentUser] = useState(() => {
-    return JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-    );
-  });
+  const { currentUser, setCurrentUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,16 +18,13 @@ export default function UserProfilePage() {
           const isLocal = !!localStorage.getItem("user");
           const storage = isLocal ? localStorage : sessionStorage;
 
-          // Merge avatar from existing storage if not present in backend
           const existingUser = JSON.parse(storage.getItem("user") || "{}");
           const updatedUser = {
             ...data.user,
             avatar: existingUser.avatar || data.user.avatar || "",
           };
 
-          storage.setItem("user", JSON.stringify(updatedUser));
           setCurrentUser(updatedUser);
-          window.dispatchEvent(new Event("user-updated"));
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
@@ -40,19 +34,8 @@ export default function UserProfilePage() {
     };
 
     fetchUser();
-
-    const handleUserUpdate = () => {
-      const updatedUser = JSON.parse(
-        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-      );
-      setCurrentUser(updatedUser);
-    };
-
-    window.addEventListener("user-updated", handleUserUpdate);
-    return () => {
-      window.removeEventListener("user-updated", handleUserUpdate);
-    };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount only
 
   return (
     <TeacherLayout>
