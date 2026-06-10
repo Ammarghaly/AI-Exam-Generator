@@ -11,8 +11,9 @@ import GenerateExamPage from "./pages/GenerateExamPage";
 import TeacherExamManagementPage from "./pages/TeacherExamManagementPage";
 import ManualExamCreatorPage from "./pages/ManualExamCreatorPage";
 import ExamCreationSelectionPage from "./pages/ExamCreationSelectionPage";
-import StudentExamPage from "./pages/StudentExamPage";
 import StudentDashboardPage from "./pages/StudentDashboardPage";
+import StudentExamResultsPage from "./pages/StudentExamResultsPage";
+import StudentExamPage from "./pages/StudentExamPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -35,6 +36,7 @@ function App() {
         <Route path="/teacher/groups" element={<MyGroups />} />
         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
         <Route path="/student/exam/:id" element={<StudentExamPage />} />
+        <Route path="/student/exam-results/:id" element={<StudentExamResultsPage />} />
       </Routes>
       <Toaster position="bottom-right" />
     </BrowserRouter>
