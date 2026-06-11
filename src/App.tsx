@@ -16,6 +16,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import TeacherExamManagementPage from "./pages/TeacherExamManagementPage";
 import ManualExamCreatorPage from "./pages/ManualExamCreatorPage";
 import ExamCreationSelectionPage from "./pages/ExamCreationSelectionPage";
+import StudentDashboardPage from "./pages/StudentDashboardPage";
+import StudentExamResultsPage from "./pages/StudentExamResultsPage";
 import StudentExamPage from "./pages/StudentExamPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import UserProfilePage from "./pages/UserProfilePage";
@@ -32,7 +34,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-
         {/* Guest-only routes — redirect to dashboard if already logged in */}
         <Route
           path="/login"
@@ -140,7 +141,33 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/student/exam/:id" element={<StudentExamPage />} />
+
+        {/* Student Routes */}
+        <Route
+          path="/student/dashboard"
+          element={
+            <ProtectedRoute>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/exam/:id"
+          element={
+            <ProtectedRoute>
+              <StudentExamPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/exam-results/:id"
+          element={
+            <ProtectedRoute>
+              <StudentExamResultsPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Toaster position="bottom-right" />
