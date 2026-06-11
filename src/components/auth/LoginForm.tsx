@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/axios";
 import { resendActivationOtp } from "../../api/auth";
+import { useUserStore } from "../../stores/use-user-store";
 
 const REMEMBER_EMAIL_KEY = "rememberedEmail";
 
@@ -43,6 +44,8 @@ export default function LoginForm() {
     },
   });
 
+  const setCurrentUser = useUserStore((state) => state.setCurrentUser);
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await api.post(`/auth/login`, {
@@ -62,10 +65,16 @@ export default function LoginForm() {
 
       // Always persist token and user in localStorage to keep user logged in across tabs
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      
+      // Call Zustand store action which also sets the storage item
+      setCurrentUser(user);
 
       toast.success("Welcome back!");
-      navigate("/teacher/dashboard");
+      if (user.role === "Student") {
+        navigate("/student/dashboard");
+      } else {
+        navigate("/teacher/dashboard");
+      }
     } catch (err: any) {
       const resData = err.response?.data;
 

@@ -1,16 +1,17 @@
 import {
   GraduationCap,
-  UserPlus,
   FileText,
   BarChart,
   School,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const sidebarNavigation = [
   { name: "My Learning", href: "/student/dashboard", icon: GraduationCap },
-  { name: "Join Group", href: "/student/join-group", icon: UserPlus },
+  { name: "Generate Exam", href: "/student/generate-exam/ai-generate", icon: Sparkles },
+  { name: "My Groups", href: "/student/groups", icon: Users },
   { name: "Practice Exams", href: "/student/practice", icon: FileText },
   { name: "Results", href: "/student/results", icon: BarChart },
 ];

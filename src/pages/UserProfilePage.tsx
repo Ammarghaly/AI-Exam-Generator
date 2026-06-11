@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
+import { StudentLayout } from "../components/Layout/StudentLayout";
 import { ProfileCard } from "../components/profile/ProfileCard";
 import { PersonalInfoForm } from "../components/profile/PersonalInfoForm";
 import { SecurityForm } from "../components/profile/SecurityForm";
@@ -37,39 +38,45 @@ export default function UserProfilePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount only
 
-  return (
-    <TeacherLayout>
-      <div className="max-w-4xl mx-auto p-xl space-y-lg">
-        <div className="mb-lg">
-          <h2 className="font-display text-h1 text-on-surface font-bold">
-            Profile
-          </h2>
-          <p className="font-body text-body text-on-surface-variant">
-            Manage your account and personal information.
-          </p>
-        </div>
+  const isStudent = currentUser?.role?.toLowerCase() === "student";
 
-        {isLoading ? (
-          <div className="flex items-center justify-center p-2xl">
-            <span className="material-symbols-outlined animate-spin text-4xl text-primary">
-              progress_activity
-            </span>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg items-stretch">
-            <div className="md:col-span-1 flex flex-col h-full">
-              <ProfileCard user={currentUser} />
-            </div>
-
-            <div className="md:col-span-2 space-y-lg">
-              <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden divide-y divide-outline-variant">
-                <PersonalInfoForm user={currentUser} />
-                <SecurityForm />
-              </div>
-            </div>
-          </div>
-        )}
+  const content = (
+    <div className="max-w-4xl mx-auto p-xl space-y-lg">
+      <div className="mb-lg">
+        <h2 className="font-display text-h1 text-on-surface font-bold">
+          Profile
+        </h2>
+        <p className="font-body text-body text-on-surface-variant">
+          Manage your account and personal information.
+        </p>
       </div>
-    </TeacherLayout>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center p-2xl">
+          <span className="material-symbols-outlined animate-spin text-4xl text-primary">
+            progress_activity
+          </span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg items-stretch">
+          <div className="md:col-span-1 flex flex-col h-full">
+            <ProfileCard user={currentUser} />
+          </div>
+
+          <div className="md:col-span-2 space-y-lg">
+            <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden divide-y divide-outline-variant">
+              <PersonalInfoForm user={currentUser} />
+              <SecurityForm />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
+
+  if (isStudent) {
+    return <StudentLayout title="Profile">{content}</StudentLayout>;
+  }
+
+  return <TeacherLayout>{content}</TeacherLayout>;
 }

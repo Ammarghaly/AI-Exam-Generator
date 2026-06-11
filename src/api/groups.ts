@@ -14,3 +14,8 @@ export const getMyGroups = async () => {
   const response = await api.get('/group/myGroups');
   return response.data;
 };
+
+export const joinGroup = async (accessCode: string) => {
+  const response = await api.post('/group/joinGroup', { accessCode });
+  return response.data;
+};

@@ -61,9 +61,6 @@ export function ProfileCard({ user }: ProfileCardProps) {
           className="w-full h-full rounded-full object-cover border-4 border-surface-container-high shadow-md transition-all group-hover:opacity-85"
           src={user.avatar || defaultAvatar}
         />
-        <h3 className="font-body my-2 bold text-on-surface-variant mb-xs">
-          {user.role || "Teacher"}
-        </h3>
         <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
           <span className="material-symbols-outlined text-white text-3xl my-2">
             photo_camera
@@ -78,6 +75,9 @@ export function ProfileCard({ user }: ProfileCardProps) {
           />
         </label>
       </div>
+      <h3 className="font-body my-2 bold text-on-surface-variant mb-xs">
+        {user.role || "Teacher"}
+      </h3>
       <h3 className="font-display text-h3 text-on-surface font-bold mb-1">
         {user.name || ""}
       </h3>

@@ -21,7 +21,7 @@ export default function AIProcessingPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const processedRef = useRef(false);
-  const { updateUser } = useUserStore();
+  const { updateUser, currentUser } = useUserStore();
 
   const [progress, setProgress] = useState(0);
   const [currentMessage, setCurrentMessage] = useState(reassuringMessages[0]);
@@ -49,7 +49,8 @@ export default function AIProcessingPage() {
   useEffect(() => {
     if (!formData) {
       toast.error("No exam configuration data found!");
-      navigate("/teacher/generate-exam");
+      const isStudent = currentUser?.role?.toLowerCase() === "student";
+      navigate(isStudent ? "/student/generate-exam/ai-generate" : "/teacher/generate-exam");
       return;
     }
 
@@ -168,7 +169,17 @@ export default function AIProcessingPage() {
             sessionStorage.getItem("user") ||
             "{}",
         );
-        const teacherID = user._id;
+        const isStudent = currentUser?.role?.toLowerCase() === "student";
+        
+        const teacherID = user._id || currentUser?._id || "";
+        const keepForever = formData.keepForever;
+        const isFreePlan = currentUser?.subscription_type === "free";
+
+        let deletion_at = null;
+        if (!keepForever || isFreePlan) {
+          const days = isStudent ? 1 : 3;
+          deletion_at = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+        }
 
         const openingAt = Math.floor(
           new Date(formData.availableFrom).getTime() / 1000,
@@ -190,6 +201,7 @@ export default function AIProcessingPage() {
               .toUpperCase(),
             status: "Active" as const,
             teacherID,
+            deletion_at,
           },
         };
 
@@ -201,21 +213,26 @@ export default function AIProcessingPage() {
           updateUser({ available_credits: publishResponse.remainingCredits });
         }
 
-        toast.success("Exam successfully generated and published!");
+        toast.success("Exam successfully generated!");
 
         // Brief delay for the user to see 100% completion
         setTimeout(() => {
-          navigate(`/teacher/exam/${generatedId}/review`);
+          if (isStudent) {
+            navigate(`/student/exam/${generatedId}`);
+          } else {
+            navigate(`/teacher/exam/${generatedId}/review`);
+          }
         }, 800);
       } catch (error: any) {
         console.error(error);
+        const isStudent = currentUser?.role?.toLowerCase() === "student";
         toast.error(
           error?.response?.data?.error ||
             error?.response?.data?.message ||
             error.message ||
             "Failed to generate exam",
         );
-        navigate("/teacher/generate-exam/ai-generate", { state: formData });
+        navigate(isStudent ? "/student/generate-exam/ai-generate" : "/teacher/generate-exam/ai-generate", { state: formData });
       }
     };
 

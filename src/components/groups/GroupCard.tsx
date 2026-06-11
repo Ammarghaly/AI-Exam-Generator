@@ -1,5 +1,8 @@
 
+import { useState, useEffect, useRef } from "react";
+
 interface GroupCardProps {
+  id: string;
   title: string;
   studentsCount: number;
   examsCount: number;
@@ -9,9 +12,12 @@ interface GroupCardProps {
   iconTextClass: string;
   avatars: string[];
   extraAvatarsCount: number;
+  onAddExam?: (groupId: string, groupTitle: string) => void;
+  isTeacher?: boolean;
 }
 
 export default function GroupCard({
+  id,
   title,
   studentsCount,
   examsCount,
@@ -21,16 +27,56 @@ export default function GroupCard({
   iconTextClass,
   avatars,
   extraAvatarsCount,
+  onAddExam,
+  isTeacher = false,
 }: GroupCardProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-lg transition-all group relative cursor-pointer">
       <div className="flex justify-between items-start mb-md">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBgClass} ${iconTextClass}`}>
           <span className="material-symbols-outlined">{icon}</span>
         </div>
-        <button className="p-xs text-outline hover:text-on-surface transition-colors">
-          <span className="material-symbols-outlined">more_vert</span>
-        </button>
+        {isTeacher && (
+          <div className="relative" ref={menuRef}>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen(!isMenuOpen);
+              }}
+              className="p-xs text-outline hover:text-on-surface transition-colors focus:outline-none"
+            >
+              <span className="material-symbols-outlined">more_vert</span>
+            </button>
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    onAddExam?.(id, title);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">add_box</span>
+                  <span>Add Exam to Group</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <h3 className="font-h2 text-h2 text-on-surface mb-sm">{title}</h3>
       <div className="flex flex-col gap-sm">

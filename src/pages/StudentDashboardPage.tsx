@@ -8,8 +8,65 @@ import {
   Sparkles,
   Plus,
 } from "lucide-react";
+import { useUserStore } from "../stores/use-user-store";
+import { useState } from "react";
+import { joinGroup } from "../api/groups";
+import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { getMyExams } from "../api/exams";
+import { useNavigate } from "react-router-dom";
+import { getMe } from "../api/auth";
 
 export default function StudentDashboardPage() {
+  const { currentUser, setCurrentUser } = useUserStore();
+  const [groupCode, setGroupCode] = useState("");
+  const [isJoining, setIsJoining] = useState(false);
+  const navigate = useNavigate();
+
+  // Automatically sync profile and credits on load
+  useQuery({
+    queryKey: ["currentUserProfile"],
+    queryFn: async () => {
+      try {
+        const data = await getMe();
+        if (data?.success && data?.user) {
+          setCurrentUser(data.user);
+        }
+        return data;
+      } catch (err) {
+        console.error("Failed to sync profile:", err);
+        return null;
+      }
+    },
+  });
+
+  const { data: practiceExamsResponse } = useQuery({
+    queryKey: ["myPracticeExams"],
+    queryFn: getMyExams,
+  });
+  const practiceExams = practiceExamsResponse?.data || [];
+
+  const handleJoinGroup = async () => {
+    if (!groupCode.trim()) {
+      toast.error("Please enter a group code");
+      return;
+    }
+    setIsJoining(true);
+    try {
+      const response = await joinGroup(groupCode.trim());
+      if (response.success) {
+        toast.success(response.message || "Join request sent successfully!");
+        setGroupCode("");
+      } else {
+        toast.error(response.message || "Failed to join group");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || err.message || "Failed to join group");
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
   return (
     <StudentLayout title="Student Dashboard">
       <div className="max-w-7xl mx-auto py-8">
@@ -61,8 +118,10 @@ export default function StudentDashboardPage() {
               </div>
             </div>
             <div className="mt-4">
-              <p className="text-gray-500 text-sm font-semibold">Points Earned</p>
-              <h3 className="text-3xl font-extrabold text-gray-900 mt-1">1,250</h3>
+              <p className="text-gray-500 text-sm font-semibold">Credits Available</p>
+              <h3 className="text-3xl font-extrabold text-gray-900 mt-1">
+                {currentUser?.available_credits !== undefined ? currentUser.available_credits : "0"}
+              </h3>
             </div>
           </div>
         </div>
@@ -129,13 +188,61 @@ export default function StudentDashboardPage() {
                 </div>
               </div>
             </div>
+
+            {/* My Practice Exams */}
+            <div className="mt-8 space-y-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">My Practice Exams</h2>
+                <p className="text-sm text-gray-500 mt-1">Practice exams you generated for yourself.</p>
+              </div>
+
+              <div className="space-y-4">
+                {practiceExams.length === 0 ? (
+                  <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                    <p className="text-gray-500 text-sm font-semibold">You haven't generated any practice exams yet.</p>
+                  </div>
+                ) : (
+                  practiceExams.map((exam: any) => {
+                    const expiryText = exam.deletion_at 
+                      ? `Expires: ${new Date(exam.deletion_at).toLocaleString()}`
+                      : "Saved Forever";
+                    return (
+                      <div key={exam._id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-md ${exam.deletion_at ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-600'}`}>
+                                <Clock className="w-3.5 h-3.5" /> {expiryText}
+                              </span>
+                              <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-md">
+                                {exam.groupID?.groupName || "Practice"}
+                              </span>
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-900">{exam.title}</h3>
+                              <p className="text-sm text-gray-500 mt-1">{exam.numOfQuestion} Questions</p>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => navigate(`/student/exam/${exam._id}`)}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm px-6 py-2.5 rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
+                          >
+                            Start Practice <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Quick Join & AI Recommendation */}
           <div className="space-y-6">
             
             {/* Quick Join Card */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden">
+            <div dir="auto" className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden">
               <div className="absolute top-4 right-4 opacity-5">
                 <Plus className="w-24 h-24" />
               </div>
@@ -148,11 +255,18 @@ export default function StudentDashboardPage() {
                   <input 
                     type="text" 
                     placeholder="e.g. PHY-101-F23" 
+                    value={groupCode}
+                    onChange={(e) => setGroupCode(e.target.value)}
+                    disabled={isJoining}
                     className="w-full bg-slate-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                   />
                 </div>
-                <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm py-2.5 rounded-lg transition-colors">
-                  Join Class
+                <button 
+                  onClick={handleJoinGroup}
+                  disabled={isJoining}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {isJoining ? "Joining..." : "Join Class"}
                 </button>
               </div>
             </div>

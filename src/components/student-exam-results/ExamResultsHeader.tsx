@@ -1,10 +1,17 @@
 import { ExamSummaryCard } from "./ExamSummaryCard";
 
-export function ExamResultsHeader() {
+interface ExamResultsHeaderProps {
+  title: string;
+  subject?: string;
+  date: string;
+  duration: number;
+  score: number;
+}
+
+export function ExamResultsHeader({ title, subject, date, duration, score }: ExamResultsHeaderProps) {
   return (
     <div className="mb-8">
-      <ExamSummaryCard />
+      <ExamSummaryCard title={title} subject={subject} date={date} duration={duration} score={score} />
     </div>
   );
 }
-

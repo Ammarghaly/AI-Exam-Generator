@@ -129,3 +129,31 @@ export const downloadExamPDF = async (examId: string, showAnswers: boolean) => {
   return response.data;
 };
 
+export interface StartExamPayload {
+  examId: string;
+  accessCode?: string;
+}
+
+export const startExam = async (payload: StartExamPayload) => {
+  const response = await api.post("/exam-session/start", payload);
+  return response.data;
+};
+
+export interface SubmitExamPayload {
+  attemptId: string;
+  answers: {
+    questionId: string;
+    studentAnswer: string;
+  }[];
+}
+
+export const submitExam = async (payload: SubmitExamPayload) => {
+  const response = await api.post("/exam-session/submit", payload);
+  return response.data;
+};
+
+export const getAttemptResult = async (attemptId: string) => {
+  const response = await api.get(`/exam-session/result/${attemptId}`);
+  return response.data;
+};
+

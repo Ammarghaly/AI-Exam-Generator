@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { LogOut, Check } from 'lucide-react';
+import { LogOut, Loader2 } from 'lucide-react';
 import { ExamTimer } from '../components/student-exam/ExamTimer';
 import { ExamProgressBar } from '../components/student-exam/ExamProgressBar';
 import { ExamSidebar } from '../components/student-exam/ExamSidebar';
@@ -9,51 +9,8 @@ import { ControlButtons } from '../components/student-exam/ControlButtons';
 import type { Question } from '../types/exam';
 import { useModalStore } from '../stores/use-modal-store';
 import { Modal } from '../components/Common/Modal';
-
-const DUMMY_QUESTIONS: Question[] = [
-  {
-    id: 'q1',
-    type: 'Multiple Choice',
-    text: 'What is the capital of France?',
-    points: 5,
-    options: [
-      { id: 'opt1', text: 'Paris' },
-      { id: 'opt2', text: 'London' },
-      { id: 'opt3', text: 'Berlin' },
-      { id: 'opt4', text: 'Madrid' },
-    ]
-  },
-  {
-    id: 'q2',
-    type: 'True/False',
-    text: 'The Earth is flat.',
-    points: 5,
-  },
-  {
-    id: 'q3',
-    type: 'Short Answer',
-    text: 'What does HTML stand for?',
-    points: 10,
-  },
-  {
-    id: 'q4',
-    type: 'Essay',
-    text: 'Explain the importance of responsive design in modern web applications. Provide examples.',
-    points: 20,
-  },
-  {
-    id: 'q5',
-    type: 'Multiple Choice',
-    text: 'Which of the following is a Javascript framework?',
-    points: 5,
-    options: [
-      { id: 'opt1', text: 'React' },
-      { id: 'opt2', text: 'Django' },
-      { id: 'opt3', text: 'Laravel' },
-      { id: 'opt4', text: 'Spring' },
-    ]
-  }
-];
+import { startExam, submitExam } from '../api/exams';
+import toast from 'react-hot-toast';
 
 export default function StudentExamPage() {
   const { id } = useParams();
@@ -62,16 +19,59 @@ export default function StudentExamPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { activeModal, openModal, closeModal } = useModalStore();
 
-  const currentQuestion = DUMMY_QUESTIONS[currentIndex];
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [attemptId, setAttemptId] = useState("");
+  const [examInfo, setExamInfo] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(3600);
+
+  const startExamSession = async () => {
+    setIsLoading(true);
+    try {
+      const res = await startExam({ examId: id! });
+      if (res.data) {
+        setAttemptId(res.data.attemptId);
+        setExamInfo(res.data.exam);
+        const remaining = res.data.exam.closingAt - Math.floor(Date.now() / 1000);
+        setTimeLeft(Math.max(0, remaining));
+        
+        // Map backend questions to frontend format
+        const mapped = res.data.questions.map((q: any) => ({
+          id: q._id,
+          type: q.typeQue === "MCQ" ? "Multiple Choice" : "True/False",
+          text: q.title,
+          points: 1,
+          options: q.typeQue === "MCQ" ? q.options.map((opt: string) => ({ id: opt, text: opt })) : undefined
+        }));
+        setQuestions(mapped);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || err.message || "Failed to load exam");
+      navigate('/');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      startExamSession();
+    }
+  }, [id]);
+
+  const currentQuestion = questions[currentIndex];
 
   const handleAnswerChange = (ans: any) => {
+    if (!currentQuestion) return;
     setAnswers(prev => ({ ...prev, [currentQuestion.id]: ans }));
   };
 
   const handleToggleFlag = () => {
+    if (!currentQuestion) return;
     setFlagged(prev => {
       const newFlagged = new Set(prev);
       if (newFlagged.has(currentQuestion.id)) {
@@ -83,12 +83,37 @@ export default function StudentExamPage() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmitClick = () => {
     const answeredCount = Object.keys(answers).length;
-    if (answeredCount < DUMMY_QUESTIONS.length) {
+    if (answeredCount < questions.length) {
       openModal('confirmSubmitExam');
     } else {
-      setIsSubmitted(true);
+      executeSubmit();
+    }
+  };
+
+  const executeSubmit = async () => {
+    setIsSubmitting(true);
+    closeModal();
+    try {
+      const formattedAnswers = Object.entries(answers).map(([qId, ansVal]) => ({
+        questionId: qId,
+        studentAnswer: String(ansVal),
+      }));
+
+      const res = await submitExam({
+        attemptId,
+        answers: formattedAnswers,
+      });
+
+      toast.success("Exam submitted successfully!");
+      // Navigate to results page immediately
+      const resultAttemptId = res?.data?.attemptId || attemptId;
+      navigate(`/student/exam-results/${resultAttemptId}`);
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || err.message || "Failed to submit exam");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -96,22 +121,29 @@ export default function StudentExamPage() {
     openModal('confirmExitExam');
   };
 
-  if (isSubmitted) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
-        <div className="bg-white p-12 rounded-3xl shadow-xl border border-gray-100 text-center max-w-lg">
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-emerald-600" />
-          </div>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-4">Exam Submitted!</h1>
-          <p className="text-gray-500 font-medium mb-8">Your exam has been successfully submitted. You can now close this window or return to your dashboard.</p>
-          <button
-            onClick={() => navigate('/')}
-            className="w-full bg-indigo-600 text-white font-bold py-3.5 px-6 rounded-xl hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
-          >
-            Return Home
-          </button>
-        </div>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center font-sans">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-semibold text-sm">Starting exam session, please wait...</p>
+      </div>
+    );
+  }
+
+  if (isSubmitting) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center font-sans">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-semibold text-sm">Submitting exam session, please wait...</p>
+      </div>
+    );
+  }
+
+
+  if (questions.length === 0 || !currentQuestion) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center font-sans">
+        <p className="text-gray-500 font-semibold text-sm">No questions found for this exam.</p>
       </div>
     );
   }
@@ -121,13 +153,13 @@ export default function StudentExamPage() {
       {/* Header */}
       <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 z-20 sticky top-0 shadow-sm">
         <div className="flex items-center gap-4">
-          <h1 className="font-extrabold text-lg text-gray-900 tracking-tight">Midterm Exam: Focus Mode</h1>
+          <h1 className="font-extrabold text-lg text-gray-900 tracking-tight">{examInfo?.title || "Exam"}</h1>
           <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider">
-            ID: {id || '101'}
+            Practice
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <ExamTimer initialSeconds={3600} />
+          <ExamTimer key={timeLeft} initialSeconds={timeLeft} />
           <button
             onClick={handleExit}
             className="text-gray-500 hover:text-rose-600 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer"
@@ -138,12 +170,12 @@ export default function StudentExamPage() {
         </div>
       </header>
 
-      <ExamProgressBar total={DUMMY_QUESTIONS.length} answered={Object.keys(answers).length} />
+      <ExamProgressBar total={questions.length} answered={Object.keys(answers).length} />
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
         <ExamSidebar
-          questions={DUMMY_QUESTIONS}
+          questions={questions}
           currentIndex={currentIndex}
           onSelect={setCurrentIndex}
           answers={answers}
@@ -163,12 +195,12 @@ export default function StudentExamPage() {
             </div>
             <ControlButtons
               isFirst={currentIndex === 0}
-              isLast={currentIndex === DUMMY_QUESTIONS.length - 1}
+              isLast={currentIndex === questions.length - 1}
               onPrev={() => setCurrentIndex(p => Math.max(0, p - 1))}
-              onNext={() => setCurrentIndex(p => Math.min(DUMMY_QUESTIONS.length - 1, p + 1))}
+              onNext={() => setCurrentIndex(p => Math.min(questions.length - 1, p + 1))}
               isFlagged={flagged.has(currentQuestion.id)}
               onToggleFlag={handleToggleFlag}
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmitClick}
             />
           </div>
         </main>
@@ -181,14 +213,11 @@ export default function StudentExamPage() {
         title="Unanswered Questions"
         description={
           <>
-            You have only answered {Object.keys(answers).length} out of {DUMMY_QUESTIONS.length} questions. Are you sure you want to submit your exam now?
+            You have only answered {Object.keys(answers).length} out of {questions.length} questions. Are you sure you want to submit your exam now?
           </>
         }
         primaryActionText="Submit Anyway"
-        primaryActionOnClick={() => {
-          closeModal();
-          setIsSubmitted(true);
-        }}
+        primaryActionOnClick={executeSubmit}
         primaryActionColor="indigo"
         secondaryActionText="Go Back"
       />
@@ -201,7 +230,7 @@ export default function StudentExamPage() {
         primaryActionText="Exit Exam"
         primaryActionOnClick={() => {
           closeModal();
-          navigate('/');
+          navigate('/student/dashboard');
         }}
         primaryActionColor="rose"
         secondaryActionText="Cancel"

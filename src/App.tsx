@@ -152,6 +152,46 @@ function App() {
           }
         />
         <Route
+          path="/student/generate-exam/ai-generate"
+          element={
+            <ProtectedRoute>
+              <GenerateExamPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/generate-exam/processing"
+          element={
+            <ProtectedRoute>
+              <AIProcessingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/join-group"
+          element={
+            <ProtectedRoute>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/practice"
+          element={
+            <ProtectedRoute>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/results"
+          element={
+            <ProtectedRoute>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/student/exam/:id"
           element={
             <ProtectedRoute>
@@ -164,6 +204,23 @@ function App() {
           element={
             <ProtectedRoute>
               <StudentExamResultsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/groups"
+          element={
+            <ProtectedRoute>
+              <MyGroups />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfilePage />
             </ProtectedRoute>
           }
         />
