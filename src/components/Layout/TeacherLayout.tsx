@@ -5,9 +5,10 @@ import {
   LayoutDashboard,
   Sparkles,
   Users,
-  History,
+  
   LogOut,
   FileText,
+  UserCheck,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TeacherSidebar } from "../Common/TeacherSidebar";
@@ -131,7 +132,7 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
                 icon: FileText,
               },
               { name: "My Groups", href: "/teacher/groups", icon: Users },
-              { name: "History", href: "/teacher/history", icon: History },
+              { name: "Requests", href: "/teacher/admissions", icon: UserCheck },
             ].map((item) => {
               const Icon = item.icon;
               return (
@@ -195,15 +196,15 @@ export function TeacherLayout({ children }: { children: React.ReactNode }) {
               <span>Groups</span>
             </Link>
             <Link
-              to="/teacher/history"
+              to="/teacher/admissions"
               className={`flex flex-col items-center justify-center w-16 h-16 text-xs font-semibold rounded-lg transition-all ${
-                location.pathname === "/teacher/history"
+                location.pathname === "/teacher/admissions"
                   ? "bg-indigo-50 text-indigo-700"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <History className="w-6 h-6 mb-1" />
-              <span>History</span>
+              <UserCheck className="w-6 h-6 mb-1" />
+              <span>Requests</span>
             </Link>
           </div>
         </nav>
