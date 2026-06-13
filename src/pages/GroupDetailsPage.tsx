@@ -12,12 +12,7 @@ import type { GroupDetailsStudent, AssignedExam } from "../types/group.types";
 import AddStudentModal from "../components/groups/AddStudentModal";
 import StudentRow from "../components/groups/StudentRow";
 
-// ── Mock exams ────────────────────────────────────────────────────────────────
-const mockExams: AssignedExam[] = [
-  { id: "1", title: "Chapter 3 – Newton's Laws", dueDate: "Sep 10, 2024", status: "Active",  submissions: 28, totalStudents: 32 },
-  { id: "2", title: "Midterm Exam",               dueDate: "Oct 5, 2024",  status: "Active",  submissions: 0,  totalStudents: 32 },
-  { id: "3", title: "Chapter 1 Quiz",             dueDate: "Aug 20, 2024", status: "Closed",  submissions: 30, totalStudents: 32 },
-];
+
 
 const examStatusStyles: Record<AssignedExam["status"], string> = {
   Active: "bg-blue-100 text-blue-700",
@@ -263,18 +258,26 @@ export default function GroupDetailsPage() {
               </tr>
             </thead>
             <tbody>
-              {mockExams.map((exam) => (
-                <tr key={exam.id} className="border-t border-gray-50 hover:bg-gray-50/60 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-800">{exam.title}</td>
-                  <td className="px-6 py-4 text-gray-500">{exam.dueDate}</td>
-                  <td className="px-6 py-4 text-gray-500">{exam.submissions} / {exam.totalStudents}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${examStatusStyles[exam.status]}`}>
-                      {exam.status}
-                    </span>
+              {group.assignedExams && group.assignedExams.length > 0 ? (
+                group.assignedExams.map((exam) => (
+                  <tr key={exam.id} className="border-t border-gray-50 hover:bg-gray-50/60 transition-colors">
+                    <td className="px-6 py-4 font-medium text-gray-800">{exam.title}</td>
+                    <td className="px-6 py-4 text-gray-500">{exam.dueDate}</td>
+                    <td className="px-6 py-4 text-gray-500">{exam.submissions} / {exam.totalStudents}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${examStatusStyles[exam.status as keyof typeof examStatusStyles] || 'bg-blue-100 text-blue-700'}`}>
+                        {exam.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-gray-400 text-sm">
+                    No exams assigned to this group yet.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -293,8 +296,8 @@ export default function GroupDetailsPage() {
               </div>
               <span className="text-sm text-gray-500 font-medium">Avg. Performance</span>
             </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">84%</p>
-            <p className="text-xs text-indigo-500 font-medium">+4% from last exam</p>
+            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.avgPerformance || 0}%</p>
+            <p className="text-xs text-indigo-500 font-medium">Average class score</p>
           </div>
 
           {/* Completion Rate */}
@@ -305,8 +308,8 @@ export default function GroupDetailsPage() {
               </div>
               <span className="text-sm text-gray-500 font-medium">Completion Rate</span>
             </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">92%</p>
-            <p className="text-xs text-gray-400 font-medium">2 pending submissions</p>
+            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.completionRate || 0}%</p>
+            <p className="text-xs text-gray-400 font-medium">{group.performance?.pendingSubmissions || 0} pending submissions</p>
           </div>
 
           {/* AI Recommendations */}
@@ -317,8 +320,10 @@ export default function GroupDetailsPage() {
               </div>
               <span className="text-sm text-gray-500 font-medium">AI Recommendations</span>
             </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">3</p>
-            <p className="text-xs text-indigo-500 font-medium">Ready for review</p>
+            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.aiRecommendationsCount || 0}</p>
+            <p className="text-xs text-indigo-500 font-medium">
+              {group.performance?.aiRecommendationsCount ? "Ready for review" : "No recommendations"}
+            </p>
           </div>
 
         </div>

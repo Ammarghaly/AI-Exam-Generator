@@ -48,6 +48,13 @@ export interface GroupDetailsData {
   students: GroupDetailsStudent[];
   pendingStudents: GroupDetailsStudent[];
   totalStudents: number;
+  assignedExams?: AssignedExam[];
+  performance?: {
+    avgPerformance: number;
+    completionRate: number;
+    pendingSubmissions: number;
+    aiRecommendationsCount: number;
+  };
 }
  
 export interface GroupDetailsStudent {
