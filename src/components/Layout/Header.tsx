@@ -47,10 +47,10 @@ export function Header({ title, role }: HeaderProps) {
   const profilePath = role === "teacher" ? "/teacher/profile" : "/student/profile";
 
   return (
-    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
+    <header className="h-16 bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
       <div className="flex items-center gap-2.5">
         <img src={iconLogo} alt="Logo" className="w-8 h-8 md:hidden object-contain shrink-0" />
-        <h2 className="text-lg md:text-xl font-bold text-gray-900 truncate">
+        <h2 className="text-lg md:text-xl font-bold text-foreground truncate">
           {displayTitle}
         </h2>
       </div>
@@ -59,14 +59,14 @@ export function Header({ title, role }: HeaderProps) {
        
         <span
           onClick={() => navigate(profilePath)}
-          className="hidden md:block text-sm font-medium text-gray-600 cursor-pointer hover:text-indigo-700 transition-colors select-none"
+          className="hidden md:block text-sm font-medium text-foreground/85 cursor-pointer hover:text-primary transition-colors select-none"
         >
           {currentUser?.name || ""}
         </span>
 
 
          {currentUser?.available_credits !== undefined && (
-          <span className="ml-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold">
+          <span className="ml-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-yellow-100/20 text-yellow-600 text-xs font-bold border border-yellow-500/30">
             <img src={img} className="w-6 h-6" alt="Bolt" />
             {currentUser.available_credits}
           </span>
@@ -79,7 +79,7 @@ export function Header({ title, role }: HeaderProps) {
                   ${
                     currentUser?.subscription_type !== "free"
                       ? "border-2 border-transparent bg-gradient-to-tr from-yellow-400 via-amber-500 to-gold-600 bg-origin-border hover:from-amber-500 hover:to-yellow-300 hover:scale-105"
-                      : "border border-gray-200 hover:border-indigo-500 hover:ring-2 hover:ring-indigo-100"
+                      : "border border-border hover:border-primary hover:ring-2 hover:ring-primary/20"
                   }`}
         >
           <img
@@ -96,7 +96,7 @@ export function Header({ title, role }: HeaderProps) {
         <button
           onClick={handleLogout}
           title="Sign out"
-          className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
+          className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors p-2 rounded-full"
         >
           <LogOut className="w-5 h-5" />
           <span className="hidden md:inline">Sign out</span>

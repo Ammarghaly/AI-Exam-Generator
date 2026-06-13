@@ -33,3 +33,36 @@
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
 }
+
+.dark {
+  .bg-white {
+    background-color: var(--color-surface) !important;
+  }
+  .bg-slate-50 {
+    background-color: var(--color-background) !important;
+  }
+  .text-gray-900, .text-slate-900 {
+    color: var(--color-foreground) !important;
+  }
+  .text-gray-800, .text-slate-800 {
+    color: var(--color-foreground) !important;
+  }
+  .text-gray-700, .text-slate-700 {
+    color: var(--color-foreground) !important;
+  }
+  .text-gray-600, .text-slate-600 {
+    color: var(--color-on-surface-variant) !important;
+  }
+  .text-gray-500, .text-slate-500 {
+    color: var(--color-muted-foreground) !important;
+  }
+  .border-gray-100, .border-gray-200, .border-slate-100, .border-slate-200 {
+    border-color: var(--color-border) !important;
+  }
+  .bg-gray-50, .bg-slate-50 {
+    background-color: var(--color-surface-container-low) !important;
+  }
+  .hover\:bg-gray-50:hover, .hover\:bg-slate-50:hover {
+    background-color: var(--color-muted) !important;
+  }
+}

@@ -71,10 +71,10 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
       ];
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
+    <div className="flex h-screen bg-background overflow-hidden font-sans">
       {/* Desktop Sidebar */}
-      <aside className="w-52 lg:w-64 bg-white border-r border-gray-200 flex-col hidden md:flex z-20 shrink-0 transition-all duration-300">
-        <div className="h-16 flex items-center px-6 border-b border-gray-100">
+      <aside className="w-52 lg:w-64 bg-surface border-r border-border flex-col hidden md:flex z-20 shrink-0 transition-all duration-300">
+        <div className="h-16 flex items-center px-6 border-b border-border">
   <Link to="/" className="flex items-center gap-3">
     <img
       src={logoIcon}
@@ -83,10 +83,10 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
     />
 
     <div>
-      <h1 className="text-lg font-bold text-slate-900">
+      <h1 className="text-lg font-bold text-foreground">
         Academix
       </h1>
-      <p className="hidden lg:block text-xs text-slate-500">
+      <p className="hidden lg:block text-xs text-muted-foreground">
         AI Exam Platform
       </p>
     </div>
@@ -105,18 +105,18 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
                 to={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${
                   isCurrent
-                    ? "bg-indigo-50 text-indigo-700"
-                    : "text-gray-600 hover:bg-gray-50"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isCurrent ? "text-indigo-700" : "text-gray-400"}`} />
+                <Icon className={`w-5 h-5 ${isCurrent ? "text-primary" : "text-muted-foreground"}`} />
                 {item.name}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-border">
           <Link
             to={isTeacher ? "/teacher/generate-exam" : "/student/generate-exam/ai-generate"}
             className="w-full bg-gradient-to-r from-orange-600 to-sky-500 text-white font-semibold text-sm py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
@@ -137,7 +137,7 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
         </div>
 
         {/* Mobile Bottom Navigation Bar */}
-        <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-gray-100 z-50 shadow-[0_-2px_16px_rgba(99,102,241,0.08)]">
+        <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-surface border-t border-border z-50 shadow-[0_-2px_16px_rgba(99,102,241,0.08)]">
           <div className="flex items-end justify-around h-16 px-1">
             {navItems.map(({ href, icon: Icon, label }) => {
               const isActive = location.pathname === href || location.pathname.startsWith(href + "/");
@@ -149,18 +149,18 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
                 >
                   <div
                     className={`flex items-center justify-center rounded-full transition-all duration-200 ${
-                      isActive ? "bg-indigo-100 w-12 h-6" : "w-8 h-6"
+                      isActive ? "bg-primary/20 w-12 h-6" : "w-8 h-6"
                     }`}
                   >
                     <Icon
                       className={`transition-all duration-200 ${
-                        isActive ? "w-4 h-4 text-indigo-700" : "w-5 h-5 text-gray-400"
+                        isActive ? "w-4 h-4 text-primary" : "w-5 h-5 text-muted-foreground"
                       }`}
                     />
                   </div>
                   <span
                     className={`text-[10px] font-semibold leading-none transition-colors duration-200 ${
-                      isActive ? "text-indigo-700" : "text-gray-400"
+                      isActive ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
                     {label}

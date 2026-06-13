@@ -10,13 +10,12 @@ export default function LandingPage() {
     if (token) {
       try {
         const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          if (user.role === "Student") {
-            navigate("/student/dashboard", { replace: true });
-          } else {
-            navigate("/teacher/dashboard", { replace: true });
-          }
+        const user = userStr ? JSON.parse(userStr) : null;
+        if (user?.role === "Student") {
+          navigate("/student/dashboard", { replace: true });
+        } else {
+          // Always redirect to dashboard if token exists, defaulting to teacher dashboard
+          navigate("/teacher/dashboard", { replace: true });
         }
       } catch (e) {
         console.error("Error parsing user info in LandingPage:", e);
