@@ -4,6 +4,9 @@ import { cn } from "../../lib/utils";
 import { updateQuestion } from "../../api/exams";
 import toast from "react-hot-toast";
 import type { ExamQuestion } from "../../types/exam";
+import { ReviewQuestionSelects } from "./ReviewQuestionSelects";
+import { ReviewQuestionMCQArea } from "./ReviewQuestionMCQArea";
+import { ReviewQuestionTFArea } from "./ReviewQuestionTFArea";
 
 interface ReviewQuestionCardEditProps {
   question: ExamQuestion;
@@ -96,61 +99,18 @@ export function ReviewQuestionCardEdit({
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">
-              Type
-            </label>
-            <select
-              value={typeQue}
-              onChange={(e) => {
-                setTypeQue(e.target.value as "MCQ" | "TF");
-                if (
-                  e.target.value === "TF" &&
-                  !["True", "False"].includes(correctAnswer)
-                ) {
-                  setCorrectAnswer("True");
-                } else if (e.target.value === "MCQ" && options.length === 0) {
-                  setOptions(["", "", "", ""]);
-                }
-              }}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20"
-            >
-              <option value="MCQ">Multiple Choice</option>
-              <option value="TF">True / False</option>
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">
-              Difficulty
-            </label>
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value as any)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20"
-            >
-              <option value="Easy">Easy</option>
-              <option value="Normal">Normal</option>
-              <option value="Hard">Hard</option>
-              <option value="Manual">Manual</option>
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-500 uppercase">
-              Cognitive Level
-            </label>
-            <select
-              value={cognitiveLevel}
-              onChange={(e) => setCognitiveLevel(e.target.value as any)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20"
-            >
-              <option value="Memorization">Memorization</option>
-              <option value="Thinking">Thinking</option>
-              <option value="Creativity">Creativity</option>
-              <option value="Manual">Manual</option>
-            </select>
-          </div>
-        </div>
+        <ReviewQuestionSelects
+          typeQue={typeQue}
+          setTypeQue={setTypeQue}
+          correctAnswer={correctAnswer}
+          setCorrectAnswer={setCorrectAnswer}
+          options={options}
+          setOptions={setOptions}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          cognitiveLevel={cognitiveLevel}
+          setCognitiveLevel={setCognitiveLevel}
+        />
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-gray-500 uppercase">
@@ -164,73 +124,20 @@ export function ReviewQuestionCardEdit({
         </div>
 
         {typeQue === "MCQ" && (
-          <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-gray-100">
-            <label className="text-xs font-bold text-gray-500 uppercase block">
-              Options (Select Correct)
-            </label>
-            {options.map((opt, idx) => (
-              <div
-                key={idx}
-                className={cn(
-                  "flex items-center gap-3 p-2 rounded-lg border",
-                  correctAnswer === opt && opt !== ""
-                    ? "bg-blue-50 border-blue-300"
-                    : "bg-white border-gray-200",
-                )}
-              >
-                <input
-                  type="radio"
-                  name={`correct-${question._id}`}
-                  checked={correctAnswer === opt && opt !== ""}
-                  onChange={() => setCorrectAnswer(opt)}
-                  className="w-4 h-4 text-indigo-600 ml-2"
-                />
-                <input
-                  type="text"
-                  value={opt}
-                  onChange={(e) => {
-                    const newOpts = [...options];
-                    const oldVal = newOpts[idx];
-                    newOpts[idx] = e.target.value;
-                    setOptions(newOpts);
-                    if (correctAnswer === oldVal) {
-                      setCorrectAnswer(e.target.value);
-                    }
-                  }}
-                  placeholder={`Option ${idx + 1}`}
-                  className="flex-1 bg-transparent text-sm font-medium focus:outline-none py-1"
-                />
-              </div>
-            ))}
-          </div>
+          <ReviewQuestionMCQArea
+            options={options}
+            setOptions={setOptions}
+            correctAnswer={correctAnswer}
+            setCorrectAnswer={setCorrectAnswer}
+            questionId={question._id}
+          />
         )}
 
         {typeQue === "TF" && (
-          <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-gray-100">
-            <label className="text-xs font-bold text-gray-500 uppercase block">
-              Correct Answer
-            </label>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  checked={correctAnswer === "True"}
-                  onChange={() => setCorrectAnswer("True")}
-                  className="w-4 h-4 text-indigo-600"
-                />
-                <span className="text-sm font-medium">True</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  checked={correctAnswer === "False"}
-                  onChange={() => setCorrectAnswer("False")}
-                  className="w-4 h-4 text-indigo-600"
-                />
-                <span className="text-sm font-medium">False</span>
-              </label>
-            </div>
-          </div>
+          <ReviewQuestionTFArea
+            correctAnswer={correctAnswer}
+            setCorrectAnswer={setCorrectAnswer}
+          />
         )}
       </div>
     </div>

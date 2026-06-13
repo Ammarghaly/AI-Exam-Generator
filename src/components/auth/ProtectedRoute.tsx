@@ -15,11 +15,11 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
       const user = JSON.parse(userStr);
       const pathname = location.pathname;
 
-      if (user.role === "Student" && pathname.startsWith("/teacher")) {
+      if (user.role?.toLowerCase() === "student" && pathname.startsWith("/teacher")) {
         return <Navigate to="/student/dashboard" replace />;
       }
 
-      if (user.role === "Teacher" && pathname.startsWith("/student")) {
+      if (user.role?.toLowerCase() === "teacher" && pathname.startsWith("/student")) {
         return <Navigate to="/teacher/dashboard" replace />;
       }
     }

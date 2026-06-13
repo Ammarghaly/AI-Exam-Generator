@@ -54,7 +54,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
     "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png";
 
   return (
-    <div className="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant gap-2 text-center flex flex-col items-center justify-center h-full min-h-[350px]">
+    <div className="bg-surface-container-lowest p-4 md:p-lg rounded-xl shadow-sm border border-outline-variant gap-2 text-center flex flex-col items-center justify-center h-full min-h-[350px]">
       <div className="relative w-32 h-32 mx-auto mb-md group cursor-pointer">
         <img
           alt="User Avatar"

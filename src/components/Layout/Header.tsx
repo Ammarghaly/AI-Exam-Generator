@@ -1,0 +1,104 @@
+import { LogOut } from "lucide-react";
+import img from "../../assets/img.svg";
+import iconLogo from "../../assets/icon-logo.png";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/use-user-store";
+import { logout } from "../../api/auth";
+import toast from "react-hot-toast";
+
+interface HeaderProps {
+  title?: string;
+  role: "teacher" | "student";
+}
+
+export function Header({ title, role }: HeaderProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser } = useUserStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
+    }
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
+  const getPageTitle = () => {
+    if (title) return title;
+    const pathname = location.pathname.toLowerCase();
+    if (pathname.includes("/profile")) return "Profile";
+    if (pathname.includes("/generate-exam")) return "Generate Exam";
+    if (pathname.includes("/dashboard")) return "Dashboard";
+    if (pathname.includes("/exam-management")) return "Exams";
+    if (pathname.includes("/groups")) return role === "teacher" ? "Groups" : "My Groups";
+    if (pathname.includes("/practice")) return "Practice Exams";
+    if (pathname.includes("/exam-results") || pathname.includes("/results")) return "Results";
+    if (pathname.includes("/exam/")) return pathname.includes("/review") ? "Exam Review" : "Take Exam";
+    return role === "teacher" ? "Teacher Dashboard" : "Student Dashboard";
+  };
+
+  const displayTitle = getPageTitle();
+  const profilePath = role === "teacher" ? "/teacher/profile" : "/student/profile";
+
+  return (
+    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
+      <div className="flex items-center gap-2.5">
+        <img src={iconLogo} alt="Logo" className="w-8 h-8 md:hidden object-contain shrink-0" />
+        <h2 className="text-lg md:text-xl font-bold text-gray-900 truncate">
+          {displayTitle}
+        </h2>
+      </div>
+
+      <div className="flex items-center gap-4 ml-auto">
+        {currentUser?.available_credits !== undefined && (
+          <span className="ml-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold">
+            <img src={img} className="w-6 h-6" alt="Bolt" />
+            {currentUser.available_credits}
+          </span>
+        )}
+
+        <span
+          onClick={() => navigate(profilePath)}
+          className="hidden md:block text-sm font-medium text-gray-600 cursor-pointer hover:text-indigo-700 transition-colors select-none"
+        >
+          {currentUser?.name || ""}
+        </span>
+
+        <div
+          onClick={() => navigate(profilePath)}
+          className={`w-8 h-8 rounded-full overflow-hidden shrink-0 cursor-pointer transition-all duration-300
+                  ${
+                    currentUser?.subscription_type !== "free"
+                      ? "border-2 border-transparent bg-gradient-to-tr from-yellow-400 via-amber-500 to-gold-600 bg-origin-border hover:from-amber-500 hover:to-yellow-300 hover:scale-105"
+                      : "border border-gray-200 hover:border-indigo-500 hover:ring-2 hover:ring-indigo-100"
+                  }`}
+        >
+          <img
+            src={
+              currentUser?.avatar ||
+              "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png"
+            }
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          title="Sign out"
+          className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="hidden md:inline">Sign out</span>
+        </button>
+      </div>
+    </header>
+  );
+}

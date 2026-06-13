@@ -5,7 +5,6 @@ const bottomNavItems = [
   { name: 'Dashboard', path: '/', icon: 'dashboard' },
   { name: 'Generate', path: '/generate-exam', icon: 'auto_awesome' },
   { name: 'Groups', path: '/groups', icon: 'groups' },
-  { name: 'History', path: '/history', icon: 'history' },
 ];
 
 export default function BottomBar() {

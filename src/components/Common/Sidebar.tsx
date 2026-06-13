@@ -6,7 +6,6 @@ const navItems = [
   { name: 'My Groups', path: '/groups', icon: 'group' },
   { name: 'Generate Exam', path: '/generate-exam', icon: 'auto_awesome' },
   { name: 'Exams', path: '/exams', icon: 'quiz' },
-  { name: 'History', path: '/history', icon: 'history' },
   { name: 'Settings', path: '/settings', icon: 'settings' },
 ];
 

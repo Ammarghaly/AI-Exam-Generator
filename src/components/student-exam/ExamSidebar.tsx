@@ -12,7 +12,7 @@ interface ExamSidebarProps {
 
 export function ExamSidebar({ questions, currentIndex, onSelect, answers, flagged }: ExamSidebarProps) {
   return (
-    <aside className="w-72 bg-white border-r border-gray-200 flex flex-col shrink-0">
+    <aside className="w-72 max-h-[100vh] bg-white border-r border-gray-200 flex flex-col shrink-0">
       <div className="p-6 border-b border-gray-100">
         <h3 className="font-extrabold text-gray-900 text-lg">Questions Overview</h3>
         <p className="text-sm font-medium text-gray-500 mt-1">

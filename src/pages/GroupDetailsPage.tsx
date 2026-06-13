@@ -10,7 +10,9 @@ import {
 import { getGroupById, removeStudentFromGroup } from "../api/groups";
 import type { GroupDetailsStudent, AssignedExam } from "../types/group.types";
 import AddStudentModal from "../components/groups/AddStudentModal";
-import StudentRow from "../components/groups/StudentRow";
+import StudentsTab from "../components/groups/StudentsTab";
+import ExamsTab from "../components/groups/ExamsTab";
+import GroupPerformanceOverview from "../components/groups/GroupPerformanceOverview";
 
 
 
@@ -23,7 +25,7 @@ const examStatusStyles: Record<AssignedExam["status"], string> = {
 // ── Helper ────────────────────────────────────────────────────────────────────
 const AVATAR_COLORS = ["#4f46e5", "#7c3aed", "#0d9488", "#0ea5e9", "#16a34a", "#dc2626"];
 
-function mapToStudentRow(s: GroupDetailsStudent, i: number) {
+export function mapToStudentRow(s: GroupDetailsStudent, i: number) {
   const name = s?.name || s?.email || "Unknown Student";
   const names = name.trim().split(" ");
   const initials = names.length >= 2
@@ -171,163 +173,28 @@ export default function GroupDetailsPage() {
 
       {/* ── Students Tab ──────────────────────────────────────────────────── */}
       {activeTab === "students" && (
-        <>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Students List</h2>
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow transition-all cursor-pointer"
-            >
-              <Plus size={16} />
-              Add Student
-            </button>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-6">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                  Student Name
-                </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                  Student ID
-                </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                  Join Date
-                </th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedStudents.length > 0 ? (
-                paginatedStudents.map((student) => (
-                  <StudentRow
-                    key={student.id}
-                    student={student}
-                    onRemove={(id) => removeStudent(id)}
-                  />
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-400 text-sm">
-                    No students in this group yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
-            <p className="text-sm text-gray-400">
-              Showing {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, mappedStudents.length)}–{Math.min(currentPage * ITEMS_PER_PAGE, mappedStudents.length)} of {mappedStudents.length} students
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronLeft size={15} />
-              </button>
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages || totalPages === 0}
-                className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronRight size={15} />
-              </button>
-            </div>
-          </div>
-        </div>
-        </>
+        <StudentsTab
+          paginatedStudents={paginatedStudents as any}
+          mappedStudentsLength={mappedStudents.length}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          itemsPerPage={ITEMS_PER_PAGE}
+          removeStudent={removeStudent as any}
+          setIsAddModalOpen={setIsAddModalOpen}
+        />
       )}
 
       {/* ── Exams Tab ─────────────────────────────────────────────────────── */}
       {activeTab === "exams" && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-6">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Exam Title</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Due Date</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Submissions</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {group.assignedExams && group.assignedExams.length > 0 ? (
-                group.assignedExams.map((exam) => (
-                  <tr key={exam.id} className="border-t border-gray-50 hover:bg-gray-50/60 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-800">{exam.title}</td>
-                    <td className="px-6 py-4 text-gray-500">{exam.dueDate}</td>
-                    <td className="px-6 py-4 text-gray-500">{exam.submissions} / {exam.totalStudents}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${examStatusStyles[exam.status as keyof typeof examStatusStyles] || 'bg-blue-100 text-blue-700'}`}>
-                        {exam.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-400 text-sm">
-                    No exams assigned to this group yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <ExamsTab
+          assignedExams={group.assignedExams}
+          examStatusStyles={examStatusStyles}
+        />
       )}
 
       {/* ── Group Performance Overview ─────────────────────────────────────── */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Group Performance Overview</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-          {/* Avg Performance */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                <TrendingUp size={16} className="text-indigo-500" />
-              </div>
-              <span className="text-sm text-gray-500 font-medium">Avg. Performance</span>
-            </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.avgPerformance || 0}%</p>
-            <p className="text-xs text-indigo-500 font-medium">Average class score</p>
-          </div>
-
-          {/* Completion Rate */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                <CheckSquare size={16} className="text-indigo-500" />
-              </div>
-              <span className="text-sm text-gray-500 font-medium">Completion Rate</span>
-            </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.completionRate || 0}%</p>
-            <p className="text-xs text-gray-400 font-medium">{group.performance?.pendingSubmissions || 0} pending submissions</p>
-          </div>
-
-          {/* AI Recommendations */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                <Sparkles size={16} className="text-indigo-500" />
-              </div>
-              <span className="text-sm text-gray-500 font-medium">AI Recommendations</span>
-            </div>
-            <p className="text-3xl font-extrabold text-gray-900 mb-1">{group.performance?.aiRecommendationsCount || 0}</p>
-            <p className="text-xs text-indigo-500 font-medium">
-              {group.performance?.aiRecommendationsCount ? "Ready for review" : "No recommendations"}
-            </p>
-          </div>
-
-        </div>
-      </div>
+      <GroupPerformanceOverview performance={group.performance} />
 
       {/* Floating New Exam Button */}
       <div className="fixed bottom-8 left-6">

@@ -12,7 +12,7 @@ export function QuestionOption({ text, isSelected, onSelect }: QuestionOptionPro
     <button
       onClick={onSelect}
       className={cn(
-        "w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all text-left group cursor-pointer",
+        "w-full flex items-center gap-4 p-2 rounded-2xl border-2 transition-all text-left group cursor-pointer",
         isSelected 
           ? "border-indigo-600 bg-indigo-50 shadow-sm" 
           : "border-gray-100 hover:border-indigo-300 hover:bg-slate-50"

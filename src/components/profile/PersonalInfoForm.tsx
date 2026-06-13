@@ -51,7 +51,7 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-lg space-y-lg">
+    <form onSubmit={handleSubmit} className="p-4 md:p-lg space-y-lg">
       <div className="flex items-center gap-sm mb-md">
         <span className="material-symbols-outlined text-primary text-2xl">
           person
@@ -61,7 +61,7 @@ export function PersonalInfoForm({ user }: PersonalInfoFormProps) {
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
         <div className="space-y-sm">
           <label className="font-label text-label text-on-surface-variant block font-medium">
             Full Name

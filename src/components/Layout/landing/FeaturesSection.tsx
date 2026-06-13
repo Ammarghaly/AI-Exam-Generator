@@ -10,14 +10,6 @@ const SMALL_FEATURES = [
       'Share question banks and collaborate with department colleagues in real-time.',
   },
   {
-    icon: 'history_edu',
-    color: 'text-tertiary',
-    surface: undefined,
-    title: 'Export Anywhere',
-    description:
-      'Direct export to Canvas, Moodle, Google Classroom, or download as PDF/Word.',
-  },
-  {
     icon: 'lock_person',
     color: 'text-primary',
     title: 'Proctoring',

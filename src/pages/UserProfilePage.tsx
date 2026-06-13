@@ -41,8 +41,8 @@ export default function UserProfilePage() {
   const isStudent = currentUser?.role?.toLowerCase() === "student";
 
   const content = (
-    <div className="max-w-4xl mx-auto p-xl space-y-lg">
-      <div className="mb-lg">
+    <div className="max-w-4xl mx-auto p-4 md:p-xl space-y-lg">
+      <div className="mb-md md:mb-lg">
         <h2 className="font-display text-h1 text-on-surface font-bold">
           Profile
         </h2>
@@ -58,12 +58,12 @@ export default function UserProfilePage() {
           </span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg items-stretch">
-          <div className="md:col-span-1 flex flex-col h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-md lg:gap-lg items-stretch">
+          <div className="lg:col-span-1 flex flex-col h-full">
             <ProfileCard user={currentUser} />
           </div>
 
-          <div className="md:col-span-2 space-y-lg">
+          <div className="lg:col-span-2 space-y-md lg:space-y-lg">
             <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden divide-y divide-outline-variant">
               <PersonalInfoForm user={currentUser} />
               <SecurityForm />

@@ -23,6 +23,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import ExamReviewPage from "./pages/ExamReviewPage";
 import GroupDetailsPage from "./pages/GroupDetailsPage";
+import StudentPracticeExamsPage from "./pages/StudentPracticeExamsPage";
+import StudentResultsPage from "./pages/StudentResultsPage";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -188,7 +190,7 @@ function App() {
           path="/student/practice"
           element={
             <ProtectedRoute>
-              <StudentDashboardPage />
+              <StudentPracticeExamsPage />
             </ProtectedRoute>
           }
         />
@@ -196,7 +198,7 @@ function App() {
           path="/student/results"
           element={
             <ProtectedRoute>
-              <StudentDashboardPage />
+              <StudentResultsPage />
             </ProtectedRoute>
           }
         />
