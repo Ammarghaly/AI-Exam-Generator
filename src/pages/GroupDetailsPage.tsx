@@ -29,15 +29,16 @@ const examStatusStyles: Record<AssignedExam["status"], string> = {
 const AVATAR_COLORS = ["#4f46e5", "#7c3aed", "#0d9488", "#0ea5e9", "#16a34a", "#dc2626"];
 
 function mapToStudentRow(s: GroupDetailsStudent, i: number) {
-  const names = s.name.trim().split(" ");
+  const name = s?.name || s?.email || "Unknown Student";
+  const names = name.trim().split(" ");
   const initials = names.length >= 2
     ? names[0][0] + names[names.length - 1][0]
-    : s.name.slice(0, 2);
+    : name.slice(0, 2);
 
   return {
     id:          s._id,
     studentId:   `#${s._id.slice(-8).toUpperCase()}`,
-    name:        s.name,
+    name:        name,
     initials:    initials.toUpperCase(),
     avatarColor: AVATAR_COLORS[i % AVATAR_COLORS.length],
     joinDate:    s.createdAt
