@@ -8,6 +8,7 @@ export interface Student {
   name: string;
   initials: string;
   avatarColor: string;
+  avatar?: string;
   studentId: string;    // my edit
   joinDate: string;
   status: StudentStatus;
@@ -53,6 +54,7 @@ export interface GroupDetailsStudent {
   _id: string;
   name: string;
   email: string;
+  avatar?: string;
   createdAt?: string;
 }
 

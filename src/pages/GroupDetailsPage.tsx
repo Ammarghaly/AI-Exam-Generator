@@ -41,6 +41,7 @@ function mapToStudentRow(s: GroupDetailsStudent, i: number) {
     name:        name,
     initials:    initials.toUpperCase(),
     avatarColor: AVATAR_COLORS[i % AVATAR_COLORS.length],
+    avatar:      s.avatar,
     joinDate:    s.createdAt
       ? new Date(s.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : "—",

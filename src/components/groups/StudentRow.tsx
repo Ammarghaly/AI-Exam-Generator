@@ -13,16 +13,25 @@ export default function StudentRow({ student, onRemove }: Props) {
       {/* Name */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border-2"
-            style={{
-              backgroundColor: student.avatarColor + "22",
-              borderColor: student.avatarColor + "55",
-              color: student.avatarColor,
-            }}
-          >
-            {student.initials}
-          </div>
+          {student.avatar ? (
+            <img
+              src={student.avatar}
+              alt={student.name}
+              className="w-9 h-9 rounded-full object-cover shrink-0 border-2"
+              style={{ borderColor: student.avatarColor + "55" }}
+            />
+          ) : (
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border-2"
+              style={{
+                backgroundColor: student.avatarColor + "22",
+                borderColor: student.avatarColor + "55",
+                color: student.avatarColor,
+              }}
+            >
+              {student.initials}
+            </div>
+          )}
           <span className="text-sm font-semibold text-gray-800">
             {student.name}
           </span>
