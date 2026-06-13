@@ -31,7 +31,7 @@ export const useUserStore = create<UserState>((set) => {
   return {
     currentUser: getInitialUser(),
     setCurrentUser: (user) => {
-      const isLocal = !!localStorage.getItem("user");
+      const isLocal = !!localStorage.getItem("token") || !!localStorage.getItem("user");
       const storage = isLocal ? localStorage : sessionStorage;
       storage.setItem("user", JSON.stringify(user));
       set({ currentUser: user });
@@ -39,7 +39,7 @@ export const useUserStore = create<UserState>((set) => {
     updateUser: (fields) => {
       set((state) => {
         const updatedUser = { ...state.currentUser, ...fields };
-        const isLocal = !!localStorage.getItem("user");
+        const isLocal = !!localStorage.getItem("token") || !!localStorage.getItem("user");
         const storage = isLocal ? localStorage : sessionStorage;
         storage.setItem("user", JSON.stringify(updatedUser));
         return { currentUser: updatedUser };

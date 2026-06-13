@@ -14,11 +14,27 @@ import { useUserStore } from "../../stores/use-user-store";
 import { Header } from "./Header";
 import CreateGroupModal from "../groups/CreateGroupModal";
 import logoIcon from "../../assets/icon-logo.png";
+import { getMe } from "../../api/auth";
 
 export function AppLayout({ children, title }: { children: React.ReactNode; title?: string }) {
   const location = useLocation();
-  const { currentUser } = useUserStore();
+  const { currentUser, setCurrentUser } = useUserStore();
   const isTeacher = currentUser?.role?.toLowerCase() === "teacher";
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token) {
+      getMe()
+        .then((data) => {
+          if (data?.success && data?.user) {
+            setCurrentUser(data.user);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to sync profile in AppLayout:", err);
+        });
+    }
+  }, [setCurrentUser]);
 
   const navItems = isTeacher
     ? [
@@ -51,7 +67,7 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
         { name: "My Groups", href: "/student/groups", icon: Users },
         { name: "Practice Exams", href: "/student/practice", icon: FileText },
         { name: "Results", href: "/student/results", icon: BarChart },
-        { name: "Porfile", href: "/teacher/profile", icon: User },
+        { name: "Profile", href: "/student/profile", icon: User },
       ];
 
   return (
