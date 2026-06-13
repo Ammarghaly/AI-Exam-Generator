@@ -1,5 +1,5 @@
-
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 
 interface GroupCardProps {
   id: string;
@@ -30,6 +30,7 @@ export default function GroupCard({
   onAddExam,
   isTeacher = false,
 }: GroupCardProps) {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -42,9 +43,10 @@ export default function GroupCard({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-lg transition-all group relative cursor-pointer">
+    <div
+      onClick={() => navigate(`/teacher/groups/${id}`)} // 🆕
+     className="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-lg transition-all group relative cursor-pointer">
       <div className="flex justify-between items-start mb-md">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBgClass} ${iconTextClass}`}>
           <span className="material-symbols-outlined">{icon}</span>
