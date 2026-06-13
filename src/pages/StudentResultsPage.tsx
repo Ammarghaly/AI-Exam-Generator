@@ -1,6 +1,6 @@
 import { StudentLayout } from "../components/Layout/StudentLayout";
 import { Award, Loader2 } from "lucide-react";
-import { useStudentResults } from "../components/student-results/useStudentResults";
+import { useStudentResults } from "../hooks/useStudentResults";
 import { ResultsStatsOverview } from "../components/student-results/ResultsStatsOverview";
 import { ResultsAttemptsTable } from "../components/student-results/ResultsAttemptsTable";
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getStudentReport } from "../../api/studentReport";
+import { getStudentReport } from "../api/studentReport";
 
 export function getStatusStyle(status: string) {
   switch (status) {

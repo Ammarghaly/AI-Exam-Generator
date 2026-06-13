@@ -3,8 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
-  ArrowLeft, Copy, Users, ClipboardCheck,
-  TrendingUp, CheckSquare, Sparkles, ChevronLeft, ChevronRight, Plus
+  ArrowLeft, Copy, Users, ClipboardCheck, Plus
 } from "lucide-react";
 
 import { getGroupById, removeStudentFromGroup } from "../api/groups";

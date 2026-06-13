@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import type { Question } from '../../types/exam';
-import { useModalStore } from '../../stores/use-modal-store';
-import { startExam, submitExam } from '../../api/exams';
+import type { Question } from '../types/exam';
+import { useModalStore } from '../stores/use-modal-store';
+import { startExam, submitExam } from '../api/exams';
 import toast from 'react-hot-toast';
 
 export function useStudentExam() {

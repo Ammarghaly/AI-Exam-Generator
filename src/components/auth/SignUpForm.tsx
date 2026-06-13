@@ -3,7 +3,7 @@ import StudentSignUpForm from "./StudentSignUpForm";
 import TeacherSignUpForm from "./TeacherSignUpForm";
 import { Link } from "react-router-dom";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useSignUp } from "./useSignUp";
+import { useSignUp } from "../../hooks/useSignUp";
 
 export default function SignUpForm() {
   const {

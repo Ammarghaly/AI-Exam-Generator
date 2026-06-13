@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { X, UserPlus, ArrowLeft, Sparkles } from "lucide-react";
 
 import { addStudentToGroup } from "../../api/groups";
 import AddStudentSearchForm from "./AddStudentSearchForm";

@@ -1,4 +1,4 @@
-import { useAIProcessing } from "../components/ai-processing/useAIProcessing";
+import { useAIProcessing } from "../hooks/useAIProcessing";
 
 export default function AIProcessingPage() {
   const { progress, currentMessage, phase, phaseText } = useAIProcessing();

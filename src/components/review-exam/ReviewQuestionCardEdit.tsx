@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Check, X } from "lucide-react";
-import { cn } from "../../lib/utils";
 import { updateQuestion } from "../../api/exams";
 import toast from "react-hot-toast";
 import type { ExamQuestion } from "../../types/exam";

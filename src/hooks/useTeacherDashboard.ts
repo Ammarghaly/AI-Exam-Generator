@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getMyExams } from '../../api/exams';
+import { getMyExams } from '../api/exams';
 
 export function useTeacherDashboard() {
   const { data: response, isLoading } = useQuery({

@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { updateExamStatus } from '../../api/exams';
+import { updateExamStatus } from '../api/exams';
 import { MoreVertical, Loader2, CheckCircle, Sparkles } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { cn } from '../../lib/utils';
+import { cn } from '../lib/utils';
 import toast from 'react-hot-toast';
-import { FloatingDropdown } from '../ui/FloatingDropdown';
+import { FloatingDropdown } from '../components/ui/FloatingDropdown';
 
 export type Generation = {
   id: string | number;

@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { sendOtp, verifyOtp, signUp } from "../../api/auth.ts";
-import { signUpSchema } from "./signUpSchema";
-import type { SignUpFormData } from "./signUpSchema";
+import { sendOtp, verifyOtp, signUp } from "../api/auth";
+import { signUpSchema } from "../components/auth/signUpSchema";
+import type { SignUpFormData } from "../components/auth/signUpSchema";
 
 export function useSignUp() {
   const navigate = useNavigate();

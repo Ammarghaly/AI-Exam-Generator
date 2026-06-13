@@ -6,7 +6,7 @@ interface Props {
   setEmailInput: (val: string) => void;
   handleAddByEmail: () => void;
   isPending: boolean;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export default function AddStudentSearchForm({

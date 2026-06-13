@@ -5,7 +5,7 @@ import { Breadcrumb } from "../components/Common/Breadcrumb";
 import { PageHeader } from "../components/Common/PageHeader";
 import { PublishSettingsArea } from "../components/Common/PublishSettingsArea";
 import { FormProvider } from "react-hook-form";
-import { useManualExam } from "../components/manual-exam/useManualExam";
+import { useManualExam } from "../hooks/useManualExam";
 export type { ExamFormValues, QuestionType } from "../components/manual-exam/schema";
 
 export default function ManualExamCreatorPage() {

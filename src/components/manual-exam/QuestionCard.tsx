@@ -169,7 +169,7 @@ export function QuestionCard({
 
       {/* True/False Area */}
       {questionType === "True/False" && (
-        <TrueFalseArea index={index} idealAnswer={idealAnswer} />
+        <TrueFalseArea index={index} idealAnswer={idealAnswer || ""} />
       )}
 
       {/* Essay / Short Answer Area */}

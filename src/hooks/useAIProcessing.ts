@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { uploadPDF, generateExamAI, publishAIExam } from "../../api/exams";
-import { useUserStore } from "../../stores/use-user-store";
+import { uploadPDF, generateExamAI, publishAIExam } from "../api/exams";
+import { useUserStore } from "../stores/use-user-store";
 
 const reassuringMessages = [
   "Uploading your course material securely...",

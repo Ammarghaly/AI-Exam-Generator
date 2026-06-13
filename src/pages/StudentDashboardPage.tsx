@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useStudentDashboard } from "../components/student-dashboard/useStudentDashboard";
+import { useStudentDashboard } from "../hooks/useStudentDashboard";
 import { StudentDashboardStats } from "../components/student-dashboard/StudentDashboardStats";
 
 export default function StudentDashboardPage() {

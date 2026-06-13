@@ -7,7 +7,7 @@ import { cn } from "../../lib/utils";
 import { useSearchStore } from "../../stores/use-search-store";
 import { useNavigate } from "react-router-dom";
 import { ExamActions } from "./ExamActions";
-import { useExamsColumns } from "./useExamsColumns";
+import { useExamsColumns } from "../../hooks/useExamsColumns";
 
 export function ExamsTable() {
   const navigate = useNavigate();

@@ -5,7 +5,7 @@ import { ExamSidebar } from '../components/student-exam/ExamSidebar';
 import { QuestionCard } from '../components/student-exam/QuestionCard';
 import { ControlButtons } from '../components/student-exam/ControlButtons';
 import { Modal } from '../components/Common/Modal';
-import { useStudentExam } from '../components/student-exam/useStudentExam';
+import { useStudentExam } from '../hooks/useStudentExam';
 
 export default function StudentExamPage() {
   const {

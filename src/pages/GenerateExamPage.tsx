@@ -4,7 +4,7 @@ import { FileUploadArea } from '../components/generate-exam/FileUploadArea';
 import { ExamSettings } from '../components/generate-exam/ExamSettings';
 import { PublishSettingsArea } from '../components/Common/PublishSettingsArea';
 import { FormProvider } from 'react-hook-form';
-import { useGenerateExam } from '../components/generate-exam/useGenerateExam';
+import { useGenerateExam } from '../hooks/useGenerateExam';
 
 export default function GenerateExamPage() {
   const {

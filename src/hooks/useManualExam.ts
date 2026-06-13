@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { examSchema, type ExamFormValues } from "./schema";
+import { examSchema, type ExamFormValues } from "../components/manual-exam/schema";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { generateExamManually } from "../../api/exams";
+import { generateExamManually } from "../api/exams";
 
 export function useManualExam() {
   const [step, setStep] = useState<"build" | "publish">("build");

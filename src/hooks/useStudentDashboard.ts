@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useUserStore } from "../../stores/use-user-store";
-import { joinGroup } from "../../api/groups";
+import { useUserStore } from "../stores/use-user-store";
+import { joinGroup } from "../api/groups";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
-import { getMe } from "../../api/auth";
-import { getStudentDashboard } from "../../api/studentDashboard";
+import { getMe } from "../api/auth";
+import { getStudentDashboard } from "../api/studentDashboard";
 
 export function useStudentDashboard() {
   const { currentUser, setCurrentUser } = useUserStore();

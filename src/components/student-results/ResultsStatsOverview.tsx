@@ -1,5 +1,5 @@
 import { Award, TrendingUp, TrendingDown, Activity } from "lucide-react";
-import { getStatusStyle } from "./useStudentResults";
+import { getStatusStyle } from "../../hooks/useStudentResults";
 
 interface Props {
   cumulativeAverage: any;

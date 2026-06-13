@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { cn } from "../../lib/utils";
-import { ExamActions } from "./ExamActions";
+import { cn } from "../lib/utils";
+import { ExamActions } from "../components/teacher-exam-management/ExamActions";
 import { useNavigate } from "react-router-dom";
 
 export type Assessment = {

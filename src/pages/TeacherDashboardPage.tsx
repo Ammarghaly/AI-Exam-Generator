@@ -7,8 +7,8 @@ import {
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { DataTable } from '../components/ui/data-table';
 import { TeacherLayout } from '../components/Layout/TeacherLayout';
-import { useDashboardColumns } from '../components/teacher-dashboard/useDashboardColumns';
-import { useTeacherDashboard } from '../components/teacher-dashboard/useTeacherDashboard';
+import { useDashboardColumns } from '../hooks/useDashboardColumns';
+import { useTeacherDashboard } from '../hooks/useTeacherDashboard';
 
 export default function TeacherDashboardPage() {
   const { columns } = useDashboardColumns();
