@@ -8,11 +8,37 @@ type ThemeState = {
   toggleTheme: () => void;
 };
 
+const getInitialTheme = (): Theme => {
+  try {
+    const stored = localStorage.getItem('theme') as Theme | null;
+    if (stored === 'light' || stored === 'dark') {
+      return stored;
+    }
+  } catch (e) {
+    console.error("Failed to read theme from localStorage:", e);
+  }
+  const systemPrefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+  return systemPrefersDark ? 'dark' : 'light';
+};
+
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme: 'light',
-  setTheme: (theme) => set({ theme }),
+  theme: getInitialTheme(),
+  setTheme: (theme) => {
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {
+      console.error("Failed to save theme to localStorage:", e);
+    }
+    set({ theme });
+  },
   toggleTheme: () =>
-    set((state) => ({
-      theme: state.theme === 'light' ? 'dark' : 'light',
-    })),
+    set((state) => {
+      const newTheme = state.theme === 'light' ? 'dark' : 'light';
+      try {
+        localStorage.setItem('theme', newTheme);
+      } catch (e) {
+        console.error("Failed to save theme to localStorage:", e);
+      }
+      return { theme: newTheme };
+    }),
 }));
