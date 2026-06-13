@@ -1,74 +1,27 @@
 import { StudentLayout } from "../components/Layout/StudentLayout";
 import {
-  ClipboardList,
-  TrendingUp,
-  Star,
   ChevronRight,
   Clock,
   Plus,
   Sparkles,
 } from "lucide-react";
-import { useUserStore } from "../stores/use-user-store";
-import { useState } from "react";
-import { joinGroup } from "../api/groups";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getMe } from "../api/auth";
-import { getStudentDashboard } from "../api/studentDashboard";
+import { useStudentDashboard } from "../components/student-dashboard/useStudentDashboard";
+import { StudentDashboardStats } from "../components/student-dashboard/StudentDashboardStats";
 
 export default function StudentDashboardPage() {
-  const { currentUser, setCurrentUser } = useUserStore();
-  const [groupCode, setGroupCode] = useState("");
-  const [isJoining, setIsJoining] = useState(false);
   const navigate = useNavigate();
-
-  // Automatically sync profile and credits on load
-  useQuery({
-    queryKey: ["currentUserProfile"],
-    queryFn: async () => {
-      try {
-        const data = await getMe();
-        if (data?.success && data?.user) {
-          setCurrentUser(data.user);
-        }
-        return data;
-      } catch (err) {
-        console.error("Failed to sync profile:", err);
-        return null;
-      }
-    },
-  });
-
-  const { data: dashboardResponse, isLoading } = useQuery({
-    queryKey: ["studentDashboard"],
-    queryFn: getStudentDashboard,
-  });
-
-  const dashboardData = dashboardResponse?.data;
-  const stats = dashboardData?.stats;
-  const assignedExams = dashboardData?.assignedExams || [];
-
-  const handleJoinGroup = async () => {
-    if (!groupCode.trim()) {
-      toast.error("Please enter a group code");
-      return;
-    }
-    setIsJoining(true);
-    try {
-      const response = await joinGroup(groupCode.trim());
-      if (response.success) {
-        toast.success(response.message || "Join request sent successfully!");
-        setGroupCode("");
-      } else {
-        toast.error(response.message || "Failed to join group");
-      }
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || err.message || "Failed to join group");
-    } finally {
-      setIsJoining(false);
-    }
-  };
+  const {
+    currentUser,
+    groupCode,
+    setGroupCode,
+    isJoining,
+    isLoading,
+    stats,
+    assignedExams,
+    handleJoinGroup,
+  } = useStudentDashboard();
 
   if (isLoading) {
     return (
@@ -85,60 +38,7 @@ export default function StudentDashboardPage() {
       <div className="max-w-7xl mx-auto py-8">
         
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Stat Card 1 */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
-            <div className="flex items-start justify-between">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                <ClipboardList className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-gray-500 text-sm font-semibold">Total Exams Assigned</p>
-              <h3 className="text-3xl font-extrabold text-gray-900 mt-1">
-                {stats?.totalExamsAssigned || 0}
-              </h3>
-            </div>
-          </div>
-
-          {/* Stat Card 2 */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden">
-            <div className="flex items-start justify-between">
-              <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-gray-500 text-sm font-semibold">Overall Progress</p>
-              <div className="flex items-end gap-2 mt-1">
-                <h3 className="text-3xl font-extrabold text-gray-900">
-                  {stats?.overallProgress || 0}<span className="text-2xl">%</span>
-                </h3>
-              </div>
-              <div className="w-full bg-gray-100 h-2 rounded-full mt-4">
-                <div 
-                  className="bg-cyan-600 h-2 rounded-full" 
-                  style={{ width: `${stats?.overallProgress || 0}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stat Card 3 */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
-            <div className="flex items-start justify-between">
-              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">
-                <Star className="w-5 h-5 fill-current" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-gray-500 text-sm font-semibold">Credits Available</p>
-              <h3 className="text-3xl font-extrabold text-gray-900 mt-1">
-                {currentUser?.available_credits !== undefined ? currentUser.available_credits : "0"}
-              </h3>
-            </div>
-          </div>
-        </div>
+        <StudentDashboardStats stats={stats} currentUser={currentUser} />
 
         {/* Main Content Split */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
