@@ -19,8 +19,6 @@ export default function ManualExamCreatorPage() {
     fields,
     remove,
     addQuestion,
-    duplicateQuestion,
-    totalPoints,
     handleProceed,
   } = useManualExam();
 
