@@ -55,6 +55,12 @@ export interface GroupDetailsData {
     pendingSubmissions: number;
     aiRecommendationsCount: number;
   };
+  teacher?: {
+    name: string;
+    email: string;
+    avatar?: string;
+  };
+  pendingExamsCount?: number;
 }
  
 export interface GroupDetailsStudent {

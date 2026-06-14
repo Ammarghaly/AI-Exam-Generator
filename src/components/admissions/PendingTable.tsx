@@ -8,8 +8,8 @@ interface PendingTableProps {
   pending: PendingRequest[];
   isLoading: boolean;
   isMutating: boolean;
-  onAccept: (studentId: string) => void;
-  onReject: (studentId: string) => void;
+  onAccept: (params: { groupId: string; studentId: string }) => void;
+  onReject: (params: { groupId: string; studentId: string }) => void;
 }
 
 export function PendingTable({
@@ -75,11 +75,19 @@ export function PendingTable({
                   {/* Student */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div
-                        className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${color.bg} ${color.text}`}
-                      >
-                        {getInitials(student.name)}
-                      </div>
+                      {student.avatar !== "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png" ? (
+                        <img
+                          src={student.avatar}
+                          alt={student.name}
+                          className="w-9 h-9 rounded-full object-cover shrink-0"
+                        />
+                      ) : (
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${color.bg} ${color.text}`}
+                        >
+                          {getInitials(student.name)}
+                        </div>
+                      )}
                       <div>
                         <p
                           className="font-semibold text-foreground"
@@ -134,7 +142,7 @@ export function PendingTable({
                       {/* Accept */}
                       <button
                         disabled={isMutating}
-                        onClick={() => onAccept(student._id)}
+                        onClick={() => onAccept({ groupId: group._id, studentId: student._id })}
                         className="w-8 h-8 flex items-center justify-center rounded-full transition-all disabled:opacity-40"
                         style={{ color: "var(--color-chart-2)" }}
                         title="Accept student"
@@ -153,7 +161,7 @@ export function PendingTable({
                       {/* Reject */}
                       <button
                         disabled={isMutating}
-                        onClick={() => onReject(student._id)}
+                        onClick={() => onReject({ groupId: group._id, studentId: student._id })}
                         className="w-8 h-8 flex items-center justify-center rounded-full transition-all disabled:opacity-40"
                         style={{ color: "var(--color-error)" }}
                         title="Reject student"

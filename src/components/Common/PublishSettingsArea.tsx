@@ -126,14 +126,17 @@ export function PublishSettingsArea({
               <div className="relative">
                 <input
                   type="number"
+                  inputMode="numeric"
                   id="duration-minutes"
                   min="1"
                   placeholder="e.g., 60"
                   {...register('durationMinutes', { valueAsNumber: true })}
                   className={cn(
-                    "w-full bg-white border rounded-lg py-3 px-4 text-[16px] text-gray-900 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all",
+                    "w-full bg-white border rounded-lg py-3 px-4 text-[16px] text-gray-900 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all font-sans",
                     errors.durationMinutes ? 'border-rose-500' : 'border-gray-200'
                   )}
+                  dir="ltr"
+                  lang="en"
                 />
               </div>
               <p className="text-xs text-gray-500 mt-1">
@@ -166,7 +169,7 @@ export function PublishSettingsArea({
                     Keep Exam Forever
                     {isFreePlan && <Lock className="w-3.5 h-3.5 text-gray-400" />}
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-1 font-sans" dir="ltr" lang="en">
                     {isStudent 
                       ? "Save exam forever (Deducts 10 credits/month. Free exams delete in 1 day)" 
                       : "Save exam forever (Deducts 15 credits/month. Free exams delete in 3 days)"}

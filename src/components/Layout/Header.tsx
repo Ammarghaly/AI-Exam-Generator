@@ -49,15 +49,15 @@ export function Header({ title, role }: HeaderProps) {
   const profilePath = role === "teacher" ? "/teacher/profile" : "/student/profile";
 
   return (
-    <header className="h-16 bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
-      <div className="flex items-center gap-2.5">
+    <header className="h-16 bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-2 md:px-6 z-10 shrink-0">
+      <div className="flex items-center gap-2">
         <img src={iconLogo} alt="Logo" className="w-8 h-8 md:hidden object-contain shrink-0" />
-        <h2 className="text-lg md:text-xl font-bold text-foreground truncate">
+        <h2 className="text-md md:text-xl font-bold text-foreground truncate">
           {displayTitle}
         </h2>
       </div>
 
-      <div className="flex items-center gap-4 ml-auto">
+      <div className="flex items-center gap-2 ml-auto">
        
         <span
           onClick={() => navigate(profilePath)}
@@ -68,7 +68,7 @@ export function Header({ title, role }: HeaderProps) {
 
 
          {currentUser?.available_credits !== undefined && (
-          <span className="ml-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-yellow-100/20 text-yellow-600 text-xs font-bold border border-yellow-500/30">
+          <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100/20 text-yellow-600 text-xs font-bold border border-yellow-500/30">
             <img src={img} className="w-6 h-6" alt="Bolt" />
             {currentUser.available_credits}
           </span>

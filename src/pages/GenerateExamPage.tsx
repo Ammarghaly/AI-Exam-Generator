@@ -24,9 +24,9 @@ export default function GenerateExamPage() {
         <form onSubmit={methods.handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-6 md:p-10 pb-24 relative bg-slate-50">
           
           {step === 1 && (
-            <div className="max-w-[1280px] mx-auto flex-grow flex flex-col gap-8">
+            <div className="max-w-3xl mx-auto flex-grow flex flex-col gap-8">
               
-              <div className="mb-4">
+              <div className="mb-4 text-center md:text-left">
                 <h2 className="text-[32px] leading-[40px] font-bold text-gray-900">Generate New Exam</h2>
                 <p className="text-[18px] leading-[28px] text-gray-500 mt-2">
                   Configure AI parameters and upload your materials to generate a customized assessment.
@@ -47,24 +47,17 @@ export default function GenerateExamPage() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Left Column: Upload */}
-                <div className="lg:col-span-7">
-                  <FileUploadArea />
-                </div>
-
-                {/* Right Column: Settings */}
-                <div className="lg:col-span-5">
-                  <ExamSettings />
-                </div>
+              {/* Spacious, full-width upload area */}
+              <div className="w-full">
+                <FileUploadArea />
               </div>
 
               {/* Next Button Action Area */}
-              <div className="mt-8 flex justify-end border-t border-gray-200 pt-8">
+              <div className="mt-4 flex justify-end border-t border-gray-200 pt-8">
                 <button 
                   type="button"
                   onClick={handleNextStep}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[18px] py-3.5 px-10 rounded-xl shadow-[0_8px_30px_rgba(79,70,229,0.3)] transition-all transform hover:-translate-y-1 flex items-center gap-2 w-full md:w-auto justify-center group"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[16px] py-3 px-8 rounded-xl shadow-[0_8px_30px_rgba(79,70,229,0.2)] transition-all transform hover:-translate-y-0.5 flex items-center gap-2 w-full md:w-auto justify-center cursor-pointer"
                 >
                   Next
                 </button>
@@ -73,8 +66,43 @@ export default function GenerateExamPage() {
           )}
 
           {step === 2 && (
+            <div className="max-w-4xl mx-auto flex-grow flex flex-col gap-8">
+              
+              <div className="mb-4 text-center md:text-left">
+                <h2 className="text-[32px] leading-[40px] font-bold text-gray-900">AI Question Settings</h2>
+                <p className="text-[18px] leading-[28px] text-gray-500 mt-2">
+                  Configure cognitive difficulty matrix and formats for the generated exam.
+                </p>
+              </div>
+
+              {/* Wide and organized exam settings dashboard */}
+              <div className="w-full">
+                <ExamSettings />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-4 flex justify-between items-center border-t border-gray-200 pt-8 gap-4">
+                <button 
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="w-full md:w-auto text-[14px] font-semibold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 py-3 px-6 rounded-xl transition-colors cursor-pointer"
+                >
+                  Back to Upload
+                </button>
+                <button 
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[16px] py-3 px-8 rounded-xl shadow-[0_8px_30px_rgba(79,70,229,0.2)] transition-all transform hover:-translate-y-0.5 flex items-center gap-2 w-full md:w-auto justify-center cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
             <PublishSettingsArea 
-              onBack={() => setStep(1)} 
+              onBack={() => setStep(2)} 
               submitLabel="✨ Generate Exam with AI" 
               isSubmitting={false} 
             />

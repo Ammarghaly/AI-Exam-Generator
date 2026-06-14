@@ -1,4 +1,4 @@
-import { CircleDot, CheckSquare, AlignLeft, FileText } from "lucide-react";
+import { CircleDot, CheckSquare } from "lucide-react";
 import type { QuestionType } from "../../pages/ManualExamCreatorPage";
 import { cn } from "../../lib/utils";
 
@@ -10,8 +10,6 @@ interface QuestionTypeSelectorProps {
 const QUESTION_TYPES: { type: QuestionType; icon: any }[] = [
   { type: "Multiple Choice", icon: CircleDot },
   { type: "True/False", icon: CheckSquare },
-  { type: "Short Answer", icon: AlignLeft },
-  { type: "Essay", icon: FileText },
 ];
 
 export function QuestionTypeSelector({ currentType, onChange }: QuestionTypeSelectorProps) {

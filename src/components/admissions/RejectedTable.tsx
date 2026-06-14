@@ -73,11 +73,19 @@ export function RejectedTable({
                   {/* Student */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div
-                        className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${color.bg} ${color.text} opacity-60`}
-                      >
-                        {getInitials(student.name)}
-                      </div>
+                      {student.avatar ? (
+                        <img
+                          src={student.avatar}
+                          alt={student.name}
+                          className="w-9 h-9 rounded-full object-cover shrink-0 opacity-60"
+                        />
+                      ) : (
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${color.bg} ${color.text} opacity-60`}
+                        >
+                          {getInitials(student.name)}
+                        </div>
+                      )}
                       <div>
                         <p
                           className="font-semibold"

@@ -77,7 +77,7 @@ export function ExamSettings() {
           <label className="block text-sm font-semibold text-gray-900">
             Cognitive & Difficulty Matrix
           </label>
-          <span className="text-xs font-bold text-gray-500 bg-slate-100 px-2 py-1 rounded">
+          <span className="text-xs font-bold text-gray-500 bg-slate-100 px-2 py-1 rounded font-sans" dir="ltr" lang="en">
             Total: {totalQuestions} Questions
           </span>
         </div>
@@ -122,11 +122,14 @@ export function ExamSettings() {
                           </button>
                           <input
                             type="number"
+                            inputMode="numeric"
                             min="0"
                             {...register(`difficultyDistribution.${cellKey}`, {
                               valueAsNumber: true,
                             })}
-                            className="w-10 text-center text-sm font-bold text-gray-900 focus:outline-none bg-transparent"
+                            className="w-10 text-center text-sm font-bold text-gray-900 focus:outline-none bg-transparent font-sans"
+                            dir="ltr"
+                            lang="en"
                           />
                           <button
                             type="button"
@@ -166,10 +169,13 @@ export function ExamSettings() {
             </label>
             <input
               type="number"
+              inputMode="numeric"
               min="0"
               max={totalQuestions}
               {...register("mcqCount", { valueAsNumber: true })}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-gray-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-sans"
+              dir="ltr"
+              lang="en"
             />
             {errors.mcqCount?.message && (
               <p className="text-xs font-semibold text-rose-500 flex items-center gap-1">
@@ -184,7 +190,7 @@ export function ExamSettings() {
             <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">
               True / False
             </label>
-            <div className="w-full bg-slate-100 border border-gray-200/70 rounded-lg px-3 py-2 text-sm font-extrabold text-gray-600 select-none">
+            <div className="w-full bg-slate-100 border border-gray-200/70 rounded-lg px-3 py-2 text-sm font-extrabold text-gray-600 select-none font-sans" dir="ltr" lang="en">
               {tfCount} Questions
             </div>
             <span className="text-[10px] text-gray-400 block font-medium">

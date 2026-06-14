@@ -31,7 +31,7 @@ export type GenerateExamFormValues = {
 };
 
 export function useGenerateExam() {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const navigate = useNavigate();
   const location = useLocation();
   const stateData = location.state as Partial<GenerateExamFormValues> | null;
@@ -123,56 +123,65 @@ export function useGenerateExam() {
   };
 
   const handleNextStep = async () => {
-    const isStep1Valid = await methods.trigger(['examTitle', 'file', 'difficultyDistribution', 'mcqCount']);
-    
-    const values = methods.getValues();
-    const total = Object.values(values.difficultyDistribution || {}).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0) as number;
-    
-    let hasCustomError = false;
-
-    const userCredits = currentUser?.available_credits ?? 0;
-
-    if (total < 5 || total > 100) {
-      methods.setError('difficultyDistribution', {
-        type: 'manual',
-        message: 'Total questions must be between 5 and 100',
-      });
-      hasCustomError = true;
-    } else if (isStudent && total > 10) {
-      methods.setError('difficultyDistribution', {
-        type: 'manual',
-        message: 'Students are limited to 10 questions per exam. Please subscribe to PRO to unlock larger exams!',
-      });
-      hasCustomError = true;
-    } else if (userCredits < total) {
-      methods.setError('difficultyDistribution', {
-        type: 'manual',
-        message: `Insufficient credits. Generating this exam costs ${total} credits, but you only have ${userCredits}.`,
-      });
-      hasCustomError = true;
-    } else {
-      methods.clearErrors('difficultyDistribution');
+    if (step === 1) {
+      const isStep1Valid = await methods.trigger(['examTitle', 'file']);
+      if (isStep1Valid) {
+        setStep(2);
+      }
+      return;
     }
-    
-    const mcqCount = Number(values.mcqCount) || 0;
-    if (mcqCount > total) {
-      methods.setError('mcqCount', {
-        type: 'manual',
-        message: 'MCQ count cannot exceed the total questions count',
-      });
-      hasCustomError = true;
-    } else if (mcqCount < 0) {
-      methods.setError('mcqCount', {
-        type: 'manual',
-        message: 'MCQ Count cannot be negative',
-      });
-      hasCustomError = true;
-    } else {
-      methods.clearErrors('mcqCount');
+
+    if (step === 2) {
+      const isStep2Valid = await methods.trigger(['difficultyDistribution', 'mcqCount']);
+      
+      const values = methods.getValues();
+      const total = Object.values(values.difficultyDistribution || {}).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0) as number;
+      
+      let hasCustomError = false;
+      const userCredits = currentUser?.available_credits ?? 0;
+
+      if (total < 5 || total > 100) {
+        methods.setError('difficultyDistribution', {
+          type: 'manual',
+          message: 'Total questions must be between 5 and 100',
+        });
+        hasCustomError = true;
+      } else if (isStudent && total > 10) {
+        methods.setError('difficultyDistribution', {
+          type: 'manual',
+          message: 'Students are limited to 10 questions per exam. Please subscribe to PRO to unlock larger exams!',
+        });
+        hasCustomError = true;
+      } else if (userCredits < total) {
+        methods.setError('difficultyDistribution', {
+          type: 'manual',
+          message: `Insufficient credits. Generating this exam costs ${total} credits, but you only have ${userCredits}.`,
+        });
+        hasCustomError = true;
+      } else {
+        methods.clearErrors('difficultyDistribution');
+      }
+      
+      const mcqCount = Number(values.mcqCount) || 0;
+      if (mcqCount > total) {
+        methods.setError('mcqCount', {
+          type: 'manual',
+          message: 'MCQ count cannot exceed the total questions count',
+        });
+        hasCustomError = true;
+      } else if (mcqCount < 0) {
+        methods.setError('mcqCount', {
+          type: 'manual',
+          message: 'MCQ Count cannot be negative',
+        });
+        hasCustomError = true;
+      } else {
+        methods.clearErrors('mcqCount');
+      }
+      
+      if (!isStep2Valid || hasCustomError) return;
+      setStep(3);
     }
-    
-    if (!isStep1Valid || hasCustomError) return;
-    setStep(2);
   };
 
   return {

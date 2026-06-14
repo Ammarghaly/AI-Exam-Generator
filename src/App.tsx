@@ -237,6 +237,14 @@ function App() {
           }
         />
         <Route
+          path="/student/groups/:id"
+          element={
+            <ProtectedRoute>
+              <GroupDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/student/profile"
           element={
             <ProtectedRoute>

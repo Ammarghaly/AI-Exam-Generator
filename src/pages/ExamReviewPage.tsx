@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
-import { Breadcrumb } from "../components/Common/Breadcrumb";
 import { PageHeader } from "../components/Common/PageHeader";
 import { Modal } from "../components/Common/Modal";
 import { ClipboardList, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
@@ -74,14 +73,6 @@ export default function ExamReviewPage() {
   return (
     <TeacherLayout>
       <div className="max-w-4xl mx-auto space-y-8">
-        <Breadcrumb
-          items={[
-            { label: "Dashboard", href: "/teacher/dashboard" },
-            { label: "Exam Management", href: "/teacher/exam-management" },
-            { label: "Review Questions" },
-          ]}
-        />
-
         <PageHeader
           title="Review & Edit Questions"
           subtitle="View and manage the questions generated for your exam."

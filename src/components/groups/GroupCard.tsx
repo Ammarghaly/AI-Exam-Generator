@@ -45,7 +45,7 @@ export default function GroupCard({
   }, []);
   return (
     <div
-      onClick={() => navigate(`/teacher/groups/${id}`)} // 🆕
+      onClick={() => navigate(isTeacher ? `/teacher/groups/${id}` : `/student/groups/${id}`)}
      className="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-lg transition-all group relative cursor-pointer">
       <div className="flex justify-between items-start mb-md">
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBgClass} ${iconTextClass}`}>

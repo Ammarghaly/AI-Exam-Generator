@@ -1,22 +1,19 @@
-import { Copy, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import type { QuestionType } from "../../pages/ManualExamCreatorPage";
 import { QuestionTypeSelector } from "./QuestionTypeSelector";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import type { ExamFormValues } from "../../pages/ManualExamCreatorPage";
 import { MultipleChoiceArea } from "./MultipleChoiceArea";
 import { TrueFalseArea } from "./TrueFalseArea";
-import { EssayArea } from "./EssayArea";
 
 interface QuestionCardProps {
   index: number;
   onDelete: () => void;
-  onDuplicate: () => void;
 }
 
 export function QuestionCard({
   index,
   onDelete,
-  onDuplicate,
 }: QuestionCardProps) {
   const {
     register,
@@ -93,14 +90,6 @@ export function QuestionCard({
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={onDuplicate}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            title="Duplicate Question"
-          >
-            <Copy className="w-5 h-5" />
-          </button>
-          <button
-            type="button"
             onClick={onDelete}
             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             title="Delete Question"
@@ -111,33 +100,14 @@ export function QuestionCard({
       </div>
 
       {/* Config Row */}
-      <div className="flex flex-col lg:flex-row gap-6 items-start">
-        <div className="flex-1 space-y-2">
-          <label className="font-bold text-[11px] text-gray-500 uppercase tracking-widest block mb-2">
-            Question Type
-          </label>
-          <QuestionTypeSelector
-            currentType={questionType}
-            onChange={setQuestionType}
-          />
-        </div>
-
-        <div className="w-full lg:w-32 space-y-2">
-          <label className="font-bold text-[11px] text-gray-500 uppercase tracking-widest block mb-2">
-            Points
-          </label>
-          <input
-            type="number"
-            {...register(`questions.${index}.points`, { valueAsNumber: true })}
-            min="1"
-            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-center text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm transition-all"
-          />
-          {questionErrors?.points && (
-            <p className="text-red-500 text-xs font-semibold">
-              {questionErrors.points.message}
-            </p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <label className="font-bold text-[11px] text-gray-500 uppercase tracking-widest block mb-2">
+          Question Type
+        </label>
+        <QuestionTypeSelector
+          currentType={questionType}
+          onChange={setQuestionType}
+        />
       </div>
 
       {/* Question Text */}
@@ -170,11 +140,6 @@ export function QuestionCard({
       {/* True/False Area */}
       {questionType === "True/False" && (
         <TrueFalseArea index={index} idealAnswer={idealAnswer || ""} />
-      )}
-
-      {/* Essay / Short Answer Area */}
-      {(questionType === "Essay" || questionType === "Short Answer") && (
-        <EssayArea index={index} />
       )}
     </div>
   );

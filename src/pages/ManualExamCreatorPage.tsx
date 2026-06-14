@@ -1,7 +1,6 @@
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
 import { Pencil, Plus, Eye, Play } from "lucide-react";
 import { QuestionCard } from "../components/manual-exam/QuestionCard";
-import { Breadcrumb } from "../components/Common/Breadcrumb";
 import { PageHeader } from "../components/Common/PageHeader";
 import { PublishSettingsArea } from "../components/Common/PublishSettingsArea";
 import { FormProvider } from "react-hook-form";
@@ -35,14 +34,6 @@ export default function ManualExamCreatorPage() {
           {step === "build" ? (
             <>
               <main className="p-8 mx-auto w-full space-y-6 pb-12 flex-1 max-w-5xl">
-                {/* Breadcrumbs */}
-                <Breadcrumb
-                  items={[
-                    { label: "Dashboard", href: "/teacher/dashboard" },
-                    { label: "Exams", href: "/teacher/exam-management" },
-                    { label: "Create Manual Exam" },
-                  ]}
-                />
 
                 {/* Header */}
                 <PageHeader
@@ -78,7 +69,6 @@ export default function ManualExamCreatorPage() {
                       key={field.id}
                       index={index}
                       onDelete={() => remove(index)}
-                      onDuplicate={() => duplicateQuestion(index)}
                     />
                   ))}
                 </div>
@@ -96,7 +86,7 @@ export default function ManualExamCreatorPage() {
                     Add Question
                   </span>
                   <span className="text-sm font-medium text-gray-500 mt-1">
-                    MCQ, T/F, Short Answer, or Essay
+                    Multiple Choice or True/False
                   </span>
                 </button>
               </main>
@@ -110,14 +100,6 @@ export default function ManualExamCreatorPage() {
                     </span>
                     <span className="font-extrabold text-lg text-gray-900">
                       {fields.length} items
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-                      Total Points
-                    </span>
-                    <span className="font-extrabold text-lg text-gray-900">
-                      {totalPoints} Points
                     </span>
                   </div>
                 </div>

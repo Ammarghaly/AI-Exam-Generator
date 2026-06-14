@@ -9,7 +9,7 @@ export const optionSchema = z.object({
 export const questionSchema = z
   .object({
     id: z.string(),
-    type: z.enum(["Multiple Choice", "True/False", "Short Answer", "Essay"]),
+    type: z.enum(["Multiple Choice", "True/False"]),
     points: z.number().min(1, "Points must be at least 1"),
     text: z.string().min(1, "Question text is required"),
     options: z.array(optionSchema).optional(),
@@ -56,6 +56,4 @@ export type ExamFormValues = z.infer<typeof examSchema>;
 
 export type QuestionType =
   | "Multiple Choice"
-  | "True/False"
-  | "Short Answer"
-  | "Essay";
+  | "True/False";

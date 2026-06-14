@@ -2,21 +2,12 @@ import { Link } from 'react-router-dom';
 import { Sparkles, PencilLine, ArrowRight } from 'lucide-react';
 import { TeacherLayout } from '../components/Layout/TeacherLayout';
 import { PageHeader } from '../components/Common/PageHeader';
-import { Breadcrumb } from '../components/Common/Breadcrumb';
 
 export default function ExamCreationSelectionPage() {
   return (
     <TeacherLayout>
       <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50 relative">
         <main className="p-8 mx-auto w-full space-y-8 flex-1">
-
-          <Breadcrumb
-            items={[
-              { label: 'Dashboard', href: '/teacher/dashboard' },
-              { label: 'Exams', href: '/teacher/exam-management' },
-              { label: 'Create New' }
-            ]}
-          />
 
           <PageHeader
             title="Create New Assessment"

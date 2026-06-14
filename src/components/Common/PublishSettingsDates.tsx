@@ -55,7 +55,7 @@ export function PublishSettingsDates() {
                   )}
                 >
                   <CalendarIcon className="mr-3 h-5 w-5 text-gray-500" />
-                  {field.value ? format(field.value, "PPP p") : <span>Pick a date & time</span>}
+                  {field.value ? <span className="font-sans text-[15px]" dir="ltr" lang="en">{format(field.value, "PPP p")}</span> : <span>Pick a date & time</span>}
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -74,7 +74,9 @@ export function PublishSettingsDates() {
                       type="time"
                       value={getTimeString(field.value)}
                       onChange={(e) => field.onChange(updateDateWithTime(field.value, e.target.value))}
-                      className="text-sm bg-white border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="text-sm bg-white border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-sans"
+                      dir="ltr"
+                      lang="en"
                     />
                   </div>
                 )}
@@ -106,7 +108,7 @@ export function PublishSettingsDates() {
                   )}
                 >
                   <CalendarIcon className="mr-3 h-5 w-5 text-gray-500" />
-                  {field.value ? format(field.value, "PPP p") : <span>Pick a date & time</span>}
+                  {field.value ? <span className="font-sans text-[15px]" dir="ltr" lang="en">{format(field.value, "PPP p")}</span> : <span>Pick a date & time</span>}
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -125,7 +127,9 @@ export function PublishSettingsDates() {
                       type="time"
                       value={getTimeString(field.value)}
                       onChange={(e) => field.onChange(updateDateWithTime(field.value, e.target.value))}
-                      className="text-sm bg-white border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="text-sm bg-white border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-sans"
+                      dir="ltr"
+                      lang="en"
                     />
                   </div>
                 )}

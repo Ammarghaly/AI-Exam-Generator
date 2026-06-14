@@ -3,8 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
-  ArrowLeft, Copy, Users, ClipboardCheck, Plus
+  ArrowLeft, Copy, Users, ClipboardCheck, Plus, Clock
 } from "lucide-react";
+import { useUserStore } from "../stores/use-user-store";
 
 import { getGroupById, removeStudentFromGroup } from "../api/groups";
 import type { GroupDetailsStudent, AssignedExam } from "../types/group.types";
@@ -56,6 +57,9 @@ export default function GroupDetailsPage() {
   const [copied, setCopied]             = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [currentPage, setCurrentPage]   = useState(1);
+
+  const { currentUser } = useUserStore();
+  const isStudent = currentUser?.role === "Student";
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   const { data: group, isLoading, error } = useQuery({
@@ -129,97 +133,188 @@ export default function GroupDetailsPage() {
         {group.groupName}
       </h1>
       <p className="text-sm text-gray-400">{group.subject}</p>
+      {isStudent && group.teacher && (
+        <p className="text-sm font-semibold text-indigo-600 mt-2">
+          Teacher: {group.teacher.name}
+        </p>
+      )}
     </div>
 
     {/* Right side */}
     <div className="flex items-center gap-3">
-
-      {/* Add Student Button 👇 */}
-     
-      {/* Invite code */}
-      <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 shrink-0">
-        <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
-            Invite Code
-          </p>
-          <p className="text-base font-extrabold text-gray-800 tracking-widest">
-            {group.inviteCode}
-          </p>
+      {isStudent ? (
+        <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-xl px-4 py-3 shrink-0">
+          <ClipboardCheck size={20} />
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5">Pending Exams</p>
+            <p className="text-base font-extrabold font-sans" dir="ltr" lang="en">{(group as any).pendingExamsCount} Upcoming</p>
+          </div>
         </div>
+      ) : (
+        <>
+          {/* Invite code */}
+          <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 shrink-0">
+            <div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+                Invite Code
+              </p>
+              <p className="text-base font-extrabold text-gray-800 tracking-widest">
+                {group.inviteCode}
+              </p>
+            </div>
 
-        <button
-          onClick={handleCopy}
-          className="text-gray-400 hover:text-indigo-600 transition-colors ml-2"
-        >
-          {copied
-            ? <span className="text-green-500 text-xs font-medium">Copied!</span>
-            : <Copy size={16} />}
-        </button>
-      </div>
- <button
-        onClick={() => setIsAddModalOpen(true)}
-        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-      >
-        <Plus size={16} />
-        Add Student
-      </button>
-
+            <button
+              onClick={handleCopy}
+              className="text-gray-400 hover:text-indigo-600 transition-colors ml-2"
+            >
+              {copied
+                ? <span className="text-green-500 text-xs font-medium">Copied!</span>
+                : <Copy size={16} />}
+            </button>
+          </div>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+          >
+            <Plus size={16} />
+            Add Student
+          </button>
+        </>
+      )}
     </div>
   </div>
 </div>
-      {/* ── Tabs ──────────────────────────────────────────────────────────── */}
-      <div className="flex gap-0 mb-6 border-b border-gray-200">
-        {(["students", "exams"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-colors -mb-px ${
-              activeTab === tab
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-400 hover:text-gray-600"
-            }`}
-          >
-            {tab === "students" ? <Users size={15} /> : <ClipboardCheck size={15} />}
-            {tab === "students" ? "Students List" : "Assigned Exams"}
-          </button>
-        ))}
-      </div>
 
-      {/* ── Students Tab ──────────────────────────────────────────────────── */}
-      {activeTab === "students" && (
-        <StudentsTab
-          paginatedStudents={paginatedStudents as any}
-          mappedStudentsLength={mappedStudents.length}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalPages={totalPages}
-          itemsPerPage={ITEMS_PER_PAGE}
-          removeStudent={removeStudent as any}
-          setIsAddModalOpen={setIsAddModalOpen}
-        />
+      {isStudent ? (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900">Assigned Exams</h2>
+          <div className="space-y-4">
+            {!group.assignedExams || group.assignedExams.length === 0 ? (
+              <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                <p className="text-gray-500 text-sm font-semibold">No exams assigned to this group yet.</p>
+              </div>
+            ) : (
+              group.assignedExams.map((exam: any) => (
+                <div key={exam.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1 bg-red-50 text-red-600 text-xs font-bold px-2.5 py-1 rounded-md font-sans" dir="ltr" lang="en">
+                          <Clock className="w-3.5 h-3.5" /> {exam.dueLabel}
+                        </span>
+                        <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-md font-sans" dir="ltr" lang="en">
+                          {exam.durationMinutes} Mins • {exam.numOfQuestion} Questions
+                        </span>
+                        {exam.isCompleted && (
+                          <span className="bg-green-50 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-md">
+                            Completed
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">{exam.title}</h3>
+                        <p className="text-xs text-gray-400 mt-1">Due date: {exam.dueDate}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      {exam.isCompleted ? (
+                        <button
+                          onClick={() => navigate(`/student/exam-results/${exam.id}`)}
+                          className="font-semibold text-sm px-6 py-2.5 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+                        >
+                          View Results
+                        </button>
+                      ) : exam.status === "Closed" ? (
+                        <button
+                          disabled
+                          className="font-semibold text-sm px-6 py-2.5 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed"
+                        >
+                          Expired
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            if (exam.isAvailable) {
+                              navigate(`/student/exam/${exam.id}`);
+                            } else {
+                              toast.error("This exam is not available yet.");
+                            }
+                          }}
+                          disabled={!exam.isAvailable}
+                          className={`font-semibold text-sm px-6 py-2.5 rounded-lg flex items-center gap-2 transition-colors cursor-pointer ${
+                            exam.isAvailable 
+                              ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
+                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          Start Exam <ArrowLeft className="w-4 h-4 rotate-180" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* ── Tabs ──────────────────────────────────────────────────────────── */}
+          <div className="flex gap-0 mb-6 border-b border-gray-200">
+            {(["students", "exams"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-colors -mb-px ${
+                  activeTab === tab
+                    ? "border-indigo-600 text-indigo-600"
+                    : "border-transparent text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                {tab === "students" ? <Users size={15} /> : <ClipboardCheck size={15} />}
+                {tab === "students" ? "Students List" : "Assigned Exams"}
+              </button>
+            ))}
+          </div>
+
+          {/* ── Students Tab ──────────────────────────────────────────────────── */}
+          {activeTab === "students" && (
+            <StudentsTab
+              paginatedStudents={paginatedStudents as any}
+              mappedStudentsLength={mappedStudents.length}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalPages={totalPages}
+              itemsPerPage={ITEMS_PER_PAGE}
+              removeStudent={removeStudent as any}
+              setIsAddModalOpen={setIsAddModalOpen}
+            />
+          )}
+
+          {/* ── Exams Tab ─────────────────────────────────────────────────────── */}
+          {activeTab === "exams" && (
+            <ExamsTab
+              assignedExams={group.assignedExams}
+              examStatusStyles={examStatusStyles}
+            />
+          )}
+
+          {/* ── Group Performance Overview ─────────────────────────────────────── */}
+          <GroupPerformanceOverview performance={group.performance} />
+
+          {/* Floating New Exam Button */}
+          <div className="fixed bottom-8 left-6">
+            <button
+              onClick={() => navigate("/teacher/generate-exam")}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-lg transition-all"
+            >
+              <Plus size={16} />
+              Create New Exam
+            </button>
+          </div>
+        </>
       )}
-
-      {/* ── Exams Tab ─────────────────────────────────────────────────────── */}
-      {activeTab === "exams" && (
-        <ExamsTab
-          assignedExams={group.assignedExams}
-          examStatusStyles={examStatusStyles}
-        />
-      )}
-
-      {/* ── Group Performance Overview ─────────────────────────────────────── */}
-      <GroupPerformanceOverview performance={group.performance} />
-
-      {/* Floating New Exam Button */}
-      <div className="fixed bottom-8 left-6">
-        <button
-          onClick={() => navigate("/teacher/generate-exam")}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-lg transition-all"
-        >
-          <Plus size={16} />
-          Create New Exam
-        </button>
-      </div>
 
       {/* Add Student Modal */}
       <AddStudentModal

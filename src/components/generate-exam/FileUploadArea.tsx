@@ -72,7 +72,7 @@ export function FileUploadArea() {
             <p className="text-[16px] text-gray-500 mt-2 z-10">
               Drag & drop your syllabus, lecture notes, or reading materials here, or click to browse.
             </p>
-            <p className="text-xs font-semibold text-gray-400 mt-4 z-10">
+            <p className="text-xs font-semibold text-gray-400 mt-4 z-10 font-sans" dir="ltr" lang="en">
               Supported formats: PDF (Max 50MB)
             </p>
           </div>
@@ -93,7 +93,7 @@ export function FileUploadArea() {
               <p className="font-semibold text-gray-900 truncate" title={file.name}>
                 {file.name}
               </p>
-              <p className="text-sm font-medium text-gray-500">
+              <p className="text-sm font-medium text-gray-500 font-sans" dir="ltr" lang="en">
                 {formatFileSize(file.size)} • Uploaded
               </p>
             </div>

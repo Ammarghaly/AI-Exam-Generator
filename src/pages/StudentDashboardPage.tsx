@@ -45,23 +45,24 @@ export default function StudentDashboardPage() {
           
           {/* Left Column - Assigned by Teachers */}
           <div className="lg:col-span-2 space-y-6">
+
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Assigned by Teachers</h2>
+                <h2 className="text-xl font-bold text-gray-900">Assigned Exams</h2>
                 <p className="text-sm text-gray-500 mt-1">Complete your pending assessments.</p>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[400px] overflow-y-auto border border-gray-200 rounded-md p-2">
               {assignedExams.length === 0 ? (
                 <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
                   <p className="text-gray-500 text-sm font-semibold">No assigned exams yet.</p>
                 </div>
               ) : (
                 assignedExams.map((exam) => (
-                  <div key={exam.examId} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                      <div className="flex flex-col gap-3">
+                  <div key={exam.examId} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           <span className="flex items-center gap-1 bg-red-50 text-red-600 text-xs font-bold px-2.5 py-1 rounded-md">
                             <Clock className="w-3.5 h-3.5" /> {exam.dueLabel}

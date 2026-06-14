@@ -40,7 +40,8 @@ export default function StudentAdmissionsPage() {
 
   // Accept Mutation
   const { mutate: accept, isPending: accepting } = useMutation({
-    mutationFn: (studentId: string) => acceptStudent(studentId),
+    mutationFn: ({ groupId, studentId }: { groupId: string; studentId: string }) =>
+      acceptStudent(groupId, studentId),
     onSuccess: () => {
       toast.success("Student accepted successfully.");
       queryClient.invalidateQueries({ queryKey: ["admissions"] });
@@ -50,7 +51,8 @@ export default function StudentAdmissionsPage() {
 
   // Reject Mutation
   const { mutate: reject, isPending: rejecting } = useMutation({
-    mutationFn: (studentId: string) => rejectStudent(studentId),
+    mutationFn: ({ groupId, studentId }: { groupId: string; studentId: string }) =>
+      rejectStudent(groupId, studentId),
     onSuccess: () => {
       toast.success("Student rejected.");
       queryClient.invalidateQueries({ queryKey: ["admissions"] });

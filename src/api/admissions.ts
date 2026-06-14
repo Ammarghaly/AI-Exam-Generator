@@ -14,16 +14,18 @@ export const getRejectedRequests = async (): Promise<RejectedRequest[]> => {
 };
 
 // ACCEPT a pending student
-export const acceptStudent = async (studentId: string): Promise<void> => {
+export const acceptStudent = async (groupId: string, studentId: string): Promise<void> => {
   await api.post("/group/teacherAcceptRejectRequest", {
+    groupId,
     requestId: studentId,
     action: "accept",
   });
 };
 
 // REJECT a pending student
-export const rejectStudent = async (studentId: string): Promise<void> => {
+export const rejectStudent = async (groupId: string, studentId: string): Promise<void> => {
   await api.post("/group/teacherAcceptRejectRequest", {
+    groupId,
     requestId: studentId,
     action: "reject",
   });
