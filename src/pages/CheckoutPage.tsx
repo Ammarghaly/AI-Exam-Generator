@@ -51,6 +51,12 @@ export default function CheckoutPage() {
             resolve((window as any).Stripe);
             return;
           }
+          const existingScript = document.querySelector('script[src="https://js.stripe.com/v3/"]');
+          if (existingScript) {
+            existingScript.addEventListener('load', () => resolve((window as any).Stripe));
+            existingScript.addEventListener('error', () => reject(new Error("Stripe.js failed to load")));
+            return;
+          }
           const script = document.createElement("script");
           script.src = "https://js.stripe.com/v3/";
           script.async = true;
