@@ -60,7 +60,7 @@ export function PendingTable({
               return (
                 <tr
                   key={`${student._id}-${group._id}`}
-                  className="transition-colors border-t border-gray-100 dark:border-white/5 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/10"
+                  className="transition-colors border-t border-gray-100 dark:border-white/5 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/50"
                 >
                   {/* Student */}
                   <td className="px-6 py-4 border-l-4 border-l-amber-500/80 dark:border-l-amber-500/60">

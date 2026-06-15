@@ -80,15 +80,16 @@ export default function StudentDashboardPage() {
                       </div>
                       <button 
                         onClick={() => {
-                          if (exam.isAvailable) {
+                          if (exam.status === "Closed") {
+                            toast.error("This exam is closed.");
+                          } else if (exam.isAvailable) {
                             navigate(`/student/exam/${exam.examId}`);
                           } else {
                             toast.error("This exam is not available yet.");
                           }
                         }}
-                        disabled={!exam.isAvailable}
                         className={`font-semibold text-sm px-6 py-2.5 rounded-lg flex items-center gap-2 transition-colors cursor-pointer ${
-                          exam.isAvailable 
+                          exam.isAvailable || exam.status === "Closed"
                             ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
                         }`}

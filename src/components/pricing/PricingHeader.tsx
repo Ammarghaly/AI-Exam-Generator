@@ -21,7 +21,7 @@ export default function PricingHeader({ activeView, onViewChange }: PricingHeade
             <button
               type="button"
               className={`relative z-10 px-8 py-2.5 text-sm font-semibold transition-all duration-300 rounded-lg cursor-pointer ${
-                activeView === "student" ? "text-white" : "text-muted-foreground hover:text-foreground"
+                activeView === "student" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => onViewChange("student")}
             >
@@ -30,7 +30,7 @@ export default function PricingHeader({ activeView, onViewChange }: PricingHeade
             <button
               type="button"
               className={`relative z-10 px-8 py-2.5 text-sm font-semibold transition-all duration-300 rounded-lg cursor-pointer ${
-                activeView === "teacher" ? "text-white" : "text-muted-foreground hover:text-foreground"
+                activeView === "teacher" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => onViewChange("teacher")}
             >

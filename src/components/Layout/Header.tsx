@@ -104,8 +104,12 @@ export function Header({ title, role }: HeaderProps) {
           onClick={() => navigate(profilePath)}
           className={`w-8 h-8 rounded-full overflow-hidden shrink-0 cursor-pointer transition-all duration-300
                   ${
-                    currentUser?.subscription_type !== "free"
-                      ? "border-2 border-transparent bg-gradient-to-tr from-yellow-400 via-amber-500 to-gold-600 bg-origin-border hover:from-amber-500 hover:to-yellow-300 hover:scale-105"
+                    currentUser?.subscription_type === "lite"
+                      ? "p-[2px] bg-gradient-to-tr from-zinc-300 via-slate-100 to-zinc-400 shadow-[0_0_6px_rgba(200,200,200,0.5)] hover:scale-105"
+                      : currentUser?.subscription_type === "premium"
+                      ? "p-[2px] bg-gradient-to-tr from-yellow-400 via-amber-500 to-yellow-600 shadow-[0_0_8px_rgba(245,158,11,0.5)] hover:scale-105"
+                      : currentUser?.subscription_type === "institution"
+                      ? "p-[2px] bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.6)] animate-pulse hover:scale-110"
                       : "border border-border hover:border-primary hover:ring-2 hover:ring-primary/20"
                   }`}
         >
@@ -115,7 +119,7 @@ export function Header({ title, role }: HeaderProps) {
               "https://res.cloudinary.com/dgjw80t8x/image/upload/q_auto/f_auto/v1780575623/mostafamagdy_hsjbw3.png"
             }
             alt="Profile"
-            className="w-full h-full object-cover"
+            className="w-full h-full rounded-full object-cover bg-surface"
           />
         </div>
 

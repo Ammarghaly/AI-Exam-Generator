@@ -66,7 +66,7 @@ export default function PricingPage() {
               features={["150 credits / month", "Permanent exams", "Export to PDF/Docs"]}
               isPopular={true}
               popularText="MOST POPULAR"
-              isCurrent={currentUser?.subscription_type === "premium_lite"} // Example check
+              isCurrent={currentUser?.subscription_type === "lite"}
               onSubscribe={() => handleSubscribe("Student Lite Plan", 3, "/month")}
             />
             <PricingCard

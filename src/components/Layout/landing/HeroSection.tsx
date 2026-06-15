@@ -12,7 +12,7 @@ export default function HeroSection() {
         </h1>
 
         <p className="font-body text-h2 text-on-surface-variant mb-xl max-w-2xl mx-auto">
-          The intelligent mentor for educators. Transform documents, videos, or topics into
+          The intelligent mentor for educators. Transform PDF documents and course materials into
           comprehensive assessments with AI-driven pedagogical precision.
         </p>
 

@@ -58,7 +58,7 @@ export function RejectedTable({
               return (
                 <tr
                   key={`${student._id}-${group._id}`}
-                  className="transition-all border-t border-gray-100 dark:border-white/5 bg-rose-50/10 dark:bg-rose-950/5 hover:bg-rose-50/40 dark:hover:bg-rose-950/15 opacity-75 hover:opacity-100"
+                  className="transition-all border-t border-gray-100 dark:border-white/5 bg-rose-50/10 dark:bg-rose-950/5 hover:bg-rose-50/40 dark:hover:bg-rose-950/50 opacity-75 hover:opacity-100"
                 >
                   {/* Student */}
                   <td className="px-6 py-4 border-l-4 border-l-rose-500/80 dark:border-l-rose-500/60">

@@ -10,6 +10,7 @@ interface ProfileCardProps {
     role?: string;
     avatar?: string;
     subjects_taught?: string;
+    subscription_type?: string;
   };
 }
 
@@ -56,11 +57,22 @@ export function ProfileCard({ user }: ProfileCardProps) {
   return (
     <div className="bg-surface-container-lowest p-4 md:p-lg rounded-xl shadow-sm border border-outline-variant gap-2 text-center flex flex-col items-center justify-center h-full min-h-[350px]">
       <div className="relative w-32 h-32 mx-auto mb-md group cursor-pointer">
-        <img
-          alt="User Avatar"
-          className="w-full h-full rounded-full object-cover border-4 border-surface-container-high shadow-md transition-all group-hover:opacity-85"
-          src={user.avatar || defaultAvatar}
-        />
+        <div className={`w-full h-full rounded-full overflow-hidden transition-all duration-300
+          ${
+            user.subscription_type === "lite"
+              ? "p-[3px] bg-gradient-to-tr from-zinc-300 via-slate-100 to-zinc-400 shadow-[0_0_15px_rgba(200,200,200,0.6)]"
+              : user.subscription_type === "premium"
+              ? "p-[3px] bg-gradient-to-tr from-yellow-400 via-amber-500 to-yellow-600 shadow-[0_0_15px_rgba(245,158,11,0.6)]"
+              : user.subscription_type === "institution"
+              ? "p-[3px] bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 shadow-[0_0_20px_rgba(168,85,247,0.7)] animate-pulse"
+              : "border-4 border-surface-container-high shadow-md"
+          }`}>
+          <img
+            alt="User Avatar"
+            className="w-full h-full rounded-full object-cover bg-surface transition-all group-hover:opacity-85"
+            src={user.avatar || defaultAvatar}
+          />
+        </div>
         <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
           <span className="material-symbols-outlined text-white text-3xl my-2">
             photo_camera

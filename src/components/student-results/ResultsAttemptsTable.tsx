@@ -38,7 +38,7 @@ export function ResultsAttemptsTable({ recentExams, onReview }: Props) {
                 const isPassed = attempt.percentage >= 60;
 
                 return (
-                  <tr key={attempt.attemptId} className="hover:bg-slate-50/30 transition-colors">
+                  <tr key={attempt.attemptId} className="hover:bg-slate-50/30 dark:hover:bg-muted transition-colors">
                     <td className="px-6 py-5">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">

@@ -59,7 +59,7 @@ export default function AddonCreditsSection({ role, onBuy }: AddonCreditsSection
             type="button"
             onClick={() => onBuy(credits, cost)}
             disabled={credits < minCredits}
-            className="bg-primary hover:opacity-90 disabled:opacity-50 text-white font-bold py-3 px-8 rounded-xl h-[46px] flex items-center justify-center transition-all active:scale-95 whitespace-nowrap cursor-pointer text-sm"
+            className="bg-primary hover:opacity-90 disabled:opacity-50 text-primary-foreground font-bold py-3 px-8 rounded-xl h-[46px] flex items-center justify-center transition-all active:scale-95 whitespace-nowrap cursor-pointer text-sm"
           >
             Buy Credits
           </button>

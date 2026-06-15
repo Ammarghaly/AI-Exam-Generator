@@ -63,14 +63,14 @@ export default function GroupCard({
               <span className="material-symbols-outlined">more_vert</span>
             </button>
             {isMenuOpen && (
-              <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
+              <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-surface border border-gray-200 dark:border-border rounded-lg shadow-lg py-1 z-50">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
                     onAddExam?.(id, title);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-sm">add_box</span>
                   <span>Add Exam to Group</span>

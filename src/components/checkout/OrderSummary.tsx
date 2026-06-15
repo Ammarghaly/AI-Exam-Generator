@@ -83,7 +83,7 @@ export default function OrderSummary({
           type="button"
           onClick={onConfirm}
           disabled={isSubmitting}
-          className="w-full py-4 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/10 hover:opacity-90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full py-4 bg-primary text-primary-foreground font-bold text-sm rounded-xl shadow-lg shadow-primary/10 hover:opacity-90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {isSubmitting ? (
             <>

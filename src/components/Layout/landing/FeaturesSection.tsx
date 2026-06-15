@@ -38,9 +38,9 @@ export default function FeaturesSection() {
                 auto_awesome
               </span>
             </div>
-            <h3 className="font-display text-[28px] font-bold mb-md">Multi-Source AI Engine</h3>
+            <h3 className="font-display text-[28px] font-bold mb-md">AI-Powered PDF Parser</h3>
             <p className="font-body text-h3 text-on-surface-variant ">
-              Input text, upload PDFs, or paste YouTube links. Our AI parses complex subjects and
+              Upload your PDF course materials, lecture notes, or syllabi. Our AI parses complex academic subjects and
               creates balanced questionnaires across all difficulty levels.
             </p>
           </div>

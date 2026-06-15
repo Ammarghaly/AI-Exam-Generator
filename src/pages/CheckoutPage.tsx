@@ -245,6 +245,8 @@ export default function CheckoutPage() {
         ? "lite"
         : planName.toLowerCase().includes("premium")
         ? "premium"
+        : planName.toLowerCase().includes("institution") || planName.toLowerCase().includes("institutional")
+        ? "institution"
         : "free";
 
       // Update backend database for instant sync

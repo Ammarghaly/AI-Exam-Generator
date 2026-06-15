@@ -1,9 +1,10 @@
+import img from '../../../assets/icon-logo.png'
+
+
 export default function NavLogo() {
   return (
     <a href="/" className="flex items-center gap-2 group cursor-pointer select-none">
-      <span className="material-symbols-outlined text-primary text-[30px] transform group-hover:rotate-12 transition-transform duration-300">
-        quiz
-      </span>
+      <img src={img} alt="Academix" className='w-10 h-10'/>
       <span className="font-display text-h2 font-extrabold text-primary tracking-tight">
         Academix
       </span>

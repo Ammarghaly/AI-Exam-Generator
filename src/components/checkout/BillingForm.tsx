@@ -53,7 +53,7 @@ export default function BillingForm() {
               type="text"
               id="cardholder"
               placeholder="Johnathan Doe"
-              className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
+              className="w-full bg-surface border border-border text-foreground rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
               required
             />
           </div>
@@ -86,7 +86,7 @@ export default function BillingForm() {
               type="text"
               id="city"
               placeholder="New York"
-              className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
+              className="w-full bg-surface border border-border text-foreground rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
               required
             />
           </div>
@@ -113,7 +113,7 @@ export default function BillingForm() {
               type="text"
               id="zip"
               placeholder="10001"
-              className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
+              className="w-full bg-surface border border-border text-foreground rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all placeholder:text-muted-foreground/45 font-sans"
               required
             />
           </div>

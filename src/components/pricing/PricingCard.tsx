@@ -32,7 +32,7 @@ export default function PricingCard({
       }`}
     >
       {isPopular && popularText && (
-        <span className="absolute top-0 right-8 -translate-y-1/2 bg-primary text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+        <span className="absolute top-0 right-8 -translate-y-1/2 bg-primary text-primary-foreground text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
           {popularText}
         </span>
       )}
@@ -75,7 +75,7 @@ export default function PricingCard({
           onClick={onSubscribe}
           className={`w-full py-3 px-6 rounded-xl font-bold transition-all active:scale-[0.98] cursor-pointer ${
             isPopular
-              ? "bg-primary text-white hover:opacity-90 shadow-md shadow-primary/10"
+              ? "bg-primary text-primary-foreground hover:opacity-90 shadow-md shadow-primary/10"
               : "border border-primary text-primary hover:bg-primary/5"
           }`}
         >
