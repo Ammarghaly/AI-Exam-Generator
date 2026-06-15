@@ -159,7 +159,7 @@ export default function CheckoutPage() {
           ? addonCredits
           : planName.includes("Premium")
           ? 1000
-          : 100000;
+          : 10000;
         
         const teacherPlanName = isStudentRole
           ? ""
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
         } else if (planName.includes("Premium")) {
           newSubscriptionCredits = isStudentRole ? 500 : 1000;
         } else if (planName.includes("Institutional")) {
-          newSubscriptionCredits = 100000;
+          newSubscriptionCredits = 10000;
         } else {
           newSubscriptionCredits = isStudentRole ? 30 : 50;
         }

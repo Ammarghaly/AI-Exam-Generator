@@ -112,7 +112,7 @@ export default function PricingPage() {
               price="$135"
               billing="/month"
               features={[
-                "100,000 credits / month",
+                "10,000 credits / month",
                 "Custom pedagogy fine-tuning",
                 "LMS Integration (Canvas/Moodle)",
               ]}
