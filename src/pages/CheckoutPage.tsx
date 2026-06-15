@@ -6,7 +6,7 @@ import { StudentLayout } from "../components/Layout/StudentLayout";
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
 import BillingForm from "../components/checkout/BillingForm";
 import OrderSummary from "../components/checkout/OrderSummary";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { updateUserCredits } from "../api/auth";
@@ -39,6 +39,7 @@ export default function CheckoutPage() {
   const [stripe, setStripe] = useState<any>(null);
   const [cardElement, setCardElement] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Initialize Stripe Elements
   useEffect(() => {
@@ -271,10 +272,13 @@ export default function CheckoutPage() {
         subscription_type: subType,
       });
 
-      toast.success("Payment completed successfully! Credits added.");
+      setShowSuccessModal(true);
       
-      const dashboardUrl = isStudentRole ? "/student/dashboard" : "/teacher/dashboard";
-      navigate(dashboardUrl);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        const dashboardUrl = isStudentRole ? "/student/dashboard" : "/teacher/dashboard";
+        navigate(dashboardUrl);
+      }, 3000);
     } catch (error: any) {
       console.error("Payment failed:", error);
       toast.error(error.message || "Failed to process payment. Please try again.");
@@ -323,6 +327,37 @@ export default function CheckoutPage() {
           </aside>
         </div>
       </div>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md transition-all duration-300">
+          <style>{`
+            @keyframes progress {
+              from { width: 0%; }
+              to { width: 100%; }
+            }
+            .animate-progress {
+              animation: progress 3s linear forwards;
+            }
+          `}</style>
+          <div className="bg-white dark:bg-[#1f2226] border border-gray-150 dark:border-white/10 rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-100 transition-all text-center flex flex-col items-center gap-5">
+            <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 animate-bounce">
+              <CheckCircle2 className="w-12 h-12" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
+                تمت عملية الدفع بنجاح
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-zinc-400 font-medium">
+                تمت إضافة الرصيد إلى حسابك بنجاح. سنقوم بنقلك إلى لوحة التحكم الآن...
+              </p>
+            </div>
+            {/* Loading/Redirect Indicator */}
+            <div className="w-full bg-gray-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full rounded-full animate-progress" />
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
