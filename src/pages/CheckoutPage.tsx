@@ -329,31 +329,76 @@ export default function CheckoutPage() {
       </div>
 
       {showSuccessModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md transition-all duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
           <style>{`
-            @keyframes progress {
+            @keyframes successPop {
+              0%   { opacity: 0; transform: scale(0.85) translateY(16px); }
+              60%  { transform: scale(1.03) translateY(-2px); }
+              100% { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            @keyframes progressBar {
               from { width: 0%; }
-              to { width: 100%; }
+              to   { width: 100%; }
             }
-            .animate-progress {
-              animation: progress 3s linear forwards;
+            @keyframes checkPulse {
+              0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+              50%       { box-shadow: 0 0 0 16px rgba(16,185,129,0); }
             }
+            @keyframes float {
+              0%, 100% { transform: translateY(0px); }
+              50%       { transform: translateY(-6px); }
+            }
+            .modal-pop    { animation: successPop   0.45s cubic-bezier(.34,1.56,.64,1) forwards; }
+            .check-pulse  { animation: checkPulse   2s ease-in-out infinite; }
+            .icon-float   { animation: float        3s ease-in-out infinite; }
+            .progress-bar { animation: progressBar  3s linear forwards; }
           `}</style>
-          <div className="bg-white dark:bg-[#1f2226] border border-gray-150 dark:border-white/10 rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-100 transition-all text-center flex flex-col items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 animate-bounce">
-              <CheckCircle2 className="w-12 h-12" />
+
+          {/* Card */}
+          <div className="modal-pop relative w-full max-w-full bg-white dark:bg-[#18191c] border border-gray-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl dark:shadow-black/60 flex flex-col items-center gap-6 text-center overflow-hidden">
+
+            {/* Decorative top glow */}
+            <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-400/20 dark:bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Sparkle dots */}
+            <div className="absolute top-5 right-7 w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-70" />
+            <div className="absolute top-9 right-14 w-1 h-1 rounded-full bg-emerald-300 opacity-50" />
+            <div className="absolute top-5 left-7 w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-70" />
+            <div className="absolute top-9 left-14 w-1 h-1 rounded-full bg-emerald-300 opacity-50" />
+
+            {/* Icon */}
+            <div className="icon-float relative mt-2">
+              <div className="check-pulse w-20 h-20 rounded-full bg-emerald-50 dark:bg-emerald-500/15 border-2 border-emerald-400/60 dark:border-emerald-500/40 flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-emerald-500 dark:text-emerald-400" />
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
-                تمت عملية الدفع بنجاح
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                Payment Successful 🎉
               </h2>
-              <p className="text-sm text-gray-500 dark:text-zinc-400 font-medium">
-                تمت إضافة الرصيد إلى حسابك بنجاح. سنقوم بنقلك إلى لوحة التحكم الآن...
+              <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">
+                Credits have been successfully added to your account.
+                <br />
+                Redirecting you to the dashboard now...
               </p>
             </div>
-            {/* Loading/Redirect Indicator */}
-            <div className="w-full bg-gray-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-emerald-500 h-full rounded-full animate-progress" />
+
+            {/* Plan badge */}
+            <div className="px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-wide">
+              ✓ &nbsp;{planName}
+            </div>
+
+            {/* Progress bar */}
+            <div className="w-full space-y-1.5">
+              <div className="w-full bg-gray-100 dark:bg-white/5 h-1 rounded-full overflow-hidden">
+                <div className="progress-bar h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
+              </div>
+              <p className="text-[11px] text-gray-400 dark:text-zinc-600">Redirecting...</p>
             </div>
           </div>
         </div>
