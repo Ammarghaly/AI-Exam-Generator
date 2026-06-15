@@ -48,7 +48,7 @@ export default function PricingPage() {
 
         {/* Student Pricing Grid */}
         {activeView === "student" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             <PricingCard
               title="Free Tier"
               price="$0"
@@ -87,7 +87,7 @@ export default function PricingPage() {
 
         {/* Teacher Pricing Grid */}
         {activeView === "teacher" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             <PricingCard
               title="Free Tier"
               price="$0"
