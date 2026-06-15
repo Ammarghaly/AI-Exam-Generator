@@ -18,6 +18,7 @@ export interface AssignedExam {
   closingAt: number;
   dueLabel: string;
   isAvailable: boolean;
+  status: string;
 }
 
 export interface StudentDashboardResponse {
