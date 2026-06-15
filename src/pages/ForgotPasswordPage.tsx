@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
   const handleForgotPasswordSubmit = async (submittedEmail: string) => {
     setLoading(true);
     try {
-      await sendOtp(submittedEmail);
+      await sendOtp(submittedEmail, "reset");
       setEmail(submittedEmail);
       toast.success("Verification code sent to your email!");
       setStep("otp");
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
     if (cooldown > 0) return;
     setLoading(true);
     try {
-      await sendOtp(email);
+      await sendOtp(email, "reset");
       toast.success("Verification code resent successfully!");
       setCooldown(60);
     } catch (error: any) {

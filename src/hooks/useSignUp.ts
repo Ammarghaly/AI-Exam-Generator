@@ -96,7 +96,7 @@ export function useSignUp() {
     if (cooldown > 0) return;
     setLoading(true);
     try {
-      await sendOtp(emailForOtp);
+      await sendOtp(emailForOtp, "verify");
       toast.success("Verification code resent successfully!");
       setCooldown(60);
     } catch (error: any) {

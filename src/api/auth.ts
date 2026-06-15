@@ -15,8 +15,8 @@ export interface ResetPasswordResponse {
   message: string;
 }
 
-export async function sendOtp(email: string): Promise<SendOtpResponse> {
-  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email });
+export async function sendOtp(email: string, purpose?: "verify" | "reset"): Promise<SendOtpResponse> {
+  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email, purpose });
   return response.data;
 }
 
@@ -47,7 +47,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
 }
 
 export async function resendActivationOtp(email: string): Promise<SendOtpResponse> {
-  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email });
+  const response = await api.post<SendOtpResponse>("/auth/send-otp", { email, purpose: "verify" });
   return response.data;
 }
 
@@ -88,6 +88,8 @@ export async function updateUserCredits(creditsData: {
   subscription_credits: number;
   purchased_credits: number;
   subscription_type: string;
+  planName?: string;
+  planPrice?: number;
 }) {
   const response = await api.put<{ success: boolean; data: any }>("/profile/checkout", creditsData);
   return response.data;

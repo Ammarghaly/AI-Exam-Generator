@@ -262,6 +262,8 @@ export default function CheckoutPage() {
         subscription_credits: newSubscriptionCredits,
         purchased_credits: newPurchasedCredits,
         subscription_type: subType,
+        planName: isAddon ? `${addonCredits} Credits Add-on` : planName,
+        planPrice: planPrice,
       });
 
       // Update local storage store
