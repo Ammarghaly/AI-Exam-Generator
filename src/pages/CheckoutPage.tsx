@@ -216,14 +216,25 @@ export default function CheckoutPage() {
       if (isAddon) {
         newPurchasedCredits += addonCredits;
       } else {
-        if (planName.includes("Lite")) {
-          newSubscriptionCredits = 150;
-        } else if (planName.includes("Premium")) {
-          newSubscriptionCredits = isStudentRole ? 500 : 1000;
-        } else if (planName.includes("Institutional")) {
-          newSubscriptionCredits = 10000;
+        if (isStudentRole) {
+          if (planName.includes("Lite")) {
+            newSubscriptionCredits = 150;
+          } else if (planName.includes("Premium")) {
+            newSubscriptionCredits = 500;
+          } else {
+            newSubscriptionCredits = 30;
+          }
         } else {
-          newSubscriptionCredits = isStudentRole ? 30 : 50;
+          // For Teachers: paid plan credits (Premium/Institutions) go directly to purchased_credits (permanent)
+          let planCredits = 50;
+          if (planName.includes("Premium")) {
+            planCredits = 1000;
+          } else if (planName.includes("Institutional")) {
+            planCredits = 10000;
+          }
+          newPurchasedCredits += planCredits;
+          // Keep teacher subscription credits as 50
+          newSubscriptionCredits = currentUser.subscription_credits ?? 50;
         }
       }
 
