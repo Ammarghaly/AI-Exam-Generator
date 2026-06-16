@@ -142,13 +142,15 @@ export function useGenerateExam() {
       let hasCustomError = false;
       const userCredits = currentUser?.available_credits ?? 0;
 
+      const isFreeTier = !currentUser?.subscription_type || currentUser.subscription_type === 'free';
+
       if (total < 5 || total > 100) {
         methods.setError('difficultyDistribution', {
           type: 'manual',
           message: 'Total questions must be between 5 and 100',
         });
         hasCustomError = true;
-      } else if (isStudent && total > 10) {
+      } else if (isStudent && isFreeTier && total > 10) {
         methods.setError('difficultyDistribution', {
           type: 'manual',
           message: 'Students are limited to 10 questions per exam. Please subscribe to PRO to unlock larger exams!',
