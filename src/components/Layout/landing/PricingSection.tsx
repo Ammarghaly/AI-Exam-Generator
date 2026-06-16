@@ -31,7 +31,7 @@ export default function PricingSection() {
               price="$3"
               billing="/month"
               infoText="Monthly credits do not roll over"
-              features={["150 credits / month", "Permanent exams", "Export to PDF/Docs"]}
+              features={["150 credits / month", "Permanent exams", "Export to PDF"]}
               isPopular={true}
               popularText="MOST POPULAR"
               onSubscribe={handleSubscribeRedirect}
@@ -78,7 +78,6 @@ export default function PricingSection() {
               features={[
                 "10,000 credits / month",
                 "Custom pedagogy fine-tuning",
-                "LMS Integration (Canvas/Moodle)",
               ]}
               onSubscribe={handleSubscribeRedirect}
             />

@@ -63,7 +63,7 @@ export default function PricingPage() {
               price="$3"
               billing="/month"
               infoText="Monthly credits do not roll over"
-              features={["150 credits / month", "Permanent exams", "Export to PDF/Docs"]}
+              features={["150 credits / month", "Permanent exams", "Export to PDF"]}
               isPopular={true}
               popularText="MOST POPULAR"
               isCurrent={currentUser?.subscription_type === "lite"}
@@ -114,7 +114,6 @@ export default function PricingPage() {
               features={[
                 "10,000 credits / month",
                 "Custom pedagogy fine-tuning",
-                "LMS Integration (Canvas/Moodle)",
               ]}
               isCurrent={currentUser?.subscription_type === "institution"}
               onSubscribe={() => handleSubscribe("Institutional Plan", 135, "/month")}

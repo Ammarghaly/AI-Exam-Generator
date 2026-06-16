@@ -6,13 +6,17 @@ import { StudentLayout } from "../components/Layout/StudentLayout";
 import { QuestionAnalysisHeader, type FilterOption } from "../components/student-exam-results/QuestionAnalysisHeader";
 import { QuestionAnalysisList } from "../components/student-exam-results/QuestionAnalysisList";
 import { type QuestionData } from "../components/student-exam-results/QuestionAnalysisCard";
-import { getAttemptResult } from "../api/exams";
-import { Loader2 } from "lucide-react";
+import { getAttemptResult, downloadExamPDF } from "../api/exams";
+import { Loader2, Download } from "lucide-react";
+import { useUserStore } from "../stores/use-user-store";
+import toast from "react-hot-toast";
 
 export default function StudentExamResultsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<FilterOption>("all");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { currentUser } = useUserStore();
 
   const { data: resultResponse, isLoading } = useQuery({
     queryKey: ["attemptResult", id],
@@ -21,6 +25,32 @@ export default function StudentExamResultsPage() {
   });
 
   const resultData = resultResponse?.data;
+
+  const showDownloadButton = currentUser?.subscription_type && currentUser?.subscription_type !== "free";
+
+  const handleDownloadPDF = async () => {
+    const examId = resultData?.exam?.id;
+    if (!examId) {
+      toast.error("Exam ID not found.");
+      return;
+    }
+    try {
+      setIsDownloading(true);
+      const blob = await downloadExamPDF(examId, true);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${resultData.exam.title.replace(/\s+/g, "_")}_Exam.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      toast.success("Exam PDF downloaded successfully!");
+    } catch {
+      toast.error("Failed to download PDF");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const questions: QuestionData[] = useMemo(() => {
     if (!resultData?.answers) return [];
@@ -118,6 +148,20 @@ export default function StudentExamResultsPage() {
               <span>⏱ {resultData.exam?.durationMinutes || 60} Mins</span>
               <span>📝 {resultData.totalQuestions} Questions</span>
             </div>
+            {showDownloadButton && (
+              <button
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+                className="mt-4 flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs py-2.5 px-4 rounded-xl transition-all cursor-pointer disabled:opacity-50"
+              >
+                {isDownloading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                Export to PDF
+              </button>
+            )}
           </div>
 
           {/* Score Circle */}

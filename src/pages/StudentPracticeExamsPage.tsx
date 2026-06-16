@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { StudentLayout } from "../components/Layout/StudentLayout";
-import { getMyExams } from "../api/exams";
+import { getMyExams, downloadExamPDF } from "../api/exams";
 import {
   FileText,
   Clock,
@@ -11,7 +11,95 @@ import {
   ArrowRight,
   Loader2,
   BookOpen,
+  Download,
 } from "lucide-react";
+import { useUserStore } from "../stores/use-user-store";
+import toast from "react-hot-toast";
+import { FloatingDropdown } from "../components/ui/FloatingDropdown";
+
+interface PracticeExamCardActionsProps {
+  examId: string;
+  examTitle: string;
+}
+
+function PracticeExamCardActions({ examId, examTitle }: PracticeExamCardActionsProps) {
+  const [showMenu, setShowMenu] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        btnRef.current &&
+        !btnRef.current.contains(event.target as Node)
+      ) {
+        setShowMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDownload = async (showAnswers: boolean) => {
+    try {
+      setIsDownloading(true);
+      setShowMenu(false);
+      const blob = await downloadExamPDF(examId, showAnswers);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${examTitle.replace(/\s+/g, "_")}_Exam.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      toast.success("Exam PDF downloaded successfully!");
+    } catch {
+      toast.error("Failed to download PDF");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <button
+        ref={btnRef}
+        onClick={() => setShowMenu((v) => !v)}
+        disabled={isDownloading}
+        className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center"
+        title="Download PDF"
+      >
+        {isDownloading ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Download className="w-4 h-4" />
+        )}
+      </button>
+
+      <FloatingDropdown triggerRef={btnRef} open={showMenu} width={192}>
+        <div ref={menuRef} className="py-1">
+          <button
+            onClick={() => handleDownload(true)}
+            className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors border-b border-gray-50 cursor-pointer"
+          >
+            <div className="font-semibold text-xs mb-0.5">With Answers</div>
+            <div className="text-[10px] text-gray-500">Includes explanations</div>
+          </button>
+          <button
+            onClick={() => handleDownload(false)}
+            className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors cursor-pointer"
+          >
+            <div className="font-semibold text-xs mb-0.5">Questions Only</div>
+            <div className="text-[10px] text-gray-500">For students</div>
+          </button>
+        </div>
+      </FloatingDropdown>
+    </div>
+  );
+}
 
 interface Exam {
   _id: string;
@@ -30,6 +118,9 @@ interface Exam {
 export default function StudentPracticeExamsPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const { currentUser } = useUserStore();
+
+  const showDownloadButton = currentUser?.subscription_type && currentUser?.subscription_type !== "free";
 
   const { data: response, isLoading } = useQuery({
     queryKey: ["myPracticeExams"],
@@ -163,13 +254,18 @@ export default function StudentPracticeExamsPage() {
 
                   <div className="px-6 pb-6 pt-3 bg-slate-50/50 border-t border-gray-50/60 flex items-center justify-between">
                     <span className="text-xs font-bold text-indigo-600/80">Self-Practice</span>
-                    <button
-                      onClick={() => navigate(`/student/exam/${exam._id}`)}
-                      className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
-                    >
-                      Start Exam
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {showDownloadButton && (
+                        <PracticeExamCardActions examId={exam._id} examTitle={exam.title} />
+                      )}
+                      <button
+                        onClick={() => navigate(`/student/exam/${exam._id}`)}
+                        className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
+                      >
+                        Start Exam
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
