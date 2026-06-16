@@ -137,12 +137,12 @@ export default function StudentDashboardPage() {
             </div>
 
             {/* AI Recommendation Card */}
-            <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100 shadow-sm relative overflow-hidden">
+            <div className="bg-amber-50 dark:bg-gray-800  rounded-2xl p-6 border border-amber-100 shadow-sm relative overflow-hidden">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-5 h-5 text-amber-600" />
                 <h3 className="text-base font-bold text-gray-900">AI Recommendation</h3>
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed mb-5">
+              <p className="text-sm dark:text-gray-400text-gray-700 leading-relaxed mb-5">
                 Based on your recent performance, generating a quick 5-question practice set could boost your understanding.
               </p>
               <button 

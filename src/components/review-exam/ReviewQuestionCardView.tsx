@@ -94,7 +94,7 @@ export function ReviewQuestionCardView({ question, index, onDelete, onEdit }: Re
         )}
 
         {question.ai_explanation && (
-          <div className="mt-6 bg-indigo-50/50 rounded-xl p-4 border border-indigo-100/50 flex gap-3 items-start">
+          <div className="mt-6 bg-indigo-50/50 dark:bg-indigo-50/70 rounded-xl p-4 border border-indigo-100/50 flex gap-3 items-start">
             <BrainCircuit className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
             <div>
               <h4 className="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1">AI Explanation</h4>

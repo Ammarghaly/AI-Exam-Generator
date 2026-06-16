@@ -42,7 +42,7 @@ export function ResultsAttemptsTable({ recentExams, onReview }: Props) {
                     <td className="px-6 py-5">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded">
+                          <span className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-100 text-[10px] font-bold px-2 py-0.5 rounded">
                             {attempt.subject || "Practice"}
                           </span>
                         </div>

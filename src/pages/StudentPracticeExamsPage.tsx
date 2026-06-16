@@ -11,7 +11,7 @@ import {
   ArrowRight,
   Loader2,
   BookOpen,
-  Download,
+  MoreVertical,
   ShieldCheck,
 } from "lucide-react";
 import { useUserStore } from "../stores/use-user-store";
@@ -99,7 +99,7 @@ function PracticeExamCardActions({ examId, examTitle, deletionAt }: PracticeExam
         {isDownloading || isTogglingKeepForever ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
-          <Download className="w-4 h-4" />
+          <MoreVertical className="w-4 h-4" />
         )}
       </button>
 
@@ -300,9 +300,16 @@ export default function StudentPracticeExamsPage() {
                     </div>
                   </div>
 
-                  <div className="px-6 pb-6 pt-3 bg-slate-50/50 border-t border-gray-50/60 flex items-center justify-between">
+                  <div className="px-6 pb-6 pt-3 bg-slate-50/50 dark:bg-gray-900 border-t dark:border-gray-50/60 flex items-center justify-between">
                     <span className="text-xs font-bold text-indigo-600/80">Self-Practice</span>
                     <div className="flex items-center gap-2">
+                       <button
+                        onClick={() => navigate(`/student/exam/${exam._id}`)}
+                        className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
+                      >
+                        Start Exam
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
                       {showDownloadButton && (
                         <PracticeExamCardActions 
                           examId={exam._id} 
@@ -310,13 +317,7 @@ export default function StudentPracticeExamsPage() {
                           deletionAt={exam.deletion_at} 
                         />
                       )}
-                      <button
-                        onClick={() => navigate(`/student/exam/${exam._id}`)}
-                        className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
-                      >
-                        Start Exam
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                     
                     </div>
                   </div>
                 </div>
