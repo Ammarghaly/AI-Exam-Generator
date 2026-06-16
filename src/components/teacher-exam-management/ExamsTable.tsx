@@ -69,6 +69,7 @@ export function ExamsTable() {
         date: formattedDate,
         startDate: formattedStartDate,
         endDate: formattedEndDate,
+        deletion_at: exam.deletion_at,
       };
     });
 

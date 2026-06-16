@@ -12,6 +12,7 @@ export type Assessment = {
   date: string;
   startDate: string;
   endDate: string;
+  deletion_at?: string;
 };
 
 export function useExamsColumns() {

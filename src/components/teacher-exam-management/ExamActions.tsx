@@ -1,23 +1,45 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { downloadExamPDF, updateExamStatus } from "../../api/exams";
-import { Loader2, Eye, MoreVertical, CheckCircle, Download } from "lucide-react";
+import { downloadExamPDF, updateExamStatus, toggleKeepForever } from "../../api/exams";
+import { Loader2, Eye, MoreVertical, CheckCircle, Download, ShieldCheck } from "lucide-react";
 import { cn } from "../../lib/utils";
 import toast from "react-hot-toast";
 import { FloatingDropdown } from "../ui/FloatingDropdown";
+import { useUserStore } from "../../stores/use-user-store";
 
 const STATUS_OPTIONS = ["Active", "Closed", "Hidden"] as const;
 
 export function ExamActions({ row, navigate }: { row: any; navigate: any }) {
   const queryClient = useQueryClient();
+  const { updateUser } = useUserStore();
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isTogglingKeepForever, setIsTogglingKeepForever] = useState(false);
   const statusBtnRef = useRef<HTMLButtonElement>(null);
   const downloadBtnRef = useRef<HTMLButtonElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
   const downloadRef = useRef<HTMLDivElement>(null);
+
+  const handleToggleKeepForever = useCallback(async () => {
+    try {
+      setIsTogglingKeepForever(true);
+      setShowStatusMenu(false);
+      const res = await toggleKeepForever(row.original.id);
+      
+      if (res.remainingCredits !== undefined && res.remainingCredits !== null) {
+        updateUser({ available_credits: res.remainingCredits });
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["myExams"] });
+      toast.success(res.message || "Exam preservation status updated.");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.response?.data?.error || "Failed to update preservation status.");
+    } finally {
+      setIsTogglingKeepForever(false);
+    }
+  }, [row.original.id, queryClient, updateUser]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -121,7 +143,7 @@ export function ExamActions({ row, navigate }: { row: any; navigate: any }) {
         >
           {isUpdatingStatus ? <Loader2 className="w-5 h-5 animate-spin" /> : <MoreVertical className="w-5 h-5" />}
         </button>
-        <FloatingDropdown triggerRef={statusBtnRef} open={showStatusMenu} width={176}>
+        <FloatingDropdown triggerRef={statusBtnRef} open={showStatusMenu} width={200}>
           <div ref={statusRef}>
             <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-b border-gray-100">
               Change Status
@@ -129,13 +151,29 @@ export function ExamActions({ row, navigate }: { row: any; navigate: any }) {
             {STATUS_OPTIONS.map((s) => (
               <button key={s} onClick={() => handleStatusChange(s)}
                 className={cn(
-                  "w-full text-left px-4 py-2.5 flex items-center gap-2 transition-colors text-gray-700 hover:bg-indigo-50 hover:text-indigo-700",
+                  "w-full text-left px-4 py-2 flex items-center gap-2 transition-colors text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 text-xs",
                   row.original.status === s && "bg-indigo-50 text-indigo-700 font-semibold"
                 )}>
-                <CheckCircle className={cn("w-4 h-4 flex-shrink-0", row.original.status === s ? "opacity-100 text-indigo-600" : "opacity-0")} />
+                <CheckCircle className={cn("w-3.5 h-3.5 flex-shrink-0", row.original.status === s ? "opacity-100 text-indigo-600" : "opacity-0")} />
                 {s}
               </button>
             ))}
+            
+            <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-t border-b border-gray-100">
+              Preservation
+            </div>
+            <button
+              onClick={handleToggleKeepForever}
+              disabled={isTogglingKeepForever}
+              className="w-full text-left px-4 py-2.5 flex items-center gap-2 transition-colors text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 text-xs disabled:opacity-50 cursor-pointer"
+            >
+              {isTogglingKeepForever ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600 shrink-0" />
+              ) : (
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+              )}
+              {row.original.deletion_at ? "Keep Forever" : "Cancel Keep Forever"}
+            </button>
           </div>
         </FloatingDropdown>
       </div>

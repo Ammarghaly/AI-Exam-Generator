@@ -157,3 +157,8 @@ export const getAttemptResult = async (attemptId: string) => {
   return response.data;
 };
 
+export const toggleKeepForever = async (examId: string) => {
+  const response = await api.patch(`/exam/${examId}/toggle-keep-forever`);
+  return response.data;
+};
+
