@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StudentLayout } from "../components/Layout/StudentLayout";
-import { getMyExams, downloadExamPDF } from "../api/exams";
+import { getMyExams, downloadExamPDF, toggleKeepForever } from "../api/exams";
 import {
   FileText,
   Clock,
@@ -12,6 +12,7 @@ import {
   Loader2,
   BookOpen,
   Download,
+  ShieldCheck,
 } from "lucide-react";
 import { useUserStore } from "../stores/use-user-store";
 import toast from "react-hot-toast";
@@ -20,11 +21,15 @@ import { FloatingDropdown } from "../components/ui/FloatingDropdown";
 interface PracticeExamCardActionsProps {
   examId: string;
   examTitle: string;
+  deletionAt?: string;
 }
 
-function PracticeExamCardActions({ examId, examTitle }: PracticeExamCardActionsProps) {
+function PracticeExamCardActions({ examId, examTitle, deletionAt }: PracticeExamCardActionsProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isTogglingKeepForever, setIsTogglingKeepForever] = useState(false);
+  const { updateUser } = useUserStore();
+  const queryClient = useQueryClient();
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -63,16 +68,35 @@ function PracticeExamCardActions({ examId, examTitle }: PracticeExamCardActionsP
     }
   };
 
+  const handleToggleKeepForever = useCallback(async () => {
+    try {
+      setIsTogglingKeepForever(true);
+      setShowMenu(false);
+      const res = await toggleKeepForever(examId);
+      
+      if (res.remainingCredits !== undefined && res.remainingCredits !== null) {
+        updateUser({ available_credits: res.remainingCredits });
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["myPracticeExams"] });
+      toast.success(res.message || "Exam preservation status updated.");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.response?.data?.error || "Failed to update preservation status.");
+    } finally {
+      setIsTogglingKeepForever(false);
+    }
+  }, [examId, queryClient, updateUser]);
+
   return (
     <div className="relative">
       <button
         ref={btnRef}
         onClick={() => setShowMenu((v) => !v)}
-        disabled={isDownloading}
+        disabled={isDownloading || isTogglingKeepForever}
         className="p-2.5 rounded-xl border border-gray-200 bg-white text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center"
-        title="Download PDF"
+        title="More Actions"
       >
-        {isDownloading ? (
+        {isDownloading || isTogglingKeepForever ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <Download className="w-4 h-4" />
@@ -81,19 +105,42 @@ function PracticeExamCardActions({ examId, examTitle }: PracticeExamCardActionsP
 
       <FloatingDropdown triggerRef={btnRef} open={showMenu} width={192}>
         <div ref={menuRef} className="py-1">
+          <div className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-b border-gray-100">
+            Download PDF
+          </div>
           <button
             onClick={() => handleDownload(true)}
-            className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors border-b border-gray-50 cursor-pointer"
+            className="w-full text-left px-4 py-2.5 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors border-b border-gray-50 cursor-pointer"
           >
-            <div className="font-semibold text-xs mb-0.5">With Answers</div>
-            <div className="text-[10px] text-gray-500">Includes explanations</div>
+            <div>
+              <div className="font-semibold text-xs mb-0.5">With Answers</div>
+              <div className="text-[10px] text-gray-500">Includes explanations</div>
+            </div>
           </button>
           <button
             onClick={() => handleDownload(false)}
-            className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors cursor-pointer"
+            className="w-full text-left px-4 py-2.5 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 transition-colors cursor-pointer"
           >
-            <div className="font-semibold text-xs mb-0.5">Questions Only</div>
-            <div className="text-[10px] text-gray-500">For students</div>
+            <div>
+              <div className="font-semibold text-xs mb-0.5">Questions Only</div>
+              <div className="text-[10px] text-gray-500">For students</div>
+            </div>
+          </button>
+
+          <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 border-t border-b border-gray-100">
+            Preservation
+          </div>
+          <button
+            onClick={handleToggleKeepForever}
+            disabled={isTogglingKeepForever}
+            className="w-full text-left px-4 py-2.5 flex items-center gap-2 hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 text-xs disabled:opacity-50 cursor-pointer"
+          >
+            {isTogglingKeepForever ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600 shrink-0" />
+            ) : (
+              <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            )}
+            {deletionAt ? "Keep Forever" : "Cancel Keep Forever"}
           </button>
         </div>
       </FloatingDropdown>
@@ -108,6 +155,7 @@ interface Exam {
   durationMinutes: number;
   createdAt: string;
   subject?: string;
+  deletion_at?: string;
   groupID?: Array<{
     _id: string;
     groupName: string;
@@ -256,7 +304,11 @@ export default function StudentPracticeExamsPage() {
                     <span className="text-xs font-bold text-indigo-600/80">Self-Practice</span>
                     <div className="flex items-center gap-2">
                       {showDownloadButton && (
-                        <PracticeExamCardActions examId={exam._id} examTitle={exam.title} />
+                        <PracticeExamCardActions 
+                          examId={exam._id} 
+                          examTitle={exam.title} 
+                          deletionAt={exam.deletion_at} 
+                        />
                       )}
                       <button
                         onClick={() => navigate(`/student/exam/${exam._id}`)}
