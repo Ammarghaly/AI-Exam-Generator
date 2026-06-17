@@ -227,7 +227,8 @@ export default function CheckoutPage() {
           if (planName.includes("Lite")) {
             newSubscriptionCredits = 150;
           } else if (planName.includes("Premium")) {
-            newSubscriptionCredits = 500;
+            newPurchasedCredits = (currentUser.purchased_credits ?? 0) + 500;
+            newSubscriptionCredits = currentUser.subscription_credits ?? 0;
           } else {
             newSubscriptionCredits = 30;
           }

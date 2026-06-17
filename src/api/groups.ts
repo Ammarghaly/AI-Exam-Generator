@@ -48,3 +48,18 @@ export const addStudentToGroup = async (
   const response = await api.post(`/group/${groupId}/addStudent`, { email });
   return response.data.data;
 };
+
+export const deleteGroup = async (groupId: string) => {
+  const response = await api.delete(`/group/${groupId}`);
+  return response.data;
+};
+
+export interface UpdateGroupPayload {
+  groupName?: string;
+  subject?: string;
+}
+
+export const updateGroup = async (groupId: string, payload: UpdateGroupPayload) => {
+  const response = await api.patch(`/group/${groupId}`, payload);
+  return response.data;
+};

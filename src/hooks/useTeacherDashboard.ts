@@ -1,16 +1,21 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getMyExams } from '../api/exams';
+import { getTeacherDashboard } from '../api/teacherDashboard';
 
 export function useTeacherDashboard() {
   const { data: response, isLoading } = useQuery({
-    queryKey: ['myExams'],
-    queryFn: getMyExams,
+    queryKey: ['teacherDashboard'],
+    queryFn: getTeacherDashboard,
   });
 
+  const dashboardData = response?.data;
+  const recentExams = dashboardData?.recentExams || [];
+  const totalExams = dashboardData?.totalExamsGenerated ?? 0;
+  const upcomingExams = dashboardData?.upcomingExamsCount ?? 0;
+  const averageCohortScore = dashboardData?.averageCohortScore ?? 0;
+  const teacherName = dashboardData?.teacherName ?? 'Professor';
+
   const data = useMemo(() => {
-    if (!response?.data) return [];
-    
     const timeAgo = (dateString?: string) => {
       if (!dateString) return 'N/A';
       const now = new Date();
@@ -27,7 +32,7 @@ export function useTeacherDashboard() {
       return `${diffDays} days ago`;
     };
 
-    return response.data.slice(0, 5).map((exam: any) => {
+    return recentExams.map((exam: any) => {
       let diff = 'Varied';
       if (exam.difficulty) {
         if (typeof exam.difficulty === 'string') {
@@ -37,19 +42,30 @@ export function useTeacherDashboard() {
         }
       }
 
+      let subjectName = 'N/A';
+      if (exam.groupID) {
+        if (Array.isArray(exam.groupID)) {
+          if (exam.groupID.length > 0) {
+            subjectName = exam.groupID[0]?.groupName || exam.groupID[0]?.subject || 'N/A';
+          }
+        } else {
+          subjectName = exam.groupID.groupName || exam.groupID.subject || 'N/A';
+        }
+      }
+
       return {
         id: exam._id || exam.id,
         title: exam.title || 'Untitled Exam',
         timeAgo: timeAgo(exam.createdAt),
-        subject: exam.groupID?.subject || exam.subject || 'N/A',
+        subject: subjectName,
         difficulty: diff,
         status: exam.status || 'Draft'
       };
     });
-  }, [response]);
+  }, [recentExams]);
 
   const growthStats = useMemo(() => {
-    if (!response?.data || response.data.length === 0) {
+    if (recentExams.length === 0) {
       return {
         badgeText: 'No exams yet',
         badgeClassName: 'bg-gray-100 text-gray-600'
@@ -64,7 +80,7 @@ export function useTeacherDashboard() {
     let last30DaysCount = 0;
     let previous30DaysCount = 0;
 
-    response.data.forEach((exam: any) => {
+    recentExams.forEach((exam: any) => {
       if (!exam.createdAt) return;
       const createdTime = new Date(exam.createdAt).getTime();
       if (createdTime >= thirtyDaysAgo && createdTime <= now) {
@@ -95,21 +111,15 @@ export function useTeacherDashboard() {
       badgeText: `${sign}${pctChange}% this month`,
       badgeClassName: colorClass
     };
-  }, [response]);
-
-  const totalExams = response?.data?.length ?? 0;
-
-  const upcomingExams = response?.data?.filter((exam: any) => {
-    if (!exam.openingAt) return false;
-    const timeMs = exam.openingAt < 9999999999 ? exam.openingAt * 1000 : exam.openingAt;
-    return timeMs > Date.now();
-  }).length ?? 0;
+  }, [recentExams]);
 
   return {
     data,
     growthStats,
     totalExams,
     upcomingExams,
+    averageCohortScore,
+    teacherName,
     isLoading
   };
 }

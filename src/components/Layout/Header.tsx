@@ -35,14 +35,14 @@ export function Header({ title, role }: HeaderProps) {
     if (title) return title;
     const pathname = location.pathname.toLowerCase();
     if (pathname.includes("/profile")) return "Profile";
-    if (pathname.includes("/generate-exam")) return "Generate Exam";
+    if (pathname.includes("/generate-exam")) return "Generate";
     if (pathname.includes("/dashboard")) return "Dashboard";
     if (pathname.includes("/exam-management")) return "Exams";
     if (pathname.includes("/groups")) return role === "teacher" ? "Groups" : "My Groups";
     if (pathname.includes("/practice")) return "Practice Exams";
     if (pathname.includes("/exam-results") || pathname.includes("/results")) return "Results";
     if (pathname.includes("/exam/")) return pathname.includes("/review") ? "Exam Review" : "Take Exam";
-    return role === "teacher" ? "Teacher Dashboard" : "Student Dashboard";
+    return role === "teacher" ? "Dashboard" : "Dashboard";
   };
 
   const displayTitle = getPageTitle();

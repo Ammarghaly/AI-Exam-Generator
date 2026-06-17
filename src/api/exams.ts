@@ -162,3 +162,21 @@ export const toggleKeepForever = async (examId: string) => {
   return response.data;
 };
 
+export interface UpdateExamPayload {
+  title?: string;
+  durationMinutes?: number;
+  openingAt?: number;
+  closingAt?: number;
+  groupID?: string | null;
+}
+
+export const updateExam = async (examId: string, payload: UpdateExamPayload) => {
+  const response = await api.patch(`/exam/${examId}`, payload);
+  return response.data;
+};
+
+export const deleteExam = async (examId: string) => {
+  const response = await api.delete(`/exam/${examId}`);
+  return response.data;
+};
+

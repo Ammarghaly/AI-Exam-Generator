@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 interface GroupCardProps {
   id: string;
   title: string;
+  subject: string;
   studentsCount: number;
   examsCount: number;
   isActive: boolean;
@@ -13,12 +14,15 @@ interface GroupCardProps {
   avatars: string[];
   extraAvatarsCount: number;
   onAddExam?: (groupId: string, groupTitle: string) => void;
+  onDeleteGroup?: (groupId: string) => void;
+  onEditGroup?: (groupId: string, groupTitle: string, groupSubject: string) => void;
   isTeacher?: boolean;
 }
 
 export default function GroupCard({
   id,
   title,
+  subject,
   studentsCount,
   examsCount,
   isActive,
@@ -28,6 +32,8 @@ export default function GroupCard({
   avatars,
   extraAvatarsCount,
   onAddExam,
+  onDeleteGroup,
+  onEditGroup,
   isTeacher = false,
 }: GroupCardProps) {
   const navigate = useNavigate();
@@ -74,6 +80,28 @@ export default function GroupCard({
                 >
                   <span className="material-symbols-outlined text-sm">add_box</span>
                   <span>Add Exam to Group</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    onEditGroup?.(id, title, subject);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-foreground hover:bg-gray-100 dark:hover:bg-muted flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm">edit</span>
+                  <span>Edit Group</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    onDeleteGroup?.(id);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm text-red-600">delete</span>
+                  <span>Delete Group</span>
                 </button>
               </div>
             )}

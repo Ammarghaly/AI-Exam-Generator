@@ -61,15 +61,33 @@ export function ExamsTable() {
         });
       }
 
+      let courseName = "N/A";
+      let rawGroupID = "";
+      if (exam.groupID) {
+        if (Array.isArray(exam.groupID)) {
+          if (exam.groupID.length > 0) {
+            courseName = exam.groupID[0]?.groupName || exam.groupID[0]?.subject || "N/A";
+            rawGroupID = exam.groupID[0]?._id || (typeof exam.groupID[0] === "string" ? exam.groupID[0] : "");
+          }
+        } else {
+          courseName = exam.groupID.groupName || exam.groupID.subject || "N/A";
+          rawGroupID = exam.groupID._id || (typeof exam.groupID === "string" ? exam.groupID : "");
+        }
+      }
+
       return {
         id: exam._id,
         title: exam.title,
-        course: exam.groupID?.groupName || exam.groupID?.subject || "N/A",
+        course: courseName,
         status: exam.status || "Active",
         date: formattedDate,
         startDate: formattedStartDate,
         endDate: formattedEndDate,
         deletion_at: exam.deletion_at,
+        openingAt: exam.openingAt,
+        closingAt: exam.closingAt,
+        durationMinutes: exam.durationMinutes,
+        rawGroupID,
       };
     });
 

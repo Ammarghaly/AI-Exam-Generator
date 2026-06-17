@@ -14,8 +14,7 @@ export default function LandingPage() {
         if (user?.role === "Student") {
           navigate("/student/dashboard", { replace: true });
         } else {
-          // Always redirect to dashboard if token exists, defaulting to teacher dashboard
-          navigate("/teacher/dashboard", { replace: true });
+           navigate("/teacher/dashboard", { replace: true });
         }
       } catch (e) {
         console.error("Error parsing user info in LandingPage:", e);

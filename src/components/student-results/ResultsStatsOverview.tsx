@@ -63,7 +63,7 @@ export function ResultsStatsOverview({ cumulativeAverage, recentExams, subjectSu
       </div>
 
       {/* Subject Breakdown Card */}
-      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
+      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col">
         <h3 className="text-sm font-extrabold text-gray-400 uppercase tracking-wider mb-4">Subject Summary</h3>
         <div className="space-y-3 overflow-y-auto max-h-[140px] pr-1">
           {subjectSummary.map((sub, index) => (

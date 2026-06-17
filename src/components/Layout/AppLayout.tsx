@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -10,6 +10,7 @@ import {
   BarChart,
   UserCheck,
   CreditCard,
+  MoreHorizontal,
 } from "lucide-react";
 import { useUserStore } from "../../stores/use-user-store";
 import { Header } from "./Header";
@@ -21,6 +22,7 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
   const location = useLocation();
   const { currentUser, setCurrentUser } = useUserStore();
   const isTeacher = currentUser?.role?.toLowerCase() === "teacher";
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   React.useEffect(() => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -43,14 +45,24 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
         { href: "/teacher/generate-exam", icon: Sparkles, label: "Generate" },
         { href: "/teacher/exam-management", icon: FileText, label: "Exams" },
         { href: "/teacher/groups", icon: Users, label: "Groups" },
-        { href: "/teacher/admissions", icon: UserCheck, label: "Requests" },
       ]
     : [
         { href: "/student/dashboard", icon: GraduationCap, label: "Learning" },
         { href: "/student/generate-exam/ai-generate", icon: Sparkles, label: "Generate" },
         { href: "/student/groups", icon: Users, label: "Groups" },
         { href: "/student/practice", icon: FileText, label: "Practice" },
+      ];
+
+  const moreItems = isTeacher
+    ? [
+        { href: "/teacher/admissions", icon: UserCheck, label: "Requests" },
+        { href: "/teacher/pricing", icon: CreditCard, label: "Plans" },
+        { href: "/teacher/profile", icon: User, label: "Profile" },
+      ]
+    : [
         { href: "/student/results", icon: BarChart, label: "Results" },
+        { href: "/student/pricing", icon: CreditCard, label: "Plans" },
+        { href: "/student/profile", icon: User, label: "Profile" },
       ];
 
   const sidebarItems = isTeacher
@@ -139,7 +151,38 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
           {children}
         </div>
 
-        {/* Mobile Bottom Navigation Bar */}
+        {showMoreMenu && (
+          <>
+            <div
+              className="fixed inset-0 z-40 bg-black/25 backdrop-blur-xs md:hidden"
+              onClick={() => setShowMoreMenu(false)}
+            />
+            <div className="fixed bottom-20 right-4 left-4 md:hidden bg-surface border border-border rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.15)] z-50 flex flex-col gap-3 animate-in slide-in-from-bottom-5 duration-200">
+              <div className="text-xs font-bold text-muted-foreground px-2 uppercase tracking-wider">
+                More Options
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {moreItems.map(({ href, icon: Icon, label }) => {
+                  const isActive = location.pathname === href || location.pathname.startsWith(href + "/");
+                  return (
+                    <Link
+                      key={href}
+                      to={href}
+                      onClick={() => setShowMoreMenu(false)}
+                      className={`flex flex-col items-center justify-center p-3 rounded-xl gap-1.5 transition-all ${
+                        isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="text-xs font-bold">{label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
         <nav className="fixed bottom-0 left-0 right-0 md:hidden bg-surface border-t border-border z-50 shadow-[0_-2px_16px_rgba(99,102,241,0.08)]">
           <div className="flex items-end justify-around h-16 px-1">
             {navItems.map(({ href, icon: Icon, label }) => {
@@ -171,6 +214,36 @@ export function AppLayout({ children, title }: { children: React.ReactNode; titl
                 </Link>
               );
             })}
+
+            <button
+              onClick={() => setShowMoreMenu((prev) => !prev)}
+              className="flex flex-col items-center justify-end pb-2 w-full h-full gap-0.5 transition-all cursor-pointer"
+            >
+              <div
+                className={`flex items-center justify-center rounded-full transition-all duration-200 ${
+                  showMoreMenu || moreItems.some(({ href }) => location.pathname === href || location.pathname.startsWith(href + "/"))
+                    ? "bg-primary/20 w-12 h-6"
+                    : "w-8 h-6"
+                }`}
+              >
+                <MoreHorizontal
+                  className={`transition-all duration-200 ${
+                    showMoreMenu || moreItems.some(({ href }) => location.pathname === href || location.pathname.startsWith(href + "/"))
+                      ? "w-4 h-4 text-primary"
+                      : "w-5 h-5 text-muted-foreground"
+                  }`}
+                />
+              </div>
+              <span
+                className={`text-[10px] font-semibold leading-none transition-colors duration-200 ${
+                  showMoreMenu || moreItems.some(({ href }) => location.pathname === href || location.pathname.startsWith(href + "/"))
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                }`}
+              >
+                More
+              </span>
+            </button>
           </div>
         </nav>
       </div>

@@ -13,6 +13,10 @@ export type Assessment = {
   startDate: string;
   endDate: string;
   deletion_at?: string;
+  openingAt?: number;
+  closingAt?: number;
+  durationMinutes?: number;
+  rawGroupID?: string;
 };
 
 export function useExamsColumns() {

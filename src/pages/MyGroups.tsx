@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import GroupCard from "../components/groups/GroupCard";
 import CreateGroupPlaceholder from "../components/groups/CreateGroupPlaceholder";
 import { useSearchStore } from "../stores/use-search-store";
 import { useModalStore } from "../stores/use-modal-store";
-import { getMyGroups } from "../api/groups";
+import { getMyGroups, deleteGroup, updateGroup } from "../api/groups";
 import { TeacherLayout } from "../components/Layout/TeacherLayout";
 import { StudentLayout } from "../components/Layout/StudentLayout";
 import { useUserStore } from "../stores/use-user-store";
 import { Users } from "lucide-react";
 import { getMyExams } from "../api/exams";
 import AddExamToGroupModal from "../components/groups/AddExamToGroupModal";
+import toast from "react-hot-toast";
 
 export default function MyGroups() {
+  const queryClient = useQueryClient();
   const searchQuery = useSearchStore((state) => state.searchQuery);
   const { openModal } = useModalStore();
   const { currentUser } = useUserStore();
@@ -21,6 +23,44 @@ export default function MyGroups() {
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState("");
   const [selectedGroupTitle, setSelectedGroupTitle] = useState("");
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteGroup,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myGroups"] });
+    },
+  });
+
+  const handleDeleteGroupClick = (groupId: string) => {
+    if (window.confirm("Are you sure you want to delete this group?")) {
+      deleteMutation.mutate(groupId);
+    }
+  };
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editGroupId, setEditGroupId] = useState("");
+  const [editGroupName, setEditGroupName] = useState("");
+  const [editGroupSubject, setEditGroupSubject] = useState("");
+
+  const updateMutation = useMutation({
+    mutationFn: ({ groupId, payload }: { groupId: string; payload: { groupName: string; subject: string } }) =>
+      updateGroup(groupId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myGroups"] });
+      setIsEditModalOpen(false);
+      toast.success("Group updated successfully");
+    },
+    onError: () => {
+      toast.error("Failed to update group");
+    },
+  });
+
+  const handleEditGroupClick = (groupId: string, groupTitle: string, groupSubject: string) => {
+    setEditGroupId(groupId);
+    setEditGroupName(groupTitle);
+    setEditGroupSubject(groupSubject);
+    setIsEditModalOpen(true);
+  };
 
   const {
     data: response,
@@ -59,6 +99,7 @@ export default function MyGroups() {
     return {
       id: g._id,
       title: g.groupName,
+      subject: g.subject || "",
       studentsCount: g.students?.length || 0,
       examsCount: 0,
       isActive: true,
@@ -128,6 +169,8 @@ export default function MyGroups() {
                 {...group}
                 isTeacher={!isStudent}
                 onAddExam={handleAddExamClick}
+                onDeleteGroup={handleDeleteGroupClick}
+                onEditGroup={handleEditGroupClick}
               />
             ))}
             {/* Only teachers see the create placeholder */}
@@ -152,6 +195,104 @@ export default function MyGroups() {
         exams={exams}
         currentUser={currentUser}
       />
+
+      {/* Edit Group Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-xl">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsEditModalOpen(false)}
+          ></div>
+
+          {/* Modal Container */}
+          <div className="relative w-full max-w-2xl bg-surface rounded-xl shadow-lg border border-outline-variant/30 flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="px-lg py-md border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-lowest">
+              <h2 className="font-h2 text-h2 text-primary">Edit Group</h2>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-full p-xs cursor-pointer"
+                type="button"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            {/* Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!editGroupName.trim() || !editGroupSubject.trim()) return;
+                updateMutation.mutate({
+                  groupId: editGroupId,
+                  payload: { groupName: editGroupName, subject: editGroupSubject },
+                });
+              }}
+              className="flex flex-col"
+            >
+              {/* Form Content */}
+              <div className="p-xl flex flex-col gap-lg bg-surface-container-lowest">
+                {/* Group Name Field */}
+                <div className="flex flex-col gap-xs">
+                  <label className="font-label text-label text-on-surface" htmlFor="edit-group-name">
+                    Group Name
+                  </label>
+                  <input
+                    className="w-full h-[40px] px-sm bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-primary/20 rounded-lg font-body text-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 transition-all"
+                    id="edit-group-name"
+                    value={editGroupName}
+                    onChange={(e) => setEditGroupName(e.target.value)}
+                    placeholder="e.g., Advanced Calculus 101"
+                    type="text"
+                    required
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+
+                {/* Subject Field */}
+                <div className="flex flex-col gap-xs">
+                  <label className="font-label text-label text-on-surface" htmlFor="edit-subject-name">
+                    Subject
+                  </label>
+                  <input
+                    className="w-full h-[40px] px-sm bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-primary/20 rounded-lg font-body text-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 transition-all"
+                    id="edit-subject-name"
+                    value={editGroupSubject}
+                    onChange={(e) => setEditGroupSubject(e.target.value)}
+                    placeholder="e.g., Mathematics"
+                    type="text"
+                    required
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="px-lg py-md border-t border-outline-variant/30 bg-surface-container-lowest flex justify-end gap-sm">
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={updateMutation.isPending}
+                  className="h-[40px] px-md rounded-lg font-label text-label text-primary border border-outline-variant hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer disabled:opacity-50"
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={updateMutation.isPending}
+                  className="h-[40px] px-md rounded-lg font-label text-label text-on-primary bg-primary hover:bg-primary-container hover:text-on-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm cursor-pointer disabled:opacity-50 flex items-center gap-xs"
+                >
+                  {updateMutation.isPending && (
+                    <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                  )}
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 

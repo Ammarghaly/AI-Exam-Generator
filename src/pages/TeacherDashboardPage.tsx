@@ -12,7 +12,7 @@ import { useTeacherDashboard } from '../hooks/useTeacherDashboard';
 
 export default function TeacherDashboardPage() {
   const { columns } = useDashboardColumns();
-  const { data, growthStats, totalExams, upcomingExams, isLoading } = useTeacherDashboard();
+  const { data, growthStats, totalExams, upcomingExams, averageCohortScore, teacherName, isLoading } = useTeacherDashboard();
 
   const totalExamsDisplay = isLoading ? (
     <Loader2 className="w-5 h-5 animate-spin text-indigo-700 inline" />
@@ -32,7 +32,7 @@ export default function TeacherDashboardPage() {
         <div className="max-w-7xl mx-auto space-y-10">
           {/* Welcome Section */}
           <div>
-            <h2 className="text-4xl md:text-[40px] font-bold text-gray-900 tracking-tight mb-2">Welcome back, Professor</h2>
+            <h2 className="text-4xl md:text-[40px] font-bold text-gray-900 tracking-tight mb-2">Welcome back, {teacherName}</h2>
             <p className="text-lg text-gray-500">Here is an overview of your academic activities for this semester.</p>
           </div>
 
@@ -49,11 +49,11 @@ export default function TeacherDashboardPage() {
             />
             <StatsCard
               title="Average Cohort Score"
-              value={<>76.4<span className="text-xl text-gray-500 ml-1">%</span></>}
+              value={isLoading ? <Loader2 className="w-5 h-5 animate-spin text-indigo-700 inline" /> : <>{averageCohortScore}<span className="text-xl text-gray-500 ml-1">%</span></>}
               icon={BarChart3}
               iconClassName="bg-sky-50 text-sky-700"
-              badgeText="Stable"
-              badgeClassName="bg-sky-100 text-sky-800"
+              badgeText={averageCohortScore > 75 ? "Excellent" : averageCohortScore > 50 ? "Stable" : "Needs Review"}
+              badgeClassName={averageCohortScore > 75 ? "bg-emerald-100 text-emerald-800" : averageCohortScore > 50 ? "bg-sky-100 text-sky-800" : "bg-rose-100 text-rose-800"}
               bgShapeClassName="bg-sky-100/40"
             />
             <StatsCard
