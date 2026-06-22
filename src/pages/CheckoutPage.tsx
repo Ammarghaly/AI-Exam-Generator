@@ -168,7 +168,7 @@ export default function CheckoutPage() {
           ? 1000
           : 10000;
         
-        const teacherPlanName = isStudentRole
+        const teacherPlanName = (isAddon || isStudentRole)
           ? ""
           : planName.toLowerCase().includes("premium")
           ? "premium"

@@ -143,7 +143,7 @@ export default function StudentDashboardPage() {
                 <h3 className="text-base font-bold text-gray-900">AI Recommendation</h3>
               </div>
               <p className="text-sm dark:text-gray-400text-gray-700 leading-relaxed mb-5">
-                Based on your recent performance, generating a quick 5-question practice set could boost your understanding.
+                Based on your recent performance, generating a quick 10-question practice set could boost your understanding.
               </p>
               <button 
                 onClick={() => navigate("/student/generate-exam/ai-generate")}

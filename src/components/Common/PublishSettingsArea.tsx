@@ -162,7 +162,7 @@ export function PublishSettingsArea({
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-500" />
                 <div className="text-left">
-                  <h3 className="text-[16px] text-gray-900 font-semibold flex items-center gap-1">
+                  <h3 className="text-[16px] text-gray-900 font-semibold dark:text-gray-400 flex items-center gap-1">
                     Keep Exam Forever
                     {isFreePlan && <Lock className="w-3.5 h-3.5 text-gray-400" />}
                   </h3>

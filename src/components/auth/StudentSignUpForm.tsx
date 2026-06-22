@@ -2,7 +2,7 @@ import { ChevronDown, ArrowRight } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 export default function StudentSignUpForm() {
-  const { register, formState: { errors } } = useFormContext<any>();
+  const { register, formState: { errors, isSubmitting } } = useFormContext<any>();
 
   return (
     <>
@@ -76,10 +76,11 @@ export default function StudentSignUpForm() {
       <div className="pt-2">
         <button 
           type="submit" 
-          className="w-full bg-[#3525cd] hover:bg-[#4f46e5] dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-semibold text-base py-3 px-6 rounded-lg shadow-sm transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+          disabled={isSubmitting}
+          className="w-full bg-[#3525cd] hover:bg-[#4f46e5] dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-semibold text-base py-3 px-6 rounded-lg shadow-sm transition-all duration-200 active:scale-[0.98] disabled:active:scale-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Student Account
-          <ArrowRight className="w-5 h-5" />
+          {isSubmitting ? "Creating Account..." : "Create Student Account"}
+          {!isSubmitting && <ArrowRight className="w-5 h-5" />}
         </button>
       </div>
     </>

@@ -33,15 +33,15 @@ export function QuestionAnalysisCard({ question }: QuestionAnalysisCardProps) {
         </div>
         <div  dir="auto" className="flex items-center gap-2 shrink-0 ml-4">
           {question.tags.map(tag => (
-            <span key={tag} className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-md">
+            <span key={tag} className="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1 rounded-md">
               {tag}
             </span>
           ))}
           {question.difficulty && (
             <span  dir="auto" className={`text-xs font-bold px-3 py-1 rounded-md ${
-              question.difficulty === 'Hard' ? 'bg-red-50 text-red-700' : 
-              question.difficulty === 'Medium' ? 'bg-amber-50 text-amber-700' : 
-              'bg-green-50 text-green-700'
+              question.difficulty === 'Hard' ? 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300' : 
+              question.difficulty === 'Medium' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300' : 
+              'bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-300'
             }`}>
               {question.difficulty}
             </span>
@@ -50,29 +50,29 @@ export function QuestionAnalysisCard({ question }: QuestionAnalysisCardProps) {
       </div>
 
       {isCorrect ? (
-        <div dir="auto" className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4 flex items-start justify-between">
+        <div dir="auto" className="mt-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-xl p-4 flex items-start justify-between">
           <div>
-            <p  dir="auto" className="text-xs font-bold text-green-700 uppercase tracking-wide mb-1">Correct Answer</p>
-            <p  dir="auto" className="text-gray-900 font-semibold">{question.correctAnswer}</p>
+            <p  dir="auto" className="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wide mb-1">Correct Answer</p>
+            <p  dir="auto" className="text-gray-900 dark:text-gray-200 font-semibold">{question.correctAnswer}</p>
           </div>
-          <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
+          <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" />
         </div>
       ) : (
         <div dir="auto" className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div dir="auto" className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start justify-between">
+          <div dir="auto" className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-xl p-4 flex items-start justify-between">
             <div>
-              <p dir="auto" className="text-xs font-bold text-red-700 uppercase tracking-wide mb-1">Your Answer</p>
-              <p dir="auto" className="text-gray-900 font-semibold line-through">{question.studentAnswer}</p>
+              <p dir="auto" className="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wide mb-1">Your Answer</p>
+              <p dir="auto" className="text-gray-900 dark:text-gray-200 font-semibold line-through">{question.studentAnswer}</p>
             </div>
-            <XCircle className="w-6 h-6 text-red-600 shrink-0" />
+            <XCircle className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0" />
           </div>
 
-          <div dir="auto" className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start justify-between">
+          <div dir="auto" className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-xl p-4 flex items-start justify-between">
             <div>
-              <p dir="auto" className="text-xs font-bold text-green-700 uppercase tracking-wide mb-1">Correct Answer</p>
-              <p dir="auto" className="text-gray-900 font-semibold">{question.correctAnswer}</p>
+              <p dir="auto" className="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wide mb-1">Correct Answer</p>
+              <p dir="auto" className="text-gray-900 dark:text-gray-200 font-semibold">{question.correctAnswer}</p>
             </div>
-            <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
+            <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0" />
           </div>
         </div>
       )}
